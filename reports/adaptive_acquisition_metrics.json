@@ -1,0 +1,2869 @@
+{
+  "schema_version": "adaptive_acquisition_v1",
+  "created_at_utc": "2026-08-27T15:04:08.926525+00:00",
+  "stage": 7,
+  "scope": "free-choice patient-specific laboratory acquisition plus STOP",
+  "seeds": {
+    "cohort_split": 20260821,
+    "train_state_sampling": 20260827,
+    "policy_randomness_at_inference": null
+  },
+  "dataset": {
+    "cohort_path": "data/processed/primary_cohort.csv",
+    "cohort_sha256": "d407cd4bd148d01fd06f34b3a1c8f64970e9a8dabad4875d43eec6fd1c605866",
+    "cohort_manifest_path": "data/processed/primary_cohort_manifest.json",
+    "cohort_manifest_sha256": "c6e6b16087108152a157f6b5a559d355561eda9a809b8dedaf604f380b2a7a51"
+  },
+  "static_provenance": {
+    "metrics_path": "reports/static_baselines_metrics.json",
+    "metrics_sha256": "83ae8c7be5fe85b7c3d09fa8c931c7d787172544372f0e1ea66e89ace43eed8e",
+    "local_subset_model_path": "models/static_subsets.joblib",
+    "local_subset_model_sha256": "3248e5694f06b0bbf8bd83f84b472bbc8f8f90c6a6e405a95e855b743e988b4e",
+    "models_fit_split": "train",
+    "preprocessing_fit_split": "train",
+    "subset_models_reused": 64
+  },
+  "ordered_comparator": {
+    "metrics_path": "reports/ordered_acquisition_metrics.json",
+    "metrics_sha256": "889aa0a67762f43b901a8240d4dcc9e94f204e48e83ae579af01358524c7c9e5",
+    "used_for_adaptive_training_or_selection": false
+  },
+  "adaptive_model_artifact": {
+    "local_path": "models/adaptive_value_policy.joblib",
+    "sha256": "c3cda5336d7cea63f2db358febbbf72a0a8d3803f66d194fcf232ddf0249a4a8",
+    "committed": false
+  },
+  "target": {
+    "event": "event",
+    "duration": "duration_years",
+    "censoring": "event = 0"
+  },
+  "features": {
+    "base": [
+      "age",
+      "gender",
+      "bmi",
+      "sbp",
+      "dbp",
+      "family_history_diabetes"
+    ],
+    "acquisition_candidates": [
+      "fpg",
+      "total_cholesterol",
+      "triglycerides",
+      "alt",
+      "ccr",
+      "bun"
+    ],
+    "optional_not_used": [
+      "height_cm",
+      "weight_kg",
+      "smoking_status",
+      "drinking_status",
+      "hdl_c",
+      "ldl",
+      "ast"
+    ],
+    "excluded_from_predictors_and_policy_state": [
+      "participant_id",
+      "site",
+      "event",
+      "duration_years",
+      "final_fpg",
+      "diabetes_diagnosed_followup"
+    ]
+  },
+  "state_contract": {
+    "state_feature_names": [
+      "value:age",
+      "value:gender",
+      "value:bmi",
+      "value:sbp",
+      "value:dbp",
+      "value:family_history_diabetes",
+      "value:fpg",
+      "value:total_cholesterol",
+      "value:triglycerides",
+      "value:alt",
+      "value:ccr",
+      "value:bun",
+      "acquired:fpg",
+      "acquired:total_cholesterol",
+      "acquired:triglycerides",
+      "acquired:alt",
+      "acquired:ccr",
+      "acquired:bun",
+      "source_observed:age",
+      "source_observed:gender",
+      "source_observed:bmi",
+      "source_observed:sbp",
+      "source_observed:dbp",
+      "source_observed:family_history_diabetes",
+      "source_observed:fpg",
+      "source_observed:total_cholesterol",
+      "source_observed:triglycerides",
+      "source_observed:alt",
+      "source_observed:ccr",
+      "source_observed:bun",
+      "current_risk_3y"
+    ],
+    "observed_values": "base values plus acquired candidate values; unknown slots are zero",
+    "acquisition_mask": "one bit per candidate test",
+    "source_observation_mask": "separate mask for source availability of observed values",
+    "current_prediction": "3-year risk from the Cox model for the current subset",
+    "available_actions": [
+      "fpg",
+      "total_cholesterol",
+      "triglycerides",
+      "alt",
+      "ccr",
+      "bun",
+      "STOP"
+    ],
+    "candidate_costs": "named relative-cost scheme",
+    "outcome_or_followup_available_to_policy": false,
+    "identifier_or_site_available_to_policy": false,
+    "unacquired_candidate_values_available_to_policy": false
+  },
+  "value_models": {
+    "type": "Ridge regression",
+    "fit_split": "train",
+    "models": 6,
+    "ridge_alpha": 1.0,
+    "training_seed": 20260827,
+    "sample_strategy": "one deterministic random subset of the other five candidates per train participant and candidate model",
+    "target": "absolute 3-year risk revision |risk(S union candidate) - risk(S)| from train-fitted static baseline Cox subset models",
+    "target_uses_event_or_followup_directly": false,
+    "candidate_models": [
+      {
+        "candidate": "fpg",
+        "participants": 148283,
+        "sampled_states": 32,
+        "target_mean_absolute_risk_revision": 0.010423437130195065,
+        "target_median_absolute_risk_revision": 0.002858146138339568,
+        "target_p95_absolute_risk_revision": 0.04082473673376678,
+        "training_r2": 0.34417422867580283,
+        "clipped_prediction_mean": 0.010531011609208933,
+        "clipped_prediction_max": 0.614428137572341
+      },
+      {
+        "candidate": "total_cholesterol",
+        "participants": 148283,
+        "sampled_states": 32,
+        "target_mean_absolute_risk_revision": 0.0003859080042450487,
+        "target_median_absolute_risk_revision": 8.796511428077469e-05,
+        "target_p95_absolute_risk_revision": 0.0015294596200961287,
+        "training_r2": 0.5190457332798624,
+        "clipped_prediction_mean": 0.00039396791128329714,
+        "clipped_prediction_max": 0.02920993561553877
+      },
+      {
+        "candidate": "triglycerides",
+        "participants": 148283,
+        "sampled_states": 32,
+        "target_mean_absolute_risk_revision": 0.0010937454229132477,
+        "target_median_absolute_risk_revision": 0.00018287992646992546,
+        "target_p95_absolute_risk_revision": 0.004293682075424472,
+        "training_r2": 0.18721678058947278,
+        "clipped_prediction_mean": 0.0011964788702859656,
+        "clipped_prediction_max": 0.05402619944137812
+      },
+      {
+        "candidate": "alt",
+        "participants": 148283,
+        "sampled_states": 32,
+        "target_mean_absolute_risk_revision": 0.000718664134798916,
+        "target_median_absolute_risk_revision": 0.00016398447395149507,
+        "target_p95_absolute_risk_revision": 0.0025378213759189904,
+        "training_r2": 0.10705671358307922,
+        "clipped_prediction_mean": 0.0007578467343830797,
+        "clipped_prediction_max": 0.04452172067442663
+      },
+      {
+        "candidate": "ccr",
+        "participants": 148283,
+        "sampled_states": 32,
+        "target_mean_absolute_risk_revision": 0.0010392909975037276,
+        "target_median_absolute_risk_revision": 0.00023259265690134256,
+        "target_p95_absolute_risk_revision": 0.004442796137288471,
+        "training_r2": 0.4436925797821386,
+        "clipped_prediction_mean": 0.0011281893811280143,
+        "clipped_prediction_max": 0.05279533114279274
+      },
+      {
+        "candidate": "bun",
+        "participants": 148283,
+        "sampled_states": 32,
+        "target_mean_absolute_risk_revision": 0.0003494972423484372,
+        "target_median_absolute_risk_revision": 6.935949669917285e-05,
+        "target_p95_absolute_risk_revision": 0.0013997334520653548,
+        "training_r2": 0.5172913546552592,
+        "clipped_prediction_mean": 0.0003634359002399979,
+        "clipped_prediction_max": 0.026445495020559873
+      }
+    ]
+  },
+  "adaptive_policy": {
+    "name": "adaptive_risk_revision_v1",
+    "action_space": [
+      "fpg",
+      "total_cholesterol",
+      "triglycerides",
+      "alt",
+      "ccr",
+      "bun",
+      "STOP"
+    ],
+    "free_choice_among_remaining_tests": true,
+    "patient_specific_test_order": true,
+    "predicted_benefit": "non-negative clipped Ridge prediction",
+    "utility": "predicted absolute risk revision - cost_penalty * candidate cost",
+    "decision_rule": "acquire the remaining candidate with maximum non-negative utility; choose STOP when every remaining utility is negative; force STOP after six",
+    "selected_operating_point": {
+      "cost_penalty": 0.0010131473450483849,
+      "retention_target": 0.99,
+      "target_validation_c_index": 0.9111495311005854,
+      "base_validation_c_index": 0.8249852925704141,
+      "full_validation_c_index": 0.9120198769443245,
+      "selected_validation_c_index": 0.9113394766560236,
+      "selected_validation_ipcw_brier": 0.010552859802761551,
+      "retained_improvement_fraction": 0.9921824146895688,
+      "mean_acquired_tests": 1.6116758457907159,
+      "median_acquired_tests": 1.0,
+      "mean_primary_cost": 1.6116758457907159,
+      "stop_without_labs_percent": 14.077104642014163,
+      "acquire_all_percent": 8.437450826121164,
+      "unique_paths": 86,
+      "unique_final_subsets": 23
+    },
+    "missing_result_rule": "charge the selected action, retain the participant, use the train-fitted imputation value, and expose source absence through the source mask"
+  },
+  "tuning": {
+    "cost_penalty_candidate_source": "quantiles of train predicted benefit divided by primary-scheme cost",
+    "lambda_quantile_count_requested": 101,
+    "cost_penalties_evaluated": 84,
+    "selection_split": "validation",
+    "selection_metric": "Harrell C-index retention relative to Base Only and Full Features",
+    "selection_rule": "minimum mean primary-scheme cost among candidates retaining the target fraction of validation C-index improvement",
+    "test_used_for_cost_penalty_selection": false,
+    "test_cost_penalties_evaluated": 1,
+    "always_stop_endpoint": {
+      "cost_penalty": null,
+      "mean_acquired_tests": 0.0,
+      "median_acquired_tests": 0.0,
+      "mean_primary_cost": 0.0,
+      "stop_without_labs_percent": 100.0,
+      "acquire_all_percent": 0.0,
+      "unique_paths": 1,
+      "unique_final_subsets": 1,
+      "validation_c_index": 0.8249852925704141,
+      "validation_ipcw_brier": 0.011622980558558116
+    },
+    "always_acquire_endpoint": {
+      "cost_penalty": 0.0,
+      "mean_acquired_tests": 6.0,
+      "median_acquired_tests": 6.0,
+      "mean_primary_cost": 6.0,
+      "stop_without_labs_percent": 0.0,
+      "acquire_all_percent": 100.0,
+      "unique_paths": 232,
+      "unique_final_subsets": 1,
+      "validation_c_index": 0.9120198769443245,
+      "validation_ipcw_brier": 0.010552421064035377
+    },
+    "search": [
+      {
+        "cost_penalty": 0.0,
+        "mean_acquired_tests": 6.0,
+        "median_acquired_tests": 6.0,
+        "mean_primary_cost": 6.0,
+        "stop_without_labs_percent": 0.0,
+        "acquire_all_percent": 100.0,
+        "unique_paths": 232,
+        "unique_final_subsets": 1,
+        "validation_c_index": 0.9120198769443245,
+        "validation_ipcw_brier": 0.010552421064035377
+      },
+      {
+        "cost_penalty": 1.8628430126501568e-06,
+        "mean_acquired_tests": 4.689221085759245,
+        "median_acquired_tests": 5.0,
+        "mean_primary_cost": 4.689221085759245,
+        "stop_without_labs_percent": 0.33988985051140835,
+        "acquire_all_percent": 35.68214004720692,
+        "unique_paths": 359,
+        "unique_final_subsets": 52,
+        "validation_c_index": 0.9122656372092895,
+        "validation_ipcw_brier": 0.010552482404332974
+      },
+      {
+        "cost_penalty": 1.090558869857512e-05,
+        "mean_acquired_tests": 4.637828481510621,
+        "median_acquired_tests": 5.0,
+        "mean_primary_cost": 4.637828481510621,
+        "stop_without_labs_percent": 0.3870967741935484,
+        "acquire_all_percent": 34.93627065302911,
+        "unique_paths": 345,
+        "unique_final_subsets": 51,
+        "validation_c_index": 0.9122080727687482,
+        "validation_ipcw_brier": 0.01055248071201627
+      },
+      {
+        "cost_penalty": 1.9652480587746998e-05,
+        "mean_acquired_tests": 4.587096774193548,
+        "median_acquired_tests": 5.0,
+        "mean_primary_cost": 4.587096774193548,
+        "stop_without_labs_percent": 0.4563335955940205,
+        "acquire_all_percent": 34.16837136113296,
+        "unique_paths": 335,
+        "unique_final_subsets": 51,
+        "validation_c_index": 0.9121368296492661,
+        "validation_ipcw_brier": 0.01055247898093731
+      },
+      {
+        "cost_penalty": 2.82059989028725e-05,
+        "mean_acquired_tests": 4.535200629425649,
+        "median_acquired_tests": 5.0,
+        "mean_primary_cost": 4.535200629425649,
+        "stop_without_labs_percent": 0.5287175452399685,
+        "acquire_all_percent": 33.48859166011015,
+        "unique_paths": 324,
+        "unique_final_subsets": 49,
+        "validation_c_index": 0.912049514082029,
+        "validation_ipcw_brier": 0.010552490722151168
+      },
+      {
+        "cost_penalty": 3.6956099496407556e-05,
+        "mean_acquired_tests": 4.472321007081039,
+        "median_acquired_tests": 5.0,
+        "mean_primary_cost": 4.472321007081039,
+        "stop_without_labs_percent": 0.6168371361132966,
+        "acquire_all_percent": 32.868607395751376,
+        "unique_paths": 307,
+        "unique_final_subsets": 48,
+        "validation_c_index": 0.9121079904344999,
+        "validation_ipcw_brier": 0.010552457978148758
+      },
+      {
+        "cost_penalty": 4.557794963088235e-05,
+        "mean_acquired_tests": 4.407741935483871,
+        "median_acquired_tests": 4.0,
+        "mean_primary_cost": 4.407741935483871,
+        "stop_without_labs_percent": 0.7112509834775768,
+        "acquire_all_percent": 32.198269079464986,
+        "unique_paths": 293,
+        "unique_final_subsets": 48,
+        "validation_c_index": 0.9121012650840207,
+        "validation_ipcw_brier": 0.01055245671999295
+      },
+      {
+        "cost_penalty": 5.419507768860641e-05,
+        "mean_acquired_tests": 4.356003147128246,
+        "median_acquired_tests": 4.0,
+        "mean_primary_cost": 4.356003147128246,
+        "stop_without_labs_percent": 0.8025177025963809,
+        "acquire_all_percent": 31.594020456333595,
+        "unique_paths": 284,
+        "unique_final_subsets": 46,
+        "validation_c_index": 0.9121142598290143,
+        "validation_ipcw_brier": 0.010552455252717453
+      },
+      {
+        "cost_penalty": 6.310438915371747e-05,
+        "mean_acquired_tests": 4.302407553107789,
+        "median_acquired_tests": 4.0,
+        "mean_primary_cost": 4.302407553107789,
+        "stop_without_labs_percent": 0.9315499606608969,
+        "acquire_all_percent": 31.00865460267506,
+        "unique_paths": 280,
+        "unique_final_subsets": 45,
+        "validation_c_index": 0.9121664667869707,
+        "validation_ipcw_brier": 0.010552450221493846
+      },
+      {
+        "cost_penalty": 7.223735041157463e-05,
+        "mean_acquired_tests": 4.247993705743509,
+        "median_acquired_tests": 4.0,
+        "mean_primary_cost": 4.247993705743509,
+        "stop_without_labs_percent": 1.051140833988985,
+        "acquire_all_percent": 30.47364280094414,
+        "unique_paths": 278,
+        "unique_final_subsets": 45,
+        "validation_c_index": 0.9121369436382573,
+        "validation_ipcw_brier": 0.01055245073195552
+      },
+      {
+        "cost_penalty": 8.13962375136802e-05,
+        "mean_acquired_tests": 4.193296616837136,
+        "median_acquired_tests": 4.0,
+        "mean_primary_cost": 4.193296616837136,
+        "stop_without_labs_percent": 1.2022029897718332,
+        "acquire_all_percent": 29.88198269079465,
+        "unique_paths": 274,
+        "unique_final_subsets": 45,
+        "validation_c_index": 0.9121166535978288,
+        "validation_ipcw_brier": 0.01055246458321274
+      },
+      {
+        "cost_penalty": 9.085169237916976e-05,
+        "mean_acquired_tests": 4.135452399685287,
+        "median_acquired_tests": 4.0,
+        "mean_primary_cost": 4.135452399685287,
+        "stop_without_labs_percent": 1.3406766325727772,
+        "acquire_all_percent": 29.302911093627067,
+        "unique_paths": 266,
+        "unique_final_subsets": 44,
+        "validation_c_index": 0.9121188193886611,
+        "validation_ipcw_brier": 0.010552466582761037
+      },
+      {
+        "cost_penalty": 0.00010068207648013277,
+        "mean_acquired_tests": 4.074933123524784,
+        "median_acquired_tests": 4.0,
+        "mean_primary_cost": 4.074933123524784,
+        "stop_without_labs_percent": 1.4917387883556255,
+        "acquire_all_percent": 28.695515342250193,
+        "unique_paths": 263,
+        "unique_final_subsets": 44,
+        "validation_c_index": 0.9121102702143232,
+        "validation_ipcw_brier": 0.010552465618452148
+      },
+      {
+        "cost_penalty": 0.00011060108691335438,
+        "mean_acquired_tests": 4.0156726986624705,
+        "median_acquired_tests": 4.0,
+        "mean_primary_cost": 4.0156726986624705,
+        "stop_without_labs_percent": 1.7151848937844216,
+        "acquire_all_percent": 28.066089693154993,
+        "unique_paths": 253,
+        "unique_final_subsets": 42,
+        "validation_c_index": 0.9120785812747777,
+        "validation_ipcw_brier": 0.010552470232174644
+      },
+      {
+        "cost_penalty": 0.0001214817035369283,
+        "mean_acquired_tests": 3.9533910306845006,
+        "median_acquired_tests": 4.0,
+        "mean_primary_cost": 3.9533910306845006,
+        "stop_without_labs_percent": 1.963808025177026,
+        "acquire_all_percent": 27.42407553107789,
+        "unique_paths": 246,
+        "unique_final_subsets": 39,
+        "validation_c_index": 0.9120650165848283,
+        "validation_ipcw_brier": 0.010552480231955874
+      },
+      {
+        "cost_penalty": 0.00013214117564269457,
+        "mean_acquired_tests": 3.8913926042486233,
+        "median_acquired_tests": 4.0,
+        "mean_primary_cost": 3.8913926042486233,
+        "stop_without_labs_percent": 2.22816679779701,
+        "acquire_all_percent": 26.926829268292686,
+        "unique_paths": 240,
+        "unique_final_subsets": 39,
+        "validation_c_index": 0.9121131199391025,
+        "validation_ipcw_brier": 0.010552458870384241
+      },
+      {
+        "cost_penalty": 0.00014324249293199163,
+        "mean_acquired_tests": 3.827033831628639,
+        "median_acquired_tests": 4.0,
+        "mean_primary_cost": 3.827033831628639,
+        "stop_without_labs_percent": 2.470495672698662,
+        "acquire_all_percent": 26.379228953579858,
+        "unique_paths": 235,
+        "unique_final_subsets": 39,
+        "validation_c_index": 0.912171368313591,
+        "validation_ipcw_brier": 0.010552432989475927
+      },
+      {
+        "cost_penalty": 0.00015470499266700196,
+        "mean_acquired_tests": 3.7626750590086546,
+        "median_acquired_tests": 4.0,
+        "mean_primary_cost": 3.7626750590086546,
+        "stop_without_labs_percent": 2.7065302911093627,
+        "acquire_all_percent": 25.778127458693938,
+        "unique_paths": 234,
+        "unique_final_subsets": 39,
+        "validation_c_index": 0.9121817413117876,
+        "validation_ipcw_brier": 0.010552429682264839
+      },
+      {
+        "cost_penalty": 0.00016660754719675306,
+        "mean_acquired_tests": 3.69309205350118,
+        "median_acquired_tests": 4.0,
+        "mean_primary_cost": 3.69309205350118,
+        "stop_without_labs_percent": 3.036978756884343,
+        "acquire_all_percent": 25.246262785208494,
+        "unique_paths": 232,
+        "unique_final_subsets": 39,
+        "validation_c_index": 0.9122110364825186,
+        "validation_ipcw_brier": 0.010552407250840518
+      },
+      {
+        "cost_penalty": 0.00017886238177824417,
+        "mean_acquired_tests": 3.6240755310778914,
+        "median_acquired_tests": 4.0,
+        "mean_primary_cost": 3.6240755310778914,
+        "stop_without_labs_percent": 3.414634146341464,
+        "acquire_all_percent": 24.62313139260425,
+        "unique_paths": 228,
+        "unique_final_subsets": 39,
+        "validation_c_index": 0.9122271089302737,
+        "validation_ipcw_brier": 0.010552395920943966
+      },
+      {
+        "cost_penalty": 0.00019148128241314625,
+        "mean_acquired_tests": 3.5531077891424077,
+        "median_acquired_tests": 4.0,
+        "mean_primary_cost": 3.5531077891424077,
+        "stop_without_labs_percent": 3.773406766325728,
+        "acquire_all_percent": 24.028324154209287,
+        "unique_paths": 228,
+        "unique_final_subsets": 40,
+        "validation_c_index": 0.9122668910881925,
+        "validation_ipcw_brier": 0.01055239108365216
+      },
+      {
+        "cost_penalty": 0.00020445716864316916,
+        "mean_acquired_tests": 3.483115656963021,
+        "median_acquired_tests": 3.0,
+        "mean_primary_cost": 3.483115656963021,
+        "stop_without_labs_percent": 4.160503540519276,
+        "acquire_all_percent": 23.46498819826908,
+        "unique_paths": 222,
+        "unique_final_subsets": 38,
+        "validation_c_index": 0.9120842807243362,
+        "validation_ipcw_brier": 0.010552430076616522
+      },
+      {
+        "cost_penalty": 0.0002181596638848961,
+        "mean_acquired_tests": 3.414854445318647,
+        "median_acquired_tests": 3.0,
+        "mean_primary_cost": 3.414854445318647,
+        "stop_without_labs_percent": 4.604248623131393,
+        "acquire_all_percent": 22.87332808811959,
+        "unique_paths": 218,
+        "unique_final_subsets": 39,
+        "validation_c_index": 0.9119694938102268,
+        "validation_ipcw_brier": 0.01055252295517429
+      },
+      {
+        "cost_penalty": 0.00023223394411950207,
+        "mean_acquired_tests": 3.3447364280094414,
+        "median_acquired_tests": 3.0,
+        "mean_primary_cost": 3.3447364280094414,
+        "stop_without_labs_percent": 5.003933910306845,
+        "acquire_all_percent": 22.32887490165224,
+        "unique_paths": 211,
+        "unique_final_subsets": 39,
+        "validation_c_index": 0.9119180847752085,
+        "validation_ipcw_brier": 0.010552397286327859
+      },
+      {
+        "cost_penalty": 0.00024671974968461604,
+        "mean_acquired_tests": 3.275499606608969,
+        "median_acquired_tests": 3.0,
+        "mean_primary_cost": 3.275499606608969,
+        "stop_without_labs_percent": 5.403619197482298,
+        "acquire_all_percent": 21.752950432730135,
+        "unique_paths": 204,
+        "unique_final_subsets": 39,
+        "validation_c_index": 0.9118714632778195,
+        "validation_ipcw_brier": 0.010552468275766034
+      },
+      {
+        "cost_penalty": 0.000261714798455572,
+        "mean_acquired_tests": 3.2075216365066876,
+        "median_acquired_tests": 3.0,
+        "mean_primary_cost": 3.2075216365066876,
+        "stop_without_labs_percent": 5.715184893784421,
+        "acquire_all_percent": 21.233674272226594,
+        "unique_paths": 199,
+        "unique_final_subsets": 39,
+        "validation_c_index": 0.9118433079970003,
+        "validation_ipcw_brier": 0.010552397236896218
+      },
+      {
+        "cost_penalty": 0.0002770707425915349,
+        "mean_acquired_tests": 3.1396066089693155,
+        "median_acquired_tests": 3.0,
+        "mean_primary_cost": 3.1396066089693155,
+        "stop_without_labs_percent": 6.099134539732494,
+        "acquire_all_percent": 20.720692368214007,
+        "unique_paths": 196,
+        "unique_final_subsets": 39,
+        "validation_c_index": 0.9117895051931675,
+        "validation_ipcw_brier": 0.010552434764384918
+      },
+      {
+        "cost_penalty": 0.00029325510895172603,
+        "mean_acquired_tests": 3.0719433516915813,
+        "median_acquired_tests": 3.0,
+        "mean_primary_cost": 3.0719433516915813,
+        "stop_without_labs_percent": 6.454760031471282,
+        "acquire_all_percent": 20.176239181746656,
+        "unique_paths": 194,
+        "unique_final_subsets": 39,
+        "validation_c_index": 0.9117209978094736,
+        "validation_ipcw_brier": 0.010552430752792476
+      },
+      {
+        "cost_penalty": 0.00031029508124024097,
+        "mean_acquired_tests": 3.0046892210857594,
+        "median_acquired_tests": 3.0,
+        "mean_primary_cost": 3.0046892210857594,
+        "stop_without_labs_percent": 6.797797010228167,
+        "acquire_all_percent": 19.67899291896145,
+        "unique_paths": 190,
+        "unique_final_subsets": 40,
+        "validation_c_index": 0.9116292366715807,
+        "validation_ipcw_brier": 0.010552519130022423
+      },
+      {
+        "cost_penalty": 0.00032812439111182024,
+        "mean_acquired_tests": 2.937844217151849,
+        "median_acquired_tests": 3.0,
+        "mean_primary_cost": 2.937844217151849,
+        "stop_without_labs_percent": 7.112509834775767,
+        "acquire_all_percent": 19.10936270653029,
+        "unique_paths": 183,
+        "unique_final_subsets": 39,
+        "validation_c_index": 0.9117360443563082,
+        "validation_ipcw_brier": 0.010552485627546602
+      },
+      {
+        "cost_penalty": 0.00034635591712527976,
+        "mean_acquired_tests": 2.8734225019669553,
+        "median_acquired_tests": 2.0,
+        "mean_primary_cost": 2.8734225019669553,
+        "stop_without_labs_percent": 7.439811172305272,
+        "acquire_all_percent": 18.624704956726987,
+        "unique_paths": 180,
+        "unique_final_subsets": 39,
+        "validation_c_index": 0.9115953819412029,
+        "validation_ipcw_brier": 0.010552594131385585
+      },
+      {
+        "cost_penalty": 0.00036563284626011544,
+        "mean_acquired_tests": 2.809881982690795,
+        "median_acquired_tests": 2.0,
+        "mean_primary_cost": 2.809881982690795,
+        "stop_without_labs_percent": 7.782848151062156,
+        "acquire_all_percent": 18.158929976396536,
+        "unique_paths": 173,
+        "unique_final_subsets": 38,
+        "validation_c_index": 0.9117608939563835,
+        "validation_ipcw_brier": 0.010552463696708097
+      },
+      {
+        "cost_penalty": 0.00038586038622025166,
+        "mean_acquired_tests": 2.7419669551534227,
+        "median_acquired_tests": 2.0,
+        "mean_primary_cost": 2.7419669551534227,
+        "stop_without_labs_percent": 8.084972462627853,
+        "acquire_all_percent": 17.62391817466562,
+        "unique_paths": 164,
+        "unique_final_subsets": 38,
+        "validation_c_index": 0.9116555681285413,
+        "validation_ipcw_brier": 0.010552533853264484
+      },
+      {
+        "cost_penalty": 0.0004066203345498714,
+        "mean_acquired_tests": 2.675814319433517,
+        "median_acquired_tests": 2.0,
+        "mean_primary_cost": 2.675814319433517,
+        "stop_without_labs_percent": 8.453186467348544,
+        "acquire_all_percent": 17.126671911880408,
+        "unique_paths": 158,
+        "unique_final_subsets": 37,
+        "validation_c_index": 0.9115815892732712,
+        "validation_ipcw_brier": 0.010552480871630309
+      },
+      {
+        "cost_penalty": 0.00042880142300312187,
+        "mean_acquired_tests": 2.6110778914240753,
+        "median_acquired_tests": 2.0,
+        "mean_primary_cost": 2.6110778914240753,
+        "stop_without_labs_percent": 8.745869394177813,
+        "acquire_all_percent": 16.610542879622344,
+        "unique_paths": 156,
+        "unique_final_subsets": 37,
+        "validation_c_index": 0.9115554857942929,
+        "validation_ipcw_brier": 0.010552460832909635
+      },
+      {
+        "cost_penalty": 0.0004515042954126771,
+        "mean_acquired_tests": 2.5491738788355627,
+        "median_acquired_tests": 2.0,
+        "mean_primary_cost": 2.5491738788355627,
+        "stop_without_labs_percent": 9.041699449252558,
+        "acquire_all_percent": 16.06294256490952,
+        "unique_paths": 150,
+        "unique_final_subsets": 36,
+        "validation_c_index": 0.9116805317176078,
+        "validation_ipcw_brier": 0.01055212576436111
+      },
+      {
+        "cost_penalty": 0.00047572807164039796,
+        "mean_acquired_tests": 2.483398898505114,
+        "median_acquired_tests": 2.0,
+        "mean_primary_cost": 2.483398898505114,
+        "stop_without_labs_percent": 9.343823760818253,
+        "acquire_all_percent": 15.531077891424076,
+        "unique_paths": 148,
+        "unique_final_subsets": 36,
+        "validation_c_index": 0.9116524904257797,
+        "validation_ipcw_brier": 0.010552134611244638
+      },
+      {
+        "cost_penalty": 0.0005006723958066901,
+        "mean_acquired_tests": 2.421243115656963,
+        "median_acquired_tests": 2.0,
+        "mean_primary_cost": 2.421243115656963,
+        "stop_without_labs_percent": 9.623918174665617,
+        "acquire_all_percent": 15.065302911093628,
+        "unique_paths": 142,
+        "unique_final_subsets": 35,
+        "validation_c_index": 0.9116798477836607,
+        "validation_ipcw_brier": 0.010552190616956102
+      },
+      {
+        "cost_penalty": 0.0005270045862406191,
+        "mean_acquired_tests": 2.359559402045633,
+        "median_acquired_tests": 2.0,
+        "mean_primary_cost": 2.359559402045633,
+        "stop_without_labs_percent": 9.89771833202203,
+        "acquire_all_percent": 14.555468135326516,
+        "unique_paths": 135,
+        "unique_final_subsets": 36,
+        "validation_c_index": 0.9114453724288216,
+        "validation_ipcw_brier": 0.010552711414029213
+      },
+      {
+        "cost_penalty": 0.0005545537253698201,
+        "mean_acquired_tests": 2.2974980330448465,
+        "median_acquired_tests": 2.0,
+        "mean_primary_cost": 2.2974980330448465,
+        "stop_without_labs_percent": 10.193548387096774,
+        "acquire_all_percent": 14.042486231313925,
+        "unique_paths": 130,
+        "unique_final_subsets": 36,
+        "validation_c_index": 0.9113703676726309,
+        "validation_ipcw_brier": 0.010552711464553357
+      },
+      {
+        "cost_penalty": 0.0005830375631151062,
+        "mean_acquired_tests": 2.2396852871754525,
+        "median_acquired_tests": 2.0,
+        "mean_primary_cost": 2.2396852871754525,
+        "stop_without_labs_percent": 10.473642800944138,
+        "acquire_all_percent": 13.649095200629427,
+        "unique_paths": 130,
+        "unique_final_subsets": 35,
+        "validation_c_index": 0.9113785748799952,
+        "validation_ipcw_brier": 0.010552662327552375
+      },
+      {
+        "cost_penalty": 0.0006126149038794922,
+        "mean_acquired_tests": 2.1786624704956727,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 2.1786624704956727,
+        "stop_without_labs_percent": 10.741148701809598,
+        "acquire_all_percent": 13.161290322580646,
+        "unique_paths": 125,
+        "unique_final_subsets": 34,
+        "validation_c_index": 0.9113512175221141,
+        "validation_ipcw_brier": 0.010552663476926382
+      },
+      {
+        "cost_penalty": 0.0006438083817685439,
+        "mean_acquired_tests": 2.120535011801731,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 2.120535011801731,
+        "stop_without_labs_percent": 10.992918961447678,
+        "acquire_all_percent": 12.701809598741148,
+        "unique_paths": 114,
+        "unique_final_subsets": 32,
+        "validation_c_index": 0.9112800883916233,
+        "validation_ipcw_brier": 0.010552728489119777
+      },
+      {
+        "cost_penalty": 0.0006770008981175365,
+        "mean_acquired_tests": 2.0602360346184105,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 2.0602360346184105,
+        "stop_without_labs_percent": 11.210070810385524,
+        "acquire_all_percent": 12.229740361919749,
+        "unique_paths": 112,
+        "unique_final_subsets": 32,
+        "validation_c_index": 0.9112539849126451,
+        "validation_ipcw_brier": 0.010552780894068687
+      },
+      {
+        "cost_penalty": 0.0007112299786936828,
+        "mean_acquired_tests": 2.0023288749016523,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 2.0023288749016523,
+        "stop_without_labs_percent": 11.455546813532653,
+        "acquire_all_percent": 11.745082612116443,
+        "unique_paths": 102,
+        "unique_final_subsets": 31,
+        "validation_c_index": 0.911330471525721,
+        "validation_ipcw_brier": 0.010552951872172383
+      },
+      {
+        "cost_penalty": 0.0007481561831234932,
+        "mean_acquired_tests": 1.9407395751376868,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 1.9407395751376868,
+        "stop_without_labs_percent": 11.79543666404406,
+        "acquire_all_percent": 11.238394964594807,
+        "unique_paths": 103,
+        "unique_final_subsets": 28,
+        "validation_c_index": 0.9112433839364662,
+        "validation_ipcw_brier": 0.010553092018321194
+      },
+      {
+        "cost_penalty": 0.0007866488451252146,
+        "mean_acquired_tests": 1.8839024390243901,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 1.8839024390243901,
+        "stop_without_labs_percent": 12.154209284028324,
+        "acquire_all_percent": 10.741148701809598,
+        "unique_paths": 100,
+        "unique_final_subsets": 26,
+        "validation_c_index": 0.9111681512022932,
+        "validation_ipcw_brier": 0.010553069644816377
+      },
+      {
+        "cost_penalty": 0.000826533139386815,
+        "mean_acquired_tests": 1.8282926829268293,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 1.8282926829268293,
+        "stop_without_labs_percent": 12.450039339103068,
+        "acquire_all_percent": 10.262785208497247,
+        "unique_paths": 98,
+        "unique_final_subsets": 24,
+        "validation_c_index": 0.9111089909158753,
+        "validation_ipcw_brier": 0.010553151440414611
+      },
+      {
+        "cost_penalty": 0.0008691697730904756,
+        "mean_acquired_tests": 1.7733438237608183,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 1.7733438237608183,
+        "stop_without_labs_percent": 12.808811959087333,
+        "acquire_all_percent": 9.768686073957515,
+        "unique_paths": 97,
+        "unique_final_subsets": 25,
+        "validation_c_index": 0.9114344294856691,
+        "validation_ipcw_brier": 0.010553351783718466
+      },
+      {
+        "cost_penalty": 0.0009139533395946358,
+        "mean_acquired_tests": 1.7181117230527143,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 1.7181117230527143,
+        "stop_without_labs_percent": 13.151848937844218,
+        "acquire_all_percent": 9.321793863099922,
+        "unique_paths": 94,
+        "unique_final_subsets": 25,
+        "validation_c_index": 0.9114662324142059,
+        "validation_ipcw_brier": 0.010553413467669095
+      },
+      {
+        "cost_penalty": 0.000962657884442733,
+        "mean_acquired_tests": 1.6635090479937058,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 1.6635090479937058,
+        "stop_without_labs_percent": 13.633359559402045,
+        "acquire_all_percent": 8.887490165224234,
+        "unique_paths": 90,
+        "unique_final_subsets": 23,
+        "validation_c_index": 0.9113188446486216,
+        "validation_ipcw_brier": 0.010553469199914577
+      },
+      {
+        "cost_penalty": 0.0010131473450483849,
+        "mean_acquired_tests": 1.6116758457907159,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 1.6116758457907159,
+        "stop_without_labs_percent": 14.077104642014163,
+        "acquire_all_percent": 8.437450826121164,
+        "unique_paths": 86,
+        "unique_final_subsets": 23,
+        "validation_c_index": 0.9113394766560236,
+        "validation_ipcw_brier": 0.010552859802761551
+      },
+      {
+        "cost_penalty": 0.001067826413902134,
+        "mean_acquired_tests": 1.5600944138473642,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 1.5600944138473642,
+        "stop_without_labs_percent": 14.533438237608182,
+        "acquire_all_percent": 8.066089693154996,
+        "unique_paths": 83,
+        "unique_final_subsets": 24,
+        "validation_c_index": 0.9110276027761791,
+        "validation_ipcw_brier": 0.010553757273741124
+      },
+      {
+        "cost_penalty": 0.0011271554915793067,
+        "mean_acquired_tests": 1.5108418568056647,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 1.5108418568056647,
+        "stop_without_labs_percent": 15.049567269866246,
+        "acquire_all_percent": 7.697875688434304,
+        "unique_paths": 77,
+        "unique_final_subsets": 23,
+        "validation_c_index": 0.9100885614669106,
+        "validation_ipcw_brier": 0.010554723488975733
+      },
+      {
+        "cost_penalty": 0.0011905712353201666,
+        "mean_acquired_tests": 1.4623446105428797,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 1.4623446105428797,
+        "stop_without_labs_percent": 15.597167584579072,
+        "acquire_all_percent": 7.323367427222658,
+        "unique_paths": 70,
+        "unique_final_subsets": 23,
+        "validation_c_index": 0.9099957744280973,
+        "validation_ipcw_brier": 0.010555100503312776
+      },
+      {
+        "cost_penalty": 0.0012583981087165386,
+        "mean_acquired_tests": 1.4165538945712037,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 1.4165538945712037,
+        "stop_without_labs_percent": 16.20456333595594,
+        "acquire_all_percent": 6.8733280881195915,
+        "unique_paths": 65,
+        "unique_final_subsets": 20,
+        "validation_c_index": 0.9098434851358925,
+        "validation_ipcw_brier": 0.01055473574779037
+      },
+      {
+        "cost_penalty": 0.001332927403353917,
+        "mean_acquired_tests": 1.3708575924468922,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 1.3708575924468922,
+        "stop_without_labs_percent": 16.82769472856019,
+        "acquire_all_percent": 6.423288749016523,
+        "unique_paths": 64,
+        "unique_final_subsets": 20,
+        "validation_c_index": 0.9098466768276453,
+        "validation_ipcw_brier": 0.010554558449657947
+      },
+      {
+        "cost_penalty": 0.0014139613108867274,
+        "mean_acquired_tests": 1.3260424862313138,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 1.3260424862313138,
+        "stop_without_labs_percent": 17.50432730133753,
+        "acquire_all_percent": 6.055074744295831,
+        "unique_paths": 62,
+        "unique_final_subsets": 19,
+        "validation_c_index": 0.9098059827577972,
+        "validation_ipcw_brier": 0.010554743230878034
+      },
+      {
+        "cost_penalty": 0.0015026500246288366,
+        "mean_acquired_tests": 1.2832100708103855,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 1.2832100708103855,
+        "stop_without_labs_percent": 18.199842643587726,
+        "acquire_all_percent": 5.66168371361133,
+        "unique_paths": 57,
+        "unique_final_subsets": 19,
+        "validation_c_index": 0.9098030190440267,
+        "validation_ipcw_brier": 0.010554585890050329
+      },
+      {
+        "cost_penalty": 0.0015993243516827366,
+        "mean_acquired_tests": 1.2420141620771046,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 1.2420141620771046,
+        "stop_without_labs_percent": 19.03383162863887,
+        "acquire_all_percent": 5.271439811172305,
+        "unique_paths": 51,
+        "unique_final_subsets": 17,
+        "validation_c_index": 0.9097761176421104,
+        "validation_ipcw_brier": 0.01055488773214688
+      },
+      {
+        "cost_penalty": 0.0017062234220345995,
+        "mean_acquired_tests": 1.1998111723052713,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 1.1998111723052713,
+        "stop_without_labs_percent": 19.88985051140834,
+        "acquire_all_percent": 4.871754523996853,
+        "unique_paths": 49,
+        "unique_final_subsets": 16,
+        "validation_c_index": 0.909811796196347,
+        "validation_ipcw_brier": 0.010554338854176686
+      },
+      {
+        "cost_penalty": 0.0018262502951822855,
+        "mean_acquired_tests": 1.1588985051140834,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 1.1588985051140834,
+        "stop_without_labs_percent": 20.783634933123523,
+        "acquire_all_percent": 4.481510621557828,
+        "unique_paths": 41,
+        "unique_final_subsets": 15,
+        "validation_c_index": 0.9095178185881164,
+        "validation_ipcw_brier": 0.010556473332401062
+      },
+      {
+        "cost_penalty": 0.0019598742898060463,
+        "mean_acquired_tests": 1.1165066876475216,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 1.1165066876475216,
+        "stop_without_labs_percent": 21.897718332022027,
+        "acquire_all_percent": 4.119590873328089,
+        "unique_paths": 40,
+        "unique_final_subsets": 15,
+        "validation_c_index": 0.9094872695384825,
+        "validation_ipcw_brier": 0.010555936461171866
+      },
+      {
+        "cost_penalty": 0.0021108567349093863,
+        "mean_acquired_tests": 1.07279307631786,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 1.07279307631786,
+        "stop_without_labs_percent": 23.175452399685287,
+        "acquire_all_percent": 3.729346970889064,
+        "unique_paths": 37,
+        "unique_final_subsets": 14,
+        "validation_c_index": 0.9094571764448133,
+        "validation_ipcw_brier": 0.010556041555309573
+      },
+      {
+        "cost_penalty": 0.002282383089998524,
+        "mean_acquired_tests": 1.029897718332022,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 1.029897718332022,
+        "stop_without_labs_percent": 24.594807238394964,
+        "acquire_all_percent": 3.304484657749803,
+        "unique_paths": 34,
+        "unique_final_subsets": 12,
+        "validation_c_index": 0.9094675494430099,
+        "validation_ipcw_brier": 0.010556176426238793
+      },
+      {
+        "cost_penalty": 0.002484731259142496,
+        "mean_acquired_tests": 0.9873485444531864,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 0.9873485444531864,
+        "stop_without_labs_percent": 26.221872541306055,
+        "acquire_all_percent": 2.992918961447679,
+        "unique_paths": 31,
+        "unique_final_subsets": 12,
+        "validation_c_index": 0.9094185341768063,
+        "validation_ipcw_brier": 0.010555315873876673
+      },
+      {
+        "cost_penalty": 0.002713872610215538,
+        "mean_acquired_tests": 0.9436978756884343,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 0.9436978756884343,
+        "stop_without_labs_percent": 28.110149488591663,
+        "acquire_all_percent": 2.7159716758457906,
+        "unique_paths": 31,
+        "unique_final_subsets": 12,
+        "validation_c_index": 0.9090549092949701,
+        "validation_ipcw_brier": 0.010534074409559687
+      },
+      {
+        "cost_penalty": 0.0029818795220227993,
+        "mean_acquired_tests": 0.8980330448465775,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 0.8980330448465775,
+        "stop_without_labs_percent": 30.250196695515342,
+        "acquire_all_percent": 2.4358772619984266,
+        "unique_paths": 27,
+        "unique_final_subsets": 12,
+        "validation_c_index": 0.9085779793559098,
+        "validation_ipcw_brier": 0.010531432077690424
+      },
+      {
+        "cost_penalty": 0.0032916173162522563,
+        "mean_acquired_tests": 0.8542250196695516,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 0.8542250196695516,
+        "stop_without_labs_percent": 32.67033831628639,
+        "acquire_all_percent": 2.1872541306058224,
+        "unique_paths": 27,
+        "unique_final_subsets": 11,
+        "validation_c_index": 0.9081980540483361,
+        "validation_ipcw_brier": 0.01053109681518718
+      },
+      {
+        "cost_penalty": 0.003662993179328753,
+        "mean_acquired_tests": 0.8078048780487805,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 0.8078048780487805,
+        "stop_without_labs_percent": 35.18174665617624,
+        "acquire_all_percent": 1.8662470495672698,
+        "unique_paths": 26,
+        "unique_final_subsets": 11,
+        "validation_c_index": 0.9069414394096647,
+        "validation_ipcw_brier": 0.010537107410925364
+      },
+      {
+        "cost_penalty": 0.004107816370501865,
+        "mean_acquired_tests": 0.755531077891424,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 0.755531077891424,
+        "stop_without_labs_percent": 38.300550747442955,
+        "acquire_all_percent": 1.5892997639653814,
+        "unique_paths": 24,
+        "unique_final_subsets": 11,
+        "validation_c_index": 0.9057678087565659,
+        "validation_ipcw_brier": 0.010534685029502855
+      },
+      {
+        "cost_penalty": 0.0046416466900614725,
+        "mean_acquired_tests": 0.6988198269079465,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 0.6988198269079465,
+        "stop_without_labs_percent": 41.93863099921322,
+        "acquire_all_percent": 1.2871754523996854,
+        "unique_paths": 20,
+        "unique_final_subsets": 11,
+        "validation_c_index": 0.9041768644067893,
+        "validation_ipcw_brier": 0.01053512835594274
+      },
+      {
+        "cost_penalty": 0.00528334210014018,
+        "mean_acquired_tests": 0.639213217938631,
+        "median_acquired_tests": 1.0,
+        "mean_primary_cost": 0.639213217938631,
+        "stop_without_labs_percent": 46.13375295043273,
+        "acquire_all_percent": 1.0542879622344612,
+        "unique_paths": 19,
+        "unique_final_subsets": 11,
+        "validation_c_index": 0.9038639646260244,
+        "validation_ipcw_brier": 0.010535234980999857
+      },
+      {
+        "cost_penalty": 0.006064333767990116,
+        "mean_acquired_tests": 0.5809913453973249,
+        "median_acquired_tests": 0.0,
+        "mean_primary_cost": 0.5809913453973249,
+        "stop_without_labs_percent": 50.35405192761605,
+        "acquire_all_percent": 0.7962234461054288,
+        "unique_paths": 16,
+        "unique_final_subsets": 10,
+        "validation_c_index": 0.8986700562433081,
+        "validation_ipcw_brier": 0.010545163982491026
+      },
+      {
+        "cost_penalty": 0.0070173750388604975,
+        "mean_acquired_tests": 0.5203776553894571,
+        "median_acquired_tests": 0.0,
+        "mean_primary_cost": 0.5203776553894571,
+        "stop_without_labs_percent": 54.78520849724626,
+        "acquire_all_percent": 0.6105428796223447,
+        "unique_paths": 15,
+        "unique_final_subsets": 10,
+        "validation_c_index": 0.8961847542688022,
+        "validation_ipcw_brier": 0.010550676705350407
+      },
+      {
+        "cost_penalty": 0.008208656417565744,
+        "mean_acquired_tests": 0.45491738788355623,
+        "median_acquired_tests": 0.0,
+        "mean_primary_cost": 0.45491738788355623,
+        "stop_without_labs_percent": 59.861526357199054,
+        "acquire_all_percent": 0.4689221085759245,
+        "unique_paths": 12,
+        "unique_final_subsets": 9,
+        "validation_c_index": 0.8892576432753277,
+        "validation_ipcw_brier": 0.0105625479187015
+      },
+      {
+        "cost_penalty": 0.00969734522990851,
+        "mean_acquired_tests": 0.38955153422501965,
+        "median_acquired_tests": 0.0,
+        "mean_primary_cost": 0.38955153422501965,
+        "stop_without_labs_percent": 65.14870180959875,
+        "acquire_all_percent": 0.2958300550747443,
+        "unique_paths": 10,
+        "unique_final_subsets": 9,
+        "validation_c_index": 0.8848087669389065,
+        "validation_ipcw_brier": 0.010551575313303852
+      },
+      {
+        "cost_penalty": 0.011610872243697605,
+        "mean_acquired_tests": 0.32166797797010227,
+        "median_acquired_tests": 0.0,
+        "mean_primary_cost": 0.32166797797010227,
+        "stop_without_labs_percent": 70.70653029110936,
+        "acquire_all_percent": 0.15106215578284815,
+        "unique_paths": 10,
+        "unique_final_subsets": 9,
+        "validation_c_index": 0.8773911613164224,
+        "validation_ipcw_brier": 0.010565999234072193
+      },
+      {
+        "cost_penalty": 0.014154864456341117,
+        "mean_acquired_tests": 0.2524311565696302,
+        "median_acquired_tests": 0.0,
+        "mean_primary_cost": 0.2524311565696302,
+        "stop_without_labs_percent": 76.6829268292683,
+        "acquire_all_percent": 0.05979543666404406,
+        "unique_paths": 10,
+        "unique_final_subsets": 9,
+        "validation_c_index": 0.8689150539219224,
+        "validation_ipcw_brier": 0.010587343470740104
+      },
+      {
+        "cost_penalty": 0.017755282973750484,
+        "mean_acquired_tests": 0.18555468135326514,
+        "median_acquired_tests": 0.0,
+        "mean_primary_cost": 0.18555468135326514,
+        "stop_without_labs_percent": 82.66561762391818,
+        "acquire_all_percent": 0.025177025963808025,
+        "unique_paths": 8,
+        "unique_final_subsets": 8,
+        "validation_c_index": 0.8605642204287194,
+        "validation_ipcw_brier": 0.010698597594337916
+      },
+      {
+        "cost_penalty": 0.023367201437257477,
+        "mean_acquired_tests": 0.119213217938631,
+        "median_acquired_tests": 0.0,
+        "mean_primary_cost": 0.119213217938631,
+        "stop_without_labs_percent": 88.61998426435878,
+        "acquire_all_percent": 0.0,
+        "unique_paths": 5,
+        "unique_final_subsets": 5,
+        "validation_c_index": 0.8485728065354904,
+        "validation_ipcw_brier": 0.011011839000507277
+      },
+      {
+        "cost_penalty": 0.03458480103258108,
+        "mean_acquired_tests": 0.056490952006294254,
+        "median_acquired_tests": 0.0,
+        "mean_primary_cost": 0.056490952006294254,
+        "stop_without_labs_percent": 94.4390243902439,
+        "acquire_all_percent": 0.0,
+        "unique_paths": 5,
+        "unique_final_subsets": 5,
+        "validation_c_index": 0.8389928297504884,
+        "validation_ipcw_brier": 0.011231519172275583
+      },
+      {
+        "cost_penalty": 0.614428137572341,
+        "mean_acquired_tests": 0.0,
+        "median_acquired_tests": 0.0,
+        "mean_primary_cost": 0.0,
+        "stop_without_labs_percent": 100.0,
+        "acquire_all_percent": 0.0,
+        "unique_paths": 1,
+        "unique_final_subsets": 1,
+        "validation_c_index": 0.8249852925704141,
+        "validation_ipcw_brier": 0.011622980558558116
+      },
+      {
+        "cost_penalty": null,
+        "mean_acquired_tests": 0.0,
+        "median_acquired_tests": 0.0,
+        "mean_primary_cost": 0.0,
+        "stop_without_labs_percent": 100.0,
+        "acquire_all_percent": 0.0,
+        "unique_paths": 1,
+        "unique_final_subsets": 1,
+        "validation_c_index": 0.8249852925704141,
+        "validation_ipcw_brier": 0.011622980558558116
+      }
+    ]
+  },
+  "evaluation": {
+    "horizon_years": 3.0,
+    "brier": "single-horizon IPCW; censoring distribution estimated on train only",
+    "selected_policy": {
+      "validation": {
+        "prediction": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9113394766560236,
+          "ipcw_brier_at_horizon": 0.010552859802761551,
+          "mean_predicted_risk_at_horizon": 0.011829079510792366,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00012061270333441759
+        },
+        "acquisition": {
+          "mean_acquired_tests": 1.6116758457907159,
+          "median_acquired_tests": 1.0,
+          "p25_acquired_tests": 1.0,
+          "p75_acquired_tests": 2.0,
+          "stop_without_labs_percent": 14.077104642014163,
+          "acquire_all_percent": 8.437450826121164,
+          "unique_paths": 86,
+          "unique_final_subsets": 23,
+          "count_distribution": [
+            {
+              "acquired_count": 0,
+              "participants": 4473,
+              "percent": 14.077104642014161
+            },
+            {
+              "acquired_count": 1,
+              "participants": 18392,
+              "percent": 57.88198269079465
+            },
+            {
+              "acquired_count": 2,
+              "participants": 3461,
+              "percent": 10.892210857592447
+            },
+            {
+              "acquired_count": 3,
+              "participants": 1619,
+              "percent": 5.095200629425649
+            },
+            {
+              "acquired_count": 4,
+              "participants": 791,
+              "percent": 2.4893784421715184
+            },
+            {
+              "acquired_count": 5,
+              "participants": 358,
+              "percent": 1.1266719118804092
+            },
+            {
+              "acquired_count": 6,
+              "participants": 2681,
+              "percent": 8.437450826121164
+            }
+          ],
+          "action_by_step": [
+            {
+              "step": 1,
+              "actions": [
+                {
+                  "action": "fpg",
+                  "participants": 27302,
+                  "percent_of_all_participants": 85.92289535798584
+                },
+                {
+                  "action": "STOP",
+                  "participants": 4473,
+                  "percent_of_all_participants": 14.077104642014161
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "actions": [
+                {
+                  "action": "triglycerides",
+                  "participants": 2635,
+                  "percent_of_all_participants": 8.292682926829269
+                },
+                {
+                  "action": "alt",
+                  "participants": 3872,
+                  "percent_of_all_participants": 12.185680566483084
+                },
+                {
+                  "action": "ccr",
+                  "participants": 2403,
+                  "percent_of_all_participants": 7.5625491738788355
+                },
+                {
+                  "action": "STOP",
+                  "participants": 18392,
+                  "percent_of_all_participants": 57.88198269079465
+                }
+              ]
+            },
+            {
+              "step": 3,
+              "actions": [
+                {
+                  "action": "total_cholesterol",
+                  "participants": 102,
+                  "percent_of_all_participants": 0.3210070810385523
+                },
+                {
+                  "action": "triglycerides",
+                  "participants": 2773,
+                  "percent_of_all_participants": 8.726986624704956
+                },
+                {
+                  "action": "alt",
+                  "participants": 949,
+                  "percent_of_all_participants": 2.986624704956727
+                },
+                {
+                  "action": "ccr",
+                  "participants": 1605,
+                  "percent_of_all_participants": 5.051140833988985
+                },
+                {
+                  "action": "bun",
+                  "participants": 20,
+                  "percent_of_all_participants": 0.06294256490952006
+                },
+                {
+                  "action": "STOP",
+                  "participants": 3461,
+                  "percent_of_all_participants": 10.892210857592447
+                }
+              ]
+            },
+            {
+              "step": 4,
+              "actions": [
+                {
+                  "action": "total_cholesterol",
+                  "participants": 220,
+                  "percent_of_all_participants": 0.6923682140047207
+                },
+                {
+                  "action": "triglycerides",
+                  "participants": 133,
+                  "percent_of_all_participants": 0.41856805664830843
+                },
+                {
+                  "action": "alt",
+                  "participants": 1681,
+                  "percent_of_all_participants": 5.290322580645161
+                },
+                {
+                  "action": "ccr",
+                  "participants": 1657,
+                  "percent_of_all_participants": 5.214791502753737
+                },
+                {
+                  "action": "bun",
+                  "participants": 139,
+                  "percent_of_all_participants": 0.4374508261211644
+                },
+                {
+                  "action": "STOP",
+                  "participants": 1619,
+                  "percent_of_all_participants": 5.095200629425649
+                }
+              ]
+            },
+            {
+              "step": 5,
+              "actions": [
+                {
+                  "action": "total_cholesterol",
+                  "participants": 2245,
+                  "percent_of_all_participants": 7.065302911093627
+                },
+                {
+                  "action": "triglycerides",
+                  "participants": 24,
+                  "percent_of_all_participants": 0.07553107789142408
+                },
+                {
+                  "action": "alt",
+                  "participants": 15,
+                  "percent_of_all_participants": 0.04720692368214005
+                },
+                {
+                  "action": "ccr",
+                  "participants": 57,
+                  "percent_of_all_participants": 0.17938630999213218
+                },
+                {
+                  "action": "bun",
+                  "participants": 698,
+                  "percent_of_all_participants": 2.1966955153422503
+                },
+                {
+                  "action": "STOP",
+                  "participants": 791,
+                  "percent_of_all_participants": 2.4893784421715184
+                }
+              ]
+            },
+            {
+              "step": 6,
+              "actions": [
+                {
+                  "action": "total_cholesterol",
+                  "participants": 534,
+                  "percent_of_all_participants": 1.6805664830841858
+                },
+                {
+                  "action": "triglycerides",
+                  "participants": 13,
+                  "percent_of_all_participants": 0.040912667191188044
+                },
+                {
+                  "action": "alt",
+                  "participants": 13,
+                  "percent_of_all_participants": 0.040912667191188044
+                },
+                {
+                  "action": "ccr",
+                  "participants": 52,
+                  "percent_of_all_participants": 0.16365066876475218
+                },
+                {
+                  "action": "bun",
+                  "participants": 2069,
+                  "percent_of_all_participants": 6.511408339889851
+                },
+                {
+                  "action": "STOP",
+                  "participants": 358,
+                  "percent_of_all_participants": 1.1266719118804092
+                }
+              ]
+            },
+            {
+              "step": 7,
+              "actions": [
+                {
+                  "action": "STOP",
+                  "participants": 2681,
+                  "percent_of_all_participants": 8.437450826121164
+                }
+              ]
+            }
+          ],
+          "acquired_by_feature": [
+            {
+              "feature": "fpg",
+              "participants": 27302,
+              "percent": 85.92289535798584
+            },
+            {
+              "feature": "total_cholesterol",
+              "participants": 3101,
+              "percent": 9.759244689221086
+            },
+            {
+              "feature": "triglycerides",
+              "participants": 5578,
+              "percent": 17.554681353265146
+            },
+            {
+              "feature": "alt",
+              "participants": 6530,
+              "percent": 20.5507474429583
+            },
+            {
+              "feature": "ccr",
+              "participants": 5774,
+              "percent": 18.171518489378442
+            },
+            {
+              "feature": "bun",
+              "participants": 2926,
+              "percent": 9.208497246262786
+            }
+          ],
+          "top_paths": [
+            {
+              "path": [
+                "fpg",
+                "STOP"
+              ],
+              "participants": 18392,
+              "percent": 57.88198269079465
+            },
+            {
+              "path": [
+                "STOP"
+              ],
+              "participants": 4473,
+              "percent": 14.077104642014161
+            },
+            {
+              "path": [
+                "fpg",
+                "alt",
+                "STOP"
+              ],
+              "participants": 1996,
+              "percent": 6.281667977970102
+            },
+            {
+              "path": [
+                "fpg",
+                "ccr",
+                "STOP"
+              ],
+              "participants": 1236,
+              "percent": 3.8898505114083397
+            },
+            {
+              "path": [
+                "fpg",
+                "triglycerides",
+                "ccr",
+                "alt",
+                "total_cholesterol",
+                "bun",
+                "STOP"
+              ],
+              "participants": 867,
+              "percent": 2.7285601888276947
+            },
+            {
+              "path": [
+                "fpg",
+                "alt",
+                "triglycerides",
+                "STOP"
+              ],
+              "participants": 591,
+              "percent": 1.8599527930763178
+            },
+            {
+              "path": [
+                "fpg",
+                "ccr",
+                "triglycerides",
+                "STOP"
+              ],
+              "participants": 563,
+              "percent": 1.7718332022029897
+            },
+            {
+              "path": [
+                "fpg",
+                "triglycerides",
+                "alt",
+                "ccr",
+                "total_cholesterol",
+                "bun",
+                "STOP"
+              ],
+              "participants": 475,
+              "percent": 1.4948859166011015
+            },
+            {
+              "path": [
+                "fpg",
+                "alt",
+                "triglycerides",
+                "ccr",
+                "total_cholesterol",
+                "bun",
+                "STOP"
+              ],
+              "participants": 442,
+              "percent": 1.3910306845003935
+            },
+            {
+              "path": [
+                "fpg",
+                "triglycerides",
+                "ccr",
+                "STOP"
+              ],
+              "participants": 295,
+              "percent": 0.9284028324154209
+            },
+            {
+              "path": [
+                "fpg",
+                "triglycerides",
+                "STOP"
+              ],
+              "participants": 229,
+              "percent": 0.7206923682140047
+            },
+            {
+              "path": [
+                "fpg",
+                "ccr",
+                "triglycerides",
+                "alt",
+                "total_cholesterol",
+                "bun",
+                "STOP"
+              ],
+              "participants": 197,
+              "percent": 0.6199842643587726
+            },
+            {
+              "path": [
+                "fpg",
+                "alt",
+                "triglycerides",
+                "ccr",
+                "STOP"
+              ],
+              "participants": 184,
+              "percent": 0.5790715971675846
+            },
+            {
+              "path": [
+                "fpg",
+                "triglycerides",
+                "ccr",
+                "alt",
+                "STOP"
+              ],
+              "participants": 179,
+              "percent": 0.5633359559402046
+            },
+            {
+              "path": [
+                "fpg",
+                "alt",
+                "triglycerides",
+                "ccr",
+                "bun",
+                "total_cholesterol",
+                "STOP"
+              ],
+              "participants": 154,
+              "percent": 0.4846577498033045
+            },
+            {
+              "path": [
+                "fpg",
+                "triglycerides",
+                "alt",
+                "ccr",
+                "STOP"
+              ],
+              "participants": 149,
+              "percent": 0.4689221085759245
+            },
+            {
+              "path": [
+                "fpg",
+                "triglycerides",
+                "alt",
+                "STOP"
+              ],
+              "participants": 120,
+              "percent": 0.3776553894571204
+            },
+            {
+              "path": [
+                "fpg",
+                "triglycerides",
+                "ccr",
+                "alt",
+                "bun",
+                "total_cholesterol",
+                "STOP"
+              ],
+              "participants": 120,
+              "percent": 0.3776553894571204
+            },
+            {
+              "path": [
+                "fpg",
+                "ccr",
+                "triglycerides",
+                "alt",
+                "STOP"
+              ],
+              "participants": 116,
+              "percent": 0.36506687647521635
+            },
+            {
+              "path": [
+                "fpg",
+                "triglycerides",
+                "alt",
+                "ccr",
+                "bun",
+                "total_cholesterol",
+                "STOP"
+              ],
+              "participants": 115,
+              "percent": 0.3619197482297404
+            }
+          ],
+          "cost_by_scheme": {
+            "uniform_unit": {
+              "mean": 1.6116758457907159,
+              "median": 1.0,
+              "p25": 1.0,
+              "p75": 2.0,
+              "min": 0.0,
+              "max": 6.0
+            },
+            "fpg_discounted_sensitivity": {
+              "mean": 1.1820613690007868,
+              "median": 0.5,
+              "p25": 0.5,
+              "p75": 1.5,
+              "min": 0.0,
+              "max": 5.5
+            },
+            "fpg_premium_sensitivity": {
+              "mean": 2.470904799370574,
+              "median": 2.0,
+              "p25": 2.0,
+              "p75": 3.0,
+              "min": 0.0,
+              "max": 7.0
+            }
+          },
+          "attempted_source_missingness": [
+            {
+              "feature": "fpg",
+              "attempted": 27302,
+              "source_value_available": 27302,
+              "source_value_missing": 0,
+              "missing_percent_of_attempts": 0.0
+            },
+            {
+              "feature": "total_cholesterol",
+              "attempted": 3101,
+              "source_value_available": 3058,
+              "source_value_missing": 43,
+              "missing_percent_of_attempts": 1.3866494679135764
+            },
+            {
+              "feature": "triglycerides",
+              "attempted": 5578,
+              "source_value_available": 5464,
+              "source_value_missing": 114,
+              "missing_percent_of_attempts": 2.0437432771602726
+            },
+            {
+              "feature": "alt",
+              "attempted": 6530,
+              "source_value_available": 6454,
+              "source_value_missing": 76,
+              "missing_percent_of_attempts": 1.1638591117917305
+            },
+            {
+              "feature": "ccr",
+              "attempted": 5774,
+              "source_value_available": 5516,
+              "source_value_missing": 258,
+              "missing_percent_of_attempts": 4.468306200207828
+            },
+            {
+              "feature": "bun",
+              "attempted": 2926,
+              "source_value_available": 2643,
+              "source_value_missing": 283,
+              "missing_percent_of_attempts": 9.671907040328094
+            }
+          ],
+          "missing_result_rule": "charge the selected action; use the train-fitted imputation value; retain the participant and expose source availability through its mask"
+        }
+      },
+      "test": {
+        "prediction": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9063279235348448,
+          "ipcw_brier_at_horizon": 0.010338306883538925,
+          "mean_predicted_risk_at_horizon": 0.011821066058846736,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.00019434875481468168
+        },
+        "acquisition": {
+          "mean_acquired_tests": 1.5991817466561762,
+          "median_acquired_tests": 1.0,
+          "p25_acquired_tests": 1.0,
+          "p75_acquired_tests": 2.0,
+          "stop_without_labs_percent": 14.061369000786783,
+          "acquire_all_percent": 8.305271439811172,
+          "unique_paths": 83,
+          "unique_final_subsets": 24,
+          "count_distribution": [
+            {
+              "acquired_count": 0,
+              "participants": 4468,
+              "percent": 14.061369000786781
+            },
+            {
+              "acquired_count": 1,
+              "participants": 18475,
+              "percent": 58.143194335169156
+            },
+            {
+              "acquired_count": 2,
+              "participants": 3509,
+              "percent": 11.043273013375295
+            },
+            {
+              "acquired_count": 3,
+              "participants": 1567,
+              "percent": 4.931549960660897
+            },
+            {
+              "acquired_count": 4,
+              "participants": 799,
+              "percent": 2.5145554681353266
+            },
+            {
+              "acquired_count": 5,
+              "participants": 318,
+              "percent": 1.000786782061369
+            },
+            {
+              "acquired_count": 6,
+              "participants": 2639,
+              "percent": 8.305271439811172
+            }
+          ],
+          "action_by_step": [
+            {
+              "step": 1,
+              "actions": [
+                {
+                  "action": "fpg",
+                  "participants": 27307,
+                  "percent_of_all_participants": 85.93863099921322
+                },
+                {
+                  "action": "STOP",
+                  "participants": 4468,
+                  "percent_of_all_participants": 14.061369000786781
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "actions": [
+                {
+                  "action": "triglycerides",
+                  "participants": 2655,
+                  "percent_of_all_participants": 8.355625491738788
+                },
+                {
+                  "action": "alt",
+                  "participants": 3737,
+                  "percent_of_all_participants": 11.760818253343825
+                },
+                {
+                  "action": "ccr",
+                  "participants": 2439,
+                  "percent_of_all_participants": 7.675845790715972
+                },
+                {
+                  "action": "bun",
+                  "participants": 1,
+                  "percent_of_all_participants": 0.003147128245476003
+                },
+                {
+                  "action": "STOP",
+                  "participants": 18475,
+                  "percent_of_all_participants": 58.143194335169156
+                }
+              ]
+            },
+            {
+              "step": 3,
+              "actions": [
+                {
+                  "action": "total_cholesterol",
+                  "participants": 110,
+                  "percent_of_all_participants": 0.34618410700236035
+                },
+                {
+                  "action": "triglycerides",
+                  "participants": 2653,
+                  "percent_of_all_participants": 8.349331235247837
+                },
+                {
+                  "action": "alt",
+                  "participants": 925,
+                  "percent_of_all_participants": 2.911093627065303
+                },
+                {
+                  "action": "ccr",
+                  "participants": 1612,
+                  "percent_of_all_participants": 5.073170731707317
+                },
+                {
+                  "action": "bun",
+                  "participants": 23,
+                  "percent_of_all_participants": 0.07238394964594808
+                },
+                {
+                  "action": "STOP",
+                  "participants": 3509,
+                  "percent_of_all_participants": 11.043273013375295
+                }
+              ]
+            },
+            {
+              "step": 4,
+              "actions": [
+                {
+                  "action": "total_cholesterol",
+                  "participants": 204,
+                  "percent_of_all_participants": 0.6420141620771046
+                },
+                {
+                  "action": "triglycerides",
+                  "participants": 127,
+                  "percent_of_all_participants": 0.3996852871754524
+                },
+                {
+                  "action": "alt",
+                  "participants": 1738,
+                  "percent_of_all_participants": 5.4697088906372935
+                },
+                {
+                  "action": "ccr",
+                  "participants": 1550,
+                  "percent_of_all_participants": 4.878048780487805
+                },
+                {
+                  "action": "bun",
+                  "participants": 137,
+                  "percent_of_all_participants": 0.4311565696302124
+                },
+                {
+                  "action": "STOP",
+                  "participants": 1567,
+                  "percent_of_all_participants": 4.931549960660897
+                }
+              ]
+            },
+            {
+              "step": 5,
+              "actions": [
+                {
+                  "action": "total_cholesterol",
+                  "participants": 2186,
+                  "percent_of_all_participants": 6.879622344610543
+                },
+                {
+                  "action": "triglycerides",
+                  "participants": 20,
+                  "percent_of_all_participants": 0.06294256490952006
+                },
+                {
+                  "action": "alt",
+                  "participants": 15,
+                  "percent_of_all_participants": 0.04720692368214005
+                },
+                {
+                  "action": "ccr",
+                  "participants": 63,
+                  "percent_of_all_participants": 0.1982690794649882
+                },
+                {
+                  "action": "bun",
+                  "participants": 673,
+                  "percent_of_all_participants": 2.1180173092053503
+                },
+                {
+                  "action": "STOP",
+                  "participants": 799,
+                  "percent_of_all_participants": 2.5145554681353266
+                }
+              ]
+            },
+            {
+              "step": 6,
+              "actions": [
+                {
+                  "action": "total_cholesterol",
+                  "participants": 529,
+                  "percent_of_all_participants": 1.6648308418568056
+                },
+                {
+                  "action": "triglycerides",
+                  "participants": 10,
+                  "percent_of_all_participants": 0.03147128245476003
+                },
+                {
+                  "action": "alt",
+                  "participants": 20,
+                  "percent_of_all_participants": 0.06294256490952006
+                },
+                {
+                  "action": "ccr",
+                  "participants": 52,
+                  "percent_of_all_participants": 0.16365066876475218
+                },
+                {
+                  "action": "bun",
+                  "participants": 2028,
+                  "percent_of_all_participants": 6.382376081825335
+                },
+                {
+                  "action": "STOP",
+                  "participants": 318,
+                  "percent_of_all_participants": 1.000786782061369
+                }
+              ]
+            },
+            {
+              "step": 7,
+              "actions": [
+                {
+                  "action": "STOP",
+                  "participants": 2639,
+                  "percent_of_all_participants": 8.305271439811172
+                }
+              ]
+            }
+          ],
+          "acquired_by_feature": [
+            {
+              "feature": "fpg",
+              "participants": 27307,
+              "percent": 85.93863099921322
+            },
+            {
+              "feature": "total_cholesterol",
+              "participants": 3029,
+              "percent": 9.532651455546814
+            },
+            {
+              "feature": "triglycerides",
+              "participants": 5465,
+              "percent": 17.199055861526357
+            },
+            {
+              "feature": "alt",
+              "participants": 6435,
+              "percent": 20.25177025963808
+            },
+            {
+              "feature": "ccr",
+              "participants": 5716,
+              "percent": 17.988985051140833
+            },
+            {
+              "feature": "bun",
+              "participants": 2862,
+              "percent": 9.007081038552322
+            }
+          ],
+          "top_paths": [
+            {
+              "path": [
+                "fpg",
+                "STOP"
+              ],
+              "participants": 18475,
+              "percent": 58.143194335169156
+            },
+            {
+              "path": [
+                "STOP"
+              ],
+              "participants": 4468,
+              "percent": 14.061369000786781
+            },
+            {
+              "path": [
+                "fpg",
+                "alt",
+                "STOP"
+              ],
+              "participants": 2012,
+              "percent": 6.332022029897718
+            },
+            {
+              "path": [
+                "fpg",
+                "ccr",
+                "STOP"
+              ],
+              "participants": 1265,
+              "percent": 3.981117230527144
+            },
+            {
+              "path": [
+                "fpg",
+                "triglycerides",
+                "ccr",
+                "alt",
+                "total_cholesterol",
+                "bun",
+                "STOP"
+              ],
+              "participants": 901,
+              "percent": 2.8355625491738787
+            },
+            {
+              "path": [
+                "fpg",
+                "ccr",
+                "triglycerides",
+                "STOP"
+              ],
+              "participants": 573,
+              "percent": 1.8033044846577497
+            },
+            {
+              "path": [
+                "fpg",
+                "alt",
+                "triglycerides",
+                "STOP"
+              ],
+              "participants": 551,
+              "percent": 1.7340676632572778
+            },
+            {
+              "path": [
+                "fpg",
+                "triglycerides",
+                "alt",
+                "ccr",
+                "total_cholesterol",
+                "bun",
+                "STOP"
+              ],
+              "participants": 459,
+              "percent": 1.4445318646734855
+            },
+            {
+              "path": [
+                "fpg",
+                "alt",
+                "triglycerides",
+                "ccr",
+                "total_cholesterol",
+                "bun",
+                "STOP"
+              ],
+              "participants": 379,
+              "percent": 1.1927616050354053
+            },
+            {
+              "path": [
+                "fpg",
+                "triglycerides",
+                "ccr",
+                "STOP"
+              ],
+              "participants": 274,
+              "percent": 0.8623131392604249
+            },
+            {
+              "path": [
+                "fpg",
+                "triglycerides",
+                "STOP"
+              ],
+              "participants": 232,
+              "percent": 0.7301337529504327
+            },
+            {
+              "path": [
+                "fpg",
+                "ccr",
+                "triglycerides",
+                "alt",
+                "total_cholesterol",
+                "bun",
+                "STOP"
+              ],
+              "participants": 204,
+              "percent": 0.6420141620771046
+            },
+            {
+              "path": [
+                "fpg",
+                "triglycerides",
+                "ccr",
+                "alt",
+                "STOP"
+              ],
+              "participants": 192,
+              "percent": 0.6042486231313926
+            },
+            {
+              "path": [
+                "fpg",
+                "alt",
+                "triglycerides",
+                "ccr",
+                "STOP"
+              ],
+              "participants": 173,
+              "percent": 0.5444531864673485
+            },
+            {
+              "path": [
+                "fpg",
+                "triglycerides",
+                "alt",
+                "ccr",
+                "STOP"
+              ],
+              "participants": 168,
+              "percent": 0.5287175452399685
+            },
+            {
+              "path": [
+                "fpg",
+                "alt",
+                "triglycerides",
+                "ccr",
+                "bun",
+                "total_cholesterol",
+                "STOP"
+              ],
+              "participants": 158,
+              "percent": 0.4972462627852085
+            },
+            {
+              "path": [
+                "fpg",
+                "triglycerides",
+                "ccr",
+                "alt",
+                "bun",
+                "total_cholesterol",
+                "STOP"
+              ],
+              "participants": 130,
+              "percent": 0.4091266719118804
+            },
+            {
+              "path": [
+                "fpg",
+                "triglycerides",
+                "alt",
+                "STOP"
+              ],
+              "participants": 126,
+              "percent": 0.3965381589299764
+            },
+            {
+              "path": [
+                "fpg",
+                "ccr",
+                "triglycerides",
+                "alt",
+                "STOP"
+              ],
+              "participants": 117,
+              "percent": 0.3682140047206924
+            },
+            {
+              "path": [
+                "fpg",
+                "triglycerides",
+                "alt",
+                "ccr",
+                "bun",
+                "total_cholesterol",
+                "STOP"
+              ],
+              "participants": 104,
+              "percent": 0.32730133752950435
+            }
+          ],
+          "cost_by_scheme": {
+            "uniform_unit": {
+              "mean": 1.5991817466561762,
+              "median": 1.0,
+              "p25": 1.0,
+              "p75": 2.0,
+              "min": 0.0,
+              "max": 6.0
+            },
+            "fpg_discounted_sensitivity": {
+              "mean": 1.16948859166011,
+              "median": 0.5,
+              "p25": 0.5,
+              "p75": 1.5,
+              "min": 0.0,
+              "max": 5.5
+            },
+            "fpg_premium_sensitivity": {
+              "mean": 2.4585680566483084,
+              "median": 2.0,
+              "p25": 2.0,
+              "p75": 3.0,
+              "min": 0.0,
+              "max": 7.0
+            }
+          },
+          "attempted_source_missingness": [
+            {
+              "feature": "fpg",
+              "attempted": 27307,
+              "source_value_available": 27307,
+              "source_value_missing": 0,
+              "missing_percent_of_attempts": 0.0
+            },
+            {
+              "feature": "total_cholesterol",
+              "attempted": 3029,
+              "source_value_available": 2987,
+              "source_value_missing": 42,
+              "missing_percent_of_attempts": 1.3865962363816442
+            },
+            {
+              "feature": "triglycerides",
+              "attempted": 5465,
+              "source_value_available": 5358,
+              "source_value_missing": 107,
+              "missing_percent_of_attempts": 1.9579139981701739
+            },
+            {
+              "feature": "alt",
+              "attempted": 6435,
+              "source_value_available": 6370,
+              "source_value_missing": 65,
+              "missing_percent_of_attempts": 1.0101010101010102
+            },
+            {
+              "feature": "ccr",
+              "attempted": 5716,
+              "source_value_available": 5499,
+              "source_value_missing": 217,
+              "missing_percent_of_attempts": 3.796361091672498
+            },
+            {
+              "feature": "bun",
+              "attempted": 2862,
+              "source_value_available": 2585,
+              "source_value_missing": 277,
+              "missing_percent_of_attempts": 9.6785464709993
+            }
+          ],
+          "missing_result_rule": "charge the selected action; use the train-fitted imputation value; retain the participant and expose source availability through its mask"
+        }
+      }
+    },
+    "static_references": {
+      "base_only": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8249852925704141,
+          "ipcw_brier_at_horizon": 0.011622980558558116,
+          "mean_predicted_risk_at_horizon": 0.011476437286784852,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00047325492734193175
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8383382563675945,
+          "ipcw_brier_at_horizon": 0.011595375132287363,
+          "mean_predicted_risk_at_horizon": 0.0115004855581473,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0005149292555141176
+        }
+      },
+      "full_features": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9120198769443245,
+          "ipcw_brier_at_horizon": 0.010552421064035377,
+          "mean_predicted_risk_at_horizon": 0.011801219933880717,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00014847228024606612
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9086049339527642,
+          "ipcw_brier_at_horizon": 0.010338086523554993,
+          "mean_predicted_risk_at_horizon": 0.01180483971186714,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0002105751017942789
+        }
+      }
+    },
+    "ordered_reference": {
+      "validation": {
+        "prediction": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9117929248629026,
+          "ipcw_brier_at_horizon": 0.010553828392364122,
+          "mean_predicted_risk_at_horizon": 0.011775749464167921,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00017394274995886222
+        },
+        "acquisition": {
+          "mean_acquired_tests": 3.5897088906372936,
+          "median_acquired_tests": 6.0,
+          "p25_acquired_tests": 1.0,
+          "p75_acquired_tests": 6.0,
+          "stop_without_labs_percent": 20.528717545239967,
+          "acquire_all_percent": 54.977183320220306,
+          "next_actions_total": 114063,
+          "stop_actions_total": 31775,
+          "stage_distribution": [
+            {
+              "acquired_count": 0,
+              "acquired_features": [],
+              "participants": 6523,
+              "percent": 20.528717545239967
+            },
+            {
+              "acquired_count": 1,
+              "acquired_features": [
+                "fpg"
+              ],
+              "participants": 7084,
+              "percent": 22.294256490952005
+            },
+            {
+              "acquired_count": 2,
+              "acquired_features": [
+                "fpg",
+                "alt"
+              ],
+              "participants": 311,
+              "percent": 0.978756884343037
+            },
+            {
+              "acquired_count": 3,
+              "acquired_features": [
+                "fpg",
+                "alt",
+                "triglycerides"
+              ],
+              "participants": 129,
+              "percent": 0.40597954366640443
+            },
+            {
+              "acquired_count": 4,
+              "acquired_features": [
+                "fpg",
+                "alt",
+                "triglycerides",
+                "total_cholesterol"
+              ],
+              "participants": 139,
+              "percent": 0.4374508261211644
+            },
+            {
+              "acquired_count": 5,
+              "acquired_features": [
+                "fpg",
+                "alt",
+                "triglycerides",
+                "total_cholesterol",
+                "ccr"
+              ],
+              "participants": 120,
+              "percent": 0.3776553894571204
+            },
+            {
+              "acquired_count": 6,
+              "acquired_features": [
+                "fpg",
+                "alt",
+                "triglycerides",
+                "total_cholesterol",
+                "ccr",
+                "bun"
+              ],
+              "participants": 17469,
+              "percent": 54.9771833202203
+            }
+          ],
+          "cost_by_scheme": {
+            "uniform_unit": {
+              "mean": 3.5897088906372936,
+              "median": 6.0,
+              "p25": 1.0,
+              "p75": 6.0,
+              "min": 0.0,
+              "max": 6.0
+            },
+            "fpg_discounted_sensitivity": {
+              "mean": 3.1923524783634933,
+              "median": 5.5,
+              "p25": 0.5,
+              "p75": 5.5,
+              "min": 0.0,
+              "max": 5.5
+            },
+            "fpg_premium_sensitivity": {
+              "mean": 4.384421715184894,
+              "median": 7.0,
+              "p25": 2.0,
+              "p75": 7.0,
+              "min": 0.0,
+              "max": 7.0
+            }
+          },
+          "attempted_source_missingness": [
+            {
+              "feature": "fpg",
+              "attempted": 25252,
+              "source_value_available": 25252,
+              "source_value_missing": 0,
+              "missing_percent_of_attempts": 0.0
+            },
+            {
+              "feature": "alt",
+              "attempted": 18168,
+              "source_value_available": 17991,
+              "source_value_missing": 177,
+              "missing_percent_of_attempts": 0.9742404227212682
+            },
+            {
+              "feature": "triglycerides",
+              "attempted": 17857,
+              "source_value_available": 17487,
+              "source_value_missing": 370,
+              "missing_percent_of_attempts": 2.0720165761326093
+            },
+            {
+              "feature": "total_cholesterol",
+              "attempted": 17728,
+              "source_value_available": 17363,
+              "source_value_missing": 365,
+              "missing_percent_of_attempts": 2.058889891696751
+            },
+            {
+              "feature": "ccr",
+              "attempted": 17589,
+              "source_value_available": 16661,
+              "source_value_missing": 928,
+              "missing_percent_of_attempts": 5.27602478821991
+            },
+            {
+              "feature": "bun",
+              "attempted": 17469,
+              "source_value_available": 15723,
+              "source_value_missing": 1746,
+              "missing_percent_of_attempts": 9.994848016486348
+            }
+          ],
+          "missing_result_rule": "charge the requested action; use the train-fitted imputation value; retain the participant and continue normal NEXT/STOP evaluation"
+        }
+      },
+      "test": {
+        "prediction": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9064319691029205,
+          "ipcw_brier_at_horizon": 0.010337429807197707,
+          "mean_predicted_risk_at_horizon": 0.011763367838666392,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.00025204697499502625
+        },
+        "acquisition": {
+          "mean_acquired_tests": 3.560818253343824,
+          "median_acquired_tests": 6.0,
+          "p25_acquired_tests": 1.0,
+          "p75_acquired_tests": 6.0,
+          "stop_without_labs_percent": 20.96931549960661,
+          "acquire_all_percent": 54.57120377655389,
+          "next_actions_total": 113145,
+          "stop_actions_total": 31775,
+          "stage_distribution": [
+            {
+              "acquired_count": 0,
+              "acquired_features": [],
+              "participants": 6663,
+              "percent": 20.96931549960661
+            },
+            {
+              "acquired_count": 1,
+              "acquired_features": [
+                "fpg"
+              ],
+              "participants": 7146,
+              "percent": 22.489378442171517
+            },
+            {
+              "acquired_count": 2,
+              "acquired_features": [
+                "fpg",
+                "alt"
+              ],
+              "participants": 273,
+              "percent": 0.8591660110149488
+            },
+            {
+              "acquired_count": 3,
+              "acquired_features": [
+                "fpg",
+                "alt",
+                "triglycerides"
+              ],
+              "participants": 105,
+              "percent": 0.3304484657749803
+            },
+            {
+              "acquired_count": 4,
+              "acquired_features": [
+                "fpg",
+                "alt",
+                "triglycerides",
+                "total_cholesterol"
+              ],
+              "participants": 142,
+              "percent": 0.44689221085759245
+            },
+            {
+              "acquired_count": 5,
+              "acquired_features": [
+                "fpg",
+                "alt",
+                "triglycerides",
+                "total_cholesterol",
+                "ccr"
+              ],
+              "participants": 106,
+              "percent": 0.33359559402045635
+            },
+            {
+              "acquired_count": 6,
+              "acquired_features": [
+                "fpg",
+                "alt",
+                "triglycerides",
+                "total_cholesterol",
+                "ccr",
+                "bun"
+              ],
+              "participants": 17340,
+              "percent": 54.571203776553894
+            }
+          ],
+          "cost_by_scheme": {
+            "uniform_unit": {
+              "mean": 3.560818253343824,
+              "median": 6.0,
+              "p25": 1.0,
+              "p75": 6.0,
+              "min": 0.0,
+              "max": 6.0
+            },
+            "fpg_discounted_sensitivity": {
+              "mean": 3.1656648308418567,
+              "median": 5.5,
+              "p25": 0.5,
+              "p75": 5.5,
+              "min": 0.0,
+              "max": 5.5
+            },
+            "fpg_premium_sensitivity": {
+              "mean": 4.351125098347758,
+              "median": 7.0,
+              "p25": 2.0,
+              "p75": 7.0,
+              "min": 0.0,
+              "max": 7.0
+            }
+          },
+          "attempted_source_missingness": [
+            {
+              "feature": "fpg",
+              "attempted": 25112,
+              "source_value_available": 25112,
+              "source_value_missing": 0,
+              "missing_percent_of_attempts": 0.0
+            },
+            {
+              "feature": "alt",
+              "attempted": 17966,
+              "source_value_available": 17806,
+              "source_value_missing": 160,
+              "missing_percent_of_attempts": 0.890571078704219
+            },
+            {
+              "feature": "triglycerides",
+              "attempted": 17693,
+              "source_value_available": 17346,
+              "source_value_missing": 347,
+              "missing_percent_of_attempts": 1.9612276041372294
+            },
+            {
+              "feature": "total_cholesterol",
+              "attempted": 17588,
+              "source_value_available": 17248,
+              "source_value_missing": 340,
+              "missing_percent_of_attempts": 1.933136229247214
+            },
+            {
+              "feature": "ccr",
+              "attempted": 17446,
+              "source_value_available": 16606,
+              "source_value_missing": 840,
+              "missing_percent_of_attempts": 4.814857273873668
+            },
+            {
+              "feature": "bun",
+              "attempted": 17340,
+              "source_value_available": 15652,
+              "source_value_missing": 1688,
+              "missing_percent_of_attempts": 9.734717416378317
+            }
+          ],
+          "missing_result_rule": "charge the requested action; use the train-fitted imputation value; retain the participant and continue normal NEXT/STOP evaluation"
+        }
+      }
+    }
+  },
+  "costs": {
+    "config_path": "configs/costs.yaml",
+    "default_scheme": "uniform_unit",
+    "unit_type": "relative_experimental",
+    "real_prices": false,
+    "stop_cost": 0.0,
+    "schemes": {
+      "uniform_unit": {
+        "role": "primary",
+        "costs": {
+          "fpg": 1.0,
+          "total_cholesterol": 1.0,
+          "triglycerides": 1.0,
+          "alt": 1.0,
+          "ccr": 1.0,
+          "bun": 1.0
+        }
+      },
+      "fpg_discounted_sensitivity": {
+        "role": "sensitivity_only",
+        "costs": {
+          "fpg": 0.5,
+          "total_cholesterol": 1.0,
+          "triglycerides": 1.0,
+          "alt": 1.0,
+          "ccr": 1.0,
+          "bun": 1.0
+        }
+      },
+      "fpg_premium_sensitivity": {
+        "role": "sensitivity_only",
+        "costs": {
+          "fpg": 2.0,
+          "total_cholesterol": 1.0,
+          "triglycerides": 1.0,
+          "alt": 1.0,
+          "ccr": 1.0,
+          "bun": 1.0
+        }
+      }
+    }
+  },
+  "participant_level_output": null,
+  "environment": {
+    "python": "3.12.4",
+    "numpy": "1.26.4",
+    "pandas": "2.2.3",
+    "scikit-learn": "1.4.2",
+    "statsmodels": "0.14.2",
+    "joblib": "1.4.2"
+  },
+  "artifact_migration": {
+    "date": "2026-11-10",
+    "source_commit": "0b9a4f4",
+    "original_sha256": "b37cd62a3c0a46de78e1147b92686c7168edc1b9cc695d1712b011b351269b45",
+    "changes": "Descriptive identifiers, paths and dependent checksums; numerical results unchanged.",
+    "models_refitted": false,
+    "metrics_recomputed": false
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "schema": "frozen_fpg_comparison_v1",
+  "scope": "Post-development, descriptive comparison; not a preregistered confirmatory analysis.",
+  "methods": [
+    "base_plus_fpg",
+    "adaptive"
+  ],
+  "horizon_years": 3.0,
+  "bootstrap_replicates": 200,
+  "bootstrap_seed": 20260827,
+  "contrasts": [
+    [
+      "adaptive",
+      "base_plus_fpg"
+    ]
+  ],
+  "refit_models": false,
+  "retune_policy": false,
+  "new_dataset": false,
+  "participant_level_output": false
+}

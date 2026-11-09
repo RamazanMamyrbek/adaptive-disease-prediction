@@ -1,0 +1,175 @@
+schema_version: feature_registry_v1
+dataset_schema_version: primary_cohort_v1
+description: Confirmed feature roles for the primary participant-level cohort.
+
+roles:
+  base:
+    - name: age
+      raw_source: Age (y)
+      clinical_group: demographics
+      value_type: continuous
+      unit: years
+      rationale: Available before laboratory acquisition.
+    - name: gender
+      raw_source: Gender(1, male; 2, female)
+      clinical_group: demographics
+      value_type: binary_coded
+      unit: source_code
+      rationale: Available before laboratory acquisition.
+    - name: bmi
+      raw_source: BMI(kg/m2)
+      clinical_group: anthropometry
+      value_type: continuous
+      unit: kg/m2
+      rationale: Used instead of including height and weight simultaneously.
+    - name: sbp
+      raw_source: SBP(mmHg)
+      clinical_group: blood_pressure
+      value_type: continuous
+      unit: mmHg
+      rationale: Treated as available at the initial assessment in the MVP.
+    - name: dbp
+      raw_source: DBP(mmHg)
+      clinical_group: blood_pressure
+      value_type: continuous
+      unit: mmHg
+      rationale: Treated as available at the initial assessment in the MVP.
+    - name: family_history_diabetes
+      raw_source: family histroy of diabetes(1,Yes;0,No)
+      clinical_group: family_history
+      value_type: binary_coded
+      unit: source_code
+      rationale: Available from history before laboratory acquisition.
+
+  acquirable:
+    - name: fpg
+      raw_source: FPG (mmol/L)
+      clinical_group: glucose
+      value_type: continuous
+      unit: mmol/L
+      rationale: Core baseline laboratory acquisition candidate.
+    - name: total_cholesterol
+      raw_source: Cholesterol(mmol/L)
+      clinical_group: lipids
+      value_type: continuous
+      unit: mmol/L
+      rationale: Core baseline laboratory acquisition candidate.
+    - name: triglycerides
+      raw_source: Triglyceride(mmol/L)
+      clinical_group: lipids
+      value_type: continuous
+      unit: mmol/L
+      rationale: Core baseline laboratory acquisition candidate.
+    - name: alt
+      raw_source: ALT(U/L)
+      clinical_group: liver_laboratory
+      value_type: continuous
+      unit: U/L
+      rationale: Core baseline laboratory acquisition candidate.
+    - name: ccr
+      raw_source: CCR(umol/L)
+      clinical_group: kidney_laboratory
+      value_type: continuous
+      unit: umol/L_as_labeled
+      rationale: Core candidate; the source label and exact clinical meaning remain a limitation.
+    - name: bun
+      raw_source: BUN(mmol/L)
+      clinical_group: kidney_laboratory
+      value_type: continuous
+      unit: mmol/L
+      rationale: Core baseline laboratory acquisition candidate.
+
+  optional:
+    - name: height_cm
+      raw_source: height(cm)
+      clinical_group: anthropometry
+      value_type: continuous
+      unit: cm
+      rationale: Retained for sensitivity work; omitted from core because BMI is used.
+    - name: weight_kg
+      raw_source: weight(kg)
+      clinical_group: anthropometry
+      value_type: continuous
+      unit: kg
+      rationale: Retained for sensitivity work; omitted from core because BMI is used.
+    - name: smoking_status
+      raw_source: smoking status(1,current smoker;2, ever smoker;3,never smoker)
+      clinical_group: lifestyle
+      value_type: categorical_coded
+      unit: source_code
+      rationale: Optional because approximately 71.6 percent is missing.
+    - name: drinking_status
+      raw_source: drinking status(1,current drinker;2, ever drinker;3,never drinker)
+      clinical_group: lifestyle
+      value_type: categorical_coded
+      unit: source_code
+      rationale: Optional because approximately 71.6 percent is missing.
+    - name: hdl_c
+      raw_source: HDL-c(mmol/L)
+      clinical_group: lipids
+      value_type: continuous
+      unit: mmol/L
+      rationale: Optional because approximately 44.6 percent is missing.
+    - name: ldl
+      raw_source: LDL(mmol/L)
+      clinical_group: lipids
+      value_type: continuous
+      unit: mmol/L
+      rationale: Optional because approximately 44.1 percent is missing.
+    - name: ast
+      raw_source: AST(U/L)
+      clinical_group: liver_laboratory
+      value_type: continuous
+      unit: U/L
+      rationale: Optional because approximately 58.2 percent is missing.
+
+  metadata:
+    - name: participant_id
+      raw_source: id
+      clinical_group: identifier
+      value_type: identifier
+      unit: none
+      rationale: Split integrity and traceability only; never a predictor.
+    - name: site
+      raw_source: site
+      clinical_group: site
+      value_type: categorical_coded
+      unit: source_code
+      rationale: Metadata for future sensitivity analysis; excluded from the main model.
+    - name: split
+      raw_source: derived_during_cohort_construction
+      clinical_group: partition
+      value_type: categorical
+      unit: none
+      rationale: Train, validation, or test assignment; never a predictor.
+
+  target:
+    - name: event
+      raw_source: censor of diabetes at followup(1, Yes; 0, No)
+      clinical_group: diabetes_outcome
+      value_type: binary
+      unit: 1_event_0_censored
+      rationale: Incident diabetes event indicator; never a predictor.
+    - name: duration_years
+      raw_source: year of followup
+      clinical_group: follow_up
+      value_type: continuous
+      unit: years
+      rationale: Event or censoring time; never a predictor.
+
+raw_excluded_fields:
+  - name: id
+    mapped_to: participant_id
+    reason: Identifier; retained only as metadata after renaming.
+  - name: FPG of final visit(mmol/L)
+    mapped_to: null
+    reason: Definite future/post-baseline leakage; absent from the processed cohort.
+  - name: Diabetes diagnosed during followup（1,Yes）
+    mapped_to: null
+    reason: Follow-up outcome flag and incomplete target proxy; absent from the processed cohort.
+  - name: censor of diabetes at followup(1, Yes; 0, No)
+    mapped_to: event
+    reason: Outcome status; target only.
+  - name: year of followup
+    mapped_to: duration_years
+    reason: Follow-up time; target only.

@@ -1,0 +1,308 @@
+{
+  "schema_version": "ordinary_survival_baseline_v1",
+  "created_at_utc": "2026-08-27T10:10:48.508386+00:00",
+  "stage": 3,
+  "model_name": "cox_full_core_v1",
+  "scope": "ordinary survival baseline; no acquisition policy or cost model",
+  "seed": 20260821,
+  "dataset": {
+    "cohort_path": "data/processed/primary_cohort.csv",
+    "cohort_sha256": "d407cd4bd148d01fd06f34b3a1c8f64970e9a8dabad4875d43eec6fd1c605866",
+    "cohort_manifest_path": "data/processed/primary_cohort_manifest.json",
+    "cohort_manifest_sha256": "c6e6b16087108152a157f6b5a559d355561eda9a809b8dedaf604f380b2a7a51"
+  },
+  "target": {
+    "event": "event",
+    "duration": "duration_years",
+    "censoring": "event = 0"
+  },
+  "predictor_features": [
+    "age",
+    "gender",
+    "bmi",
+    "sbp",
+    "dbp",
+    "family_history_diabetes",
+    "fpg",
+    "total_cholesterol",
+    "triglycerides",
+    "alt",
+    "ccr",
+    "bun"
+  ],
+  "base_features": [
+    "age",
+    "gender",
+    "bmi",
+    "sbp",
+    "dbp",
+    "family_history_diabetes"
+  ],
+  "core_acquirable_features_used_as_ordinary_predictors": [
+    "fpg",
+    "total_cholesterol",
+    "triglycerides",
+    "alt",
+    "ccr",
+    "bun"
+  ],
+  "excluded_from_predictors": [
+    "participant_id",
+    "site",
+    "event",
+    "duration_years",
+    "final_fpg",
+    "diabetes_diagnosed_followup"
+  ],
+  "model": {
+    "type": "Cox proportional hazards",
+    "ties": "breslow",
+    "penalization": null,
+    "fit_split": "train",
+    "fit_warnings": [],
+    "coefficients": [
+      {
+        "feature": "age",
+        "coefficient": 0.42137071859650366,
+        "hazard_ratio": 1.524049167063136,
+        "hazard_ratio_ci95_low": 1.4662821124041323,
+        "hazard_ratio_ci95_high": 1.584092067942827,
+        "standard_error": 0.019714641228516967,
+        "p_value": 2.3582102211348445e-101
+      },
+      {
+        "feature": "bmi",
+        "coefficient": 0.32327165720958495,
+        "hazard_ratio": 1.3816406325682302,
+        "hazard_ratio_ci95_low": 1.3319298012699523,
+        "hazard_ratio_ci95_high": 1.4332067919371088,
+        "standard_error": 0.018695300117070712,
+        "p_value": 5.442026415952563e-67
+      },
+      {
+        "feature": "sbp",
+        "coefficient": 0.04352611728102543,
+        "hazard_ratio": 1.04448727312344,
+        "hazard_ratio_ci95_low": 0.9997242115203715,
+        "hazard_ratio_ci95_high": 1.091254619169148,
+        "standard_error": 0.022347930508821532,
+        "p_value": 0.051455943547473286
+      },
+      {
+        "feature": "dbp",
+        "coefficient": 0.062359577732048775,
+        "hazard_ratio": 1.0643449906862963,
+        "hazard_ratio_ci95_low": 1.0192689435548332,
+        "hazard_ratio_ci95_high": 1.1114144763874774,
+        "standard_error": 0.022078535412725114,
+        "p_value": 0.004736278519557466
+      },
+      {
+        "feature": "fpg",
+        "coefficient": 1.1688372245948992,
+        "hazard_ratio": 3.2182483620311837,
+        "hazard_ratio_ci95_low": 3.106702619177566,
+        "hazard_ratio_ci95_high": 3.3337991398926445,
+        "standard_error": 0.01799760813052597,
+        "p_value": 0.0
+      },
+      {
+        "feature": "total_cholesterol",
+        "coefficient": -0.07075547113728016,
+        "hazard_ratio": 0.931689689295097,
+        "hazard_ratio_ci95_low": 0.8985852649427251,
+        "hazard_ratio_ci95_high": 0.9660137006521275,
+        "standard_error": 0.01845826996774614,
+        "p_value": 0.00012645274010803347
+      },
+      {
+        "feature": "triglycerides",
+        "coefficient": 0.07252035742327714,
+        "hazard_ratio": 1.0752146944680079,
+        "hazard_ratio_ci95_low": 1.0516862830774847,
+        "hazard_ratio_ci95_high": 1.09926948539915,
+        "standard_error": 0.011288519175303338,
+        "p_value": 1.3251445809190697e-10
+      },
+      {
+        "feature": "alt",
+        "coefficient": 0.10583229158956906,
+        "hazard_ratio": 1.1116354302616782,
+        "hazard_ratio_ci95_low": 1.0935773329416207,
+        "hazard_ratio_ci95_high": 1.1299917185454635,
+        "standard_error": 0.008356128768875638,
+        "p_value": 9.215005254262898e-37
+      },
+      {
+        "feature": "ccr",
+        "coefficient": -0.08052421649947075,
+        "hazard_ratio": 0.9226325603823105,
+        "hazard_ratio_ci95_low": 0.879697245680072,
+        "hazard_ratio_ci95_high": 0.9676634156328827,
+        "standard_error": 0.024312884288431844,
+        "p_value": 0.0009263231217563089
+      },
+      {
+        "feature": "bun",
+        "coefficient": -0.03835981782612833,
+        "hazard_ratio": 0.9623666019268258,
+        "hazard_ratio_ci95_low": 0.9275748263828798,
+        "hazard_ratio_ci95_high": 0.9984633586012113,
+        "standard_error": 0.01878673193014095,
+        "p_value": 0.04116573020841781
+      },
+      {
+        "feature": "gender",
+        "coefficient": -0.13198933929583367,
+        "hazard_ratio": 0.8763503375412692,
+        "hazard_ratio_ci95_low": 0.7901302378202913,
+        "hazard_ratio_ci95_high": 0.9719788932864122,
+        "standard_error": 0.052840892761456225,
+        "p_value": 0.012494428097555344
+      },
+      {
+        "feature": "family_history_diabetes",
+        "coefficient": 0.56279773137802,
+        "hazard_ratio": 1.7555772695970455,
+        "hazard_ratio_ci95_low": 1.4632316928226285,
+        "hazard_ratio_ci95_high": 2.106331871188783,
+        "standard_error": 0.09293380284650697,
+        "p_value": 1.3963552701111695e-09
+      }
+    ]
+  },
+  "preprocessing": {
+    "fit_split": "train",
+    "continuous_strategy": "median imputation followed by standard scaling",
+    "binary_strategy": "most-frequent imputation without scaling",
+    "missing_indicators_added": false,
+    "continuous": {
+      "age": {
+        "imputation_median": 39.0,
+        "post_imputation_mean": 42.06608984172157,
+        "post_imputation_scale": 12.653671526924036
+      },
+      "bmi": {
+        "imputation_median": 23.0,
+        "post_imputation_mean": 23.22811805803767,
+        "post_imputation_scale": 3.3457744076083795
+      },
+      "sbp": {
+        "imputation_median": 118.0,
+        "post_imputation_mean": 119.06542894330435,
+        "post_imputation_scale": 16.376335314851836
+      },
+      "dbp": {
+        "imputation_median": 73.0,
+        "post_imputation_mean": 74.16174477182145,
+        "post_imputation_scale": 10.815973509656192
+      },
+      "fpg": {
+        "imputation_median": 4.9,
+        "post_imputation_mean": 4.912746977064127,
+        "post_imputation_scale": 0.6113248161867433
+      },
+      "total_cholesterol": {
+        "imputation_median": 4.62,
+        "post_imputation_mean": 4.7027568231017725,
+        "post_imputation_scale": 0.8892948182818347
+      },
+      "triglycerides": {
+        "imputation_median": 1.07,
+        "post_imputation_mean": 1.3304689681217672,
+        "post_imputation_scale": 1.014536984161472
+      },
+      "alt": {
+        "imputation_median": 18.0,
+        "post_imputation_mean": 23.900503092060454,
+        "post_imputation_scale": 22.326722756853165
+      },
+      "ccr": {
+        "imputation_median": 69.3,
+        "post_imputation_mean": 70.01946339094839,
+        "post_imputation_scale": 15.537855752993993
+      },
+      "bun": {
+        "imputation_median": 4.53,
+        "post_imputation_mean": 4.645274846071364,
+        "post_imputation_scale": 1.1255251654752614
+      }
+    },
+    "binary": {
+      "gender": {
+        "imputation_mode": 1.0
+      },
+      "family_history_diabetes": {
+        "imputation_mode": 0.0
+      }
+    }
+  },
+  "evaluation": {
+    "horizon_years": 3.0,
+    "c_index": "Harrell; higher linear predictor means higher risk",
+    "brier": "single-horizon IPCW; censoring distribution estimated on train only",
+    "observed_risk": "1 - Kaplan-Meier survival within each split",
+    "metrics": {
+      "train": {
+        "participants": 148283,
+        "events_total": 2922,
+        "event_percent": 1.9705563011268992,
+        "events_by_horizon": 1225,
+        "censored_by_horizon": 74257,
+        "observed_beyond_horizon": 72801,
+        "harrell_c_index": 0.9184869997312056,
+        "ipcw_brier_at_horizon": 0.010464675319515174,
+        "mean_predicted_risk_at_horizon": 0.011669057522451882,
+        "km_observed_risk_at_horizon": 0.011760565486257701,
+        "calibration_in_the_large_difference": -9.150796380581923e-05,
+        "training_censoring_survival_at_horizon": 0.49682688973270644
+      },
+      "validation": {
+        "participants": 31775,
+        "events_total": 626,
+        "event_percent": 1.970102281667978,
+        "events_by_horizon": 268,
+        "censored_by_horizon": 15887,
+        "observed_beyond_horizon": 15620,
+        "harrell_c_index": 0.9120194209883598,
+        "ipcw_brier_at_horizon": 0.01055251948969552,
+        "mean_predicted_risk_at_horizon": 0.011801205713806072,
+        "km_observed_risk_at_horizon": 0.011949692214126784,
+        "calibration_in_the_large_difference": -0.0001484865003207117,
+        "training_censoring_survival_at_horizon": 0.49682688973270644
+      },
+      "test": {
+        "participants": 31775,
+        "events_total": 626,
+        "event_percent": 1.970102281667978,
+        "events_by_horizon": 271,
+        "censored_by_horizon": 15911,
+        "observed_beyond_horizon": 15593,
+        "harrell_c_index": 0.9086073323687133,
+        "ipcw_brier_at_horizon": 0.010338274356461915,
+        "mean_predicted_risk_at_horizon": 0.01180475836853894,
+        "km_observed_risk_at_horizon": 0.012015414813661418,
+        "calibration_in_the_large_difference": -0.00021065644512247884,
+        "training_censoring_survival_at_horizon": 0.49682688973270644
+      }
+    }
+  },
+  "cost_configuration": null,
+  "acquisition_policy": null,
+  "environment": {
+    "python": "3.12.4",
+    "numpy": "1.26.4",
+    "pandas": "2.2.3",
+    "scikit-learn": "1.4.2",
+    "statsmodels": "0.14.2",
+    "joblib": "1.4.2"
+  },
+  "artifact_migration": {
+    "date": "2026-11-10",
+    "source_commit": "0b9a4f4",
+    "original_sha256": "6b248b6bdd1a29a39bc402bfc62735df75badc4025a00280c1cd4c701a5d3138",
+    "changes": "Descriptive identifiers, paths and dependent checksums; numerical results unchanged.",
+    "models_refitted": false,
+    "metrics_recomputed": false
+  }
+}

@@ -1,0 +1,1507 @@
+{
+  "schema_version": "ordered_acquisition_v1",
+  "created_at_utc": "2026-08-27T14:46:11.421236+00:00",
+  "stage": 6,
+  "scope": "fixed global order with patient-specific NEXT/STOP; no free-choice acquisition",
+  "seeds": {
+    "cohort_split": 20260821,
+    "policy_randomness": null
+  },
+  "dataset": {
+    "cohort_path": "data/processed/primary_cohort.csv",
+    "cohort_sha256": "d407cd4bd148d01fd06f34b3a1c8f64970e9a8dabad4875d43eec6fd1c605866",
+    "cohort_manifest_path": "data/processed/primary_cohort_manifest.json",
+    "cohort_manifest_sha256": "c6e6b16087108152a157f6b5a559d355561eda9a809b8dedaf604f380b2a7a51"
+  },
+  "static_provenance": {
+    "metrics_path": "reports/static_baselines_metrics.json",
+    "metrics_sha256": "83ae8c7be5fe85b7c3d09fa8c931c7d787172544372f0e1ea66e89ace43eed8e",
+    "local_model_path": "models/static_subsets.joblib",
+    "local_model_sha256": "3248e5694f06b0bbf8bd83f84b472bbc8f8f90c6a6e405a95e855b743e988b4e",
+    "models_fit_split": "train",
+    "preprocessing_fit_split": "train",
+    "model_type": "Cox proportional hazards",
+    "ties": "breslow",
+    "optimizer": "bfgs"
+  },
+  "target": {
+    "event": "event",
+    "duration": "duration_years",
+    "censoring": "event = 0"
+  },
+  "features": {
+    "base": [
+      "age",
+      "gender",
+      "bmi",
+      "sbp",
+      "dbp",
+      "family_history_diabetes"
+    ],
+    "acquisition_candidates": [
+      "fpg",
+      "total_cholesterol",
+      "triglycerides",
+      "alt",
+      "ccr",
+      "bun"
+    ],
+    "optional_not_used": [
+      "height_cm",
+      "weight_kg",
+      "smoking_status",
+      "drinking_status",
+      "hdl_c",
+      "ldl",
+      "ast"
+    ],
+    "excluded_from_predictors_and_policy_state": [
+      "participant_id",
+      "site",
+      "event",
+      "duration_years",
+      "final_fpg",
+      "diabetes_diagnosed_followup"
+    ]
+  },
+  "fixed_order": {
+    "source_stage": 5,
+    "source_method": "importance_greedy",
+    "selection_data": "validation only in static baseline",
+    "order": [
+      "fpg",
+      "alt",
+      "triglycerides",
+      "total_cholesterol",
+      "ccr",
+      "bun"
+    ],
+    "patient_specific_order": false
+  },
+  "state_contract": {
+    "observed_values": "base features plus the acquired fixed-order prefix",
+    "acquisition_mask": "base observed by contract; candidate prefix marked acquired",
+    "source_observation_mask": "separately records whether each retrospectively requested source value exists",
+    "current_prediction": "3-year incident-T2D risk from the current prefix Cox model",
+    "available_next_action": "the next single candidate in the fixed order",
+    "candidate_cost": "cost of that next candidate under the named scheme",
+    "outcome_or_followup_available_to_policy": false,
+    "identifier_or_site_available_to_policy": false
+  },
+  "ordered_policy": {
+    "name": "ordered_risk_gate_v1",
+    "action_space": [
+      "NEXT",
+      "STOP"
+    ],
+    "free_choice_among_remaining_tests": false,
+    "decision_rule": "at stages 0-5 choose NEXT when current 3-year risk >= threshold; otherwise STOP; force STOP after stage 6",
+    "threshold_shared_across_stages": true,
+    "selected_operating_point": {
+      "threshold": 0.002145289116957735,
+      "retention_target": 0.99,
+      "target_validation_c_index": 0.9111495311005854,
+      "base_validation_c_index": 0.8249852925704141,
+      "full_validation_c_index": 0.9120198769443245,
+      "selected_validation_c_index": 0.9117929248629026,
+      "selected_validation_ipcw_brier": 0.010553828392364122,
+      "retained_improvement_fraction": 0.9973923919663147,
+      "mean_acquired_tests": 3.5897088906372936,
+      "median_acquired_tests": 6.0,
+      "stop_without_labs_percent": 20.528717545239967,
+      "acquire_all_percent": 54.977183320220306
+    },
+    "missing_result_rule": "charge the requested action, retain the participant, and use the train-fitted imputation value when the retrospective source result is missing"
+  },
+  "tuning": {
+    "threshold_candidate_source": "quantiles of train prefix risks at decision stages",
+    "threshold_quantile_count_requested": 101,
+    "threshold_candidates_evaluated": 103,
+    "selection_split": "validation",
+    "selection_metric": "Harrell C-index retention relative to Base Only and Full Features",
+    "selection_rule": "minimum mean primary-scheme cost among candidates retaining the target fraction of the validation C-index improvement",
+    "test_used_for_threshold_selection": false,
+    "test_thresholds_evaluated": 1,
+    "always_stop_endpoint": {
+      "threshold": null,
+      "mean_acquired_tests": 0.0,
+      "median_acquired_tests": 0.0,
+      "stop_without_labs_percent": 100.0,
+      "acquire_all_percent": 0.0,
+      "validation_c_index": 0.8249852925704141,
+      "validation_ipcw_brier": 0.011622980558558116
+    },
+    "always_next_endpoint": {
+      "threshold": 0.0,
+      "mean_acquired_tests": 6.0,
+      "median_acquired_tests": 6.0,
+      "stop_without_labs_percent": 0.0,
+      "acquire_all_percent": 100.0,
+      "validation_c_index": 0.9120198769443245,
+      "validation_ipcw_brier": 0.010552421064035377
+    },
+    "search": [
+      {
+        "threshold": 0.0,
+        "mean_acquired_tests": 6.0,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 0.0,
+        "acquire_all_percent": 100.0,
+        "validation_c_index": 0.9120198769443245,
+        "validation_ipcw_brier": 0.010552421064035377
+      },
+      {
+        "threshold": 7.945306074175207e-07,
+        "mean_acquired_tests": 6.0,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 0.0,
+        "acquire_all_percent": 100.0,
+        "validation_c_index": 0.9120198769443245,
+        "validation_ipcw_brier": 0.010552421064035377
+      },
+      {
+        "threshold": 0.00013589367027782017,
+        "mean_acquired_tests": 5.932903225806451,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 0.0,
+        "acquire_all_percent": 98.62155782848151,
+        "validation_c_index": 0.9120198769443245,
+        "validation_ipcw_brier": 0.010552421054267553
+      },
+      {
+        "threshold": 0.00020494182310692332,
+        "mean_acquired_tests": 5.8742722265932334,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 0.0,
+        "acquire_all_percent": 97.3910306845004,
+        "validation_c_index": 0.9120090479901632,
+        "validation_ipcw_brier": 0.01055242410219227
+      },
+      {
+        "threshold": 0.0002625245491791561,
+        "mean_acquired_tests": 5.813123524783635,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 0.0,
+        "acquire_all_percent": 96.09756097560975,
+        "validation_c_index": 0.9120276281957241,
+        "validation_ipcw_brier": 0.01055242166272224
+      },
+      {
+        "threshold": 0.00031434635237859165,
+        "mean_acquired_tests": 5.754492525570417,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 0.0,
+        "acquire_all_percent": 94.87962234461055,
+        "validation_c_index": 0.9120596591022432,
+        "validation_ipcw_brier": 0.010552415734254498
+      },
+      {
+        "threshold": 0.0003664443498743897,
+        "mean_acquired_tests": 5.695483870967742,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 0.0,
+        "acquire_all_percent": 93.66483084185681,
+        "validation_c_index": 0.9120612549481196,
+        "validation_ipcw_brier": 0.010552413905323493
+      },
+      {
+        "threshold": 0.00041649778384655444,
+        "mean_acquired_tests": 5.635090479937057,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 0.012588512981904013,
+        "acquire_all_percent": 92.4059795436664,
+        "validation_c_index": 0.91206421866189,
+        "validation_ipcw_brier": 0.010552413870215925
+      },
+      {
+        "threshold": 0.0004672967951345986,
+        "mean_acquired_tests": 5.571990558615264,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 0.03461841070023604,
+        "acquire_all_percent": 91.10306845003933,
+        "validation_c_index": 0.9120529337517641,
+        "validation_ipcw_brier": 0.010552413828653328
+      },
+      {
+        "threshold": 0.0005156338976955244,
+        "mean_acquired_tests": 5.508953579858379,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 0.0975609756097561,
+        "acquire_all_percent": 89.82533438237607,
+        "validation_c_index": 0.9120153173846777,
+        "validation_ipcw_brier": 0.010552413727994708
+      },
+      {
+        "threshold": 0.0005633024863313041,
+        "mean_acquired_tests": 5.4451927616050355,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 0.2014162077104642,
+        "acquire_all_percent": 88.5255704169945,
+        "validation_c_index": 0.9120067682103398,
+        "validation_ipcw_brier": 0.010552412406781909
+      },
+      {
+        "threshold": 0.0006108850423845237,
+        "mean_acquired_tests": 5.385365853658537,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 0.3367427222659323,
+        "acquire_all_percent": 87.36742722265932,
+        "validation_c_index": 0.9120047164084987,
+        "validation_ipcw_brier": 0.010552412335699332
+      },
+      {
+        "threshold": 0.0006599914912469661,
+        "mean_acquired_tests": 5.321888276947286,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 0.5538945712037766,
+        "acquire_all_percent": 86.09284028324154,
+        "validation_c_index": 0.9120103018690661,
+        "validation_ipcw_brier": 0.01055241018708135
+      },
+      {
+        "threshold": 0.0007088033905492352,
+        "mean_acquired_tests": 5.256900078678206,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 0.8056648308418568,
+        "acquire_all_percent": 84.7458693941778,
+        "validation_c_index": 0.9119788409075028,
+        "validation_ipcw_brier": 0.010552409196703869
+      },
+      {
+        "threshold": 0.0007567111739585675,
+        "mean_acquired_tests": 5.1948701809598745,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 1.1046420141620772,
+        "acquire_all_percent": 83.56569630212431,
+        "validation_c_index": 0.9119940014433287,
+        "validation_ipcw_brier": 0.010552396134965647
+      },
+      {
+        "threshold": 0.0008043887631099311,
+        "mean_acquired_tests": 5.129819040125885,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 1.4980330448465775,
+        "acquire_all_percent": 82.37922895357987,
+        "validation_c_index": 0.9120020946617018,
+        "validation_ipcw_brier": 0.010552393181781824
+      },
+      {
+        "threshold": 0.0008527764003906701,
+        "mean_acquired_tests": 5.067852084972462,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 1.9323367427222662,
+        "acquire_all_percent": 81.1549960660897,
+        "validation_c_index": 0.911997535102055,
+        "validation_ipcw_brier": 0.010552389194719354
+      },
+      {
+        "threshold": 0.0009016408674895792,
+        "mean_acquired_tests": 4.998646734854446,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 2.4390243902439024,
+        "acquire_all_percent": 79.81431943351691,
+        "validation_c_index": 0.91199023980662,
+        "validation_ipcw_brier": 0.01055238087704985
+      },
+      {
+        "threshold": 0.0009498899050000709,
+        "mean_acquired_tests": 4.933910306845004,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 3.0275373721479153,
+        "acquire_all_percent": 78.64044059795437,
+        "validation_c_index": 0.9119901258176288,
+        "validation_ipcw_brier": 0.010552378904881775
+      },
+      {
+        "threshold": 0.000998603138448122,
+        "mean_acquired_tests": 4.867946498819827,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 3.6034618410700237,
+        "acquire_all_percent": 77.3910306845004,
+        "validation_c_index": 0.9120107578250308,
+        "validation_ipcw_brier": 0.010552374246148358
+      },
+      {
+        "threshold": 0.0010486210836567066,
+        "mean_acquired_tests": 4.797167584579071,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 4.248623131392605,
+        "acquire_all_percent": 76.0912667191188,
+        "validation_c_index": 0.9123531807545091,
+        "validation_ipcw_brier": 0.01055229935442604
+      },
+      {
+        "threshold": 0.0010992606060270529,
+        "mean_acquired_tests": 4.7305428796223445,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 5.054287962234461,
+        "acquire_all_percent": 74.95200629425649,
+        "validation_c_index": 0.9122936785011178,
+        "validation_ipcw_brier": 0.010552291156733338
+      },
+      {
+        "threshold": 0.0011508516953079471,
+        "mean_acquired_tests": 4.6593233674272225,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 5.888276947285602,
+        "acquire_all_percent": 73.66168371361132,
+        "validation_c_index": 0.9123935328573837,
+        "validation_ipcw_brier": 0.010552278996549402
+      },
+      {
+        "threshold": 0.001202698846530481,
+        "mean_acquired_tests": 4.591062155782848,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 6.693941778127459,
+        "acquire_all_percent": 72.4594807238395,
+        "validation_c_index": 0.9123885173417722,
+        "validation_ipcw_brier": 0.010552180581989515
+      },
+      {
+        "threshold": 0.0012564728679910686,
+        "mean_acquired_tests": 4.525507474429583,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 7.455546813532651,
+        "acquire_all_percent": 71.25098347757671,
+        "validation_c_index": 0.9123612739728822,
+        "validation_ipcw_brier": 0.010552162194895525
+      },
+      {
+        "threshold": 0.001311682007571111,
+        "mean_acquired_tests": 4.452619984264358,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 8.327301337529503,
+        "acquire_all_percent": 69.97324940991345,
+        "validation_c_index": 0.912343833657233,
+        "validation_ipcw_brier": 0.010552157422135786
+      },
+      {
+        "threshold": 0.0013687427100350091,
+        "mean_acquired_tests": 4.380928402832415,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 9.214791502753737,
+        "acquire_all_percent": 68.68922108575924,
+        "validation_c_index": 0.9122898028754179,
+        "validation_ipcw_brier": 0.010552191304551446
+      },
+      {
+        "threshold": 0.0014253452975997493,
+        "mean_acquired_tests": 4.312289535798584,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 10.09598741148702,
+        "acquire_all_percent": 67.47442958300552,
+        "validation_c_index": 0.9122601657377134,
+        "validation_ipcw_brier": 0.010552171169031966
+      },
+      {
+        "threshold": 0.001482958735272606,
+        "mean_acquired_tests": 4.2442486231313925,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 11.014948859166012,
+        "acquire_all_percent": 66.31943351691582,
+        "validation_c_index": 0.9122377099064527,
+        "validation_ipcw_brier": 0.010552163621642859
+      },
+      {
+        "threshold": 0.0015415234915529346,
+        "mean_acquired_tests": 4.179449252557042,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 11.918174665617624,
+        "acquire_all_percent": 65.17702596380802,
+        "validation_c_index": 0.9122265389853179,
+        "validation_ipcw_brier": 0.010552134155497555
+      },
+      {
+        "threshold": 0.0016014910763432208,
+        "mean_acquired_tests": 4.111376868607396,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 12.827694728560187,
+        "acquire_all_percent": 63.911880409126674,
+        "validation_c_index": 0.9121922282989754,
+        "validation_ipcw_brier": 0.01055211555249314
+      },
+      {
+        "threshold": 0.0016618739083786966,
+        "mean_acquired_tests": 4.046294256490952,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 13.752950432730135,
+        "acquire_all_percent": 62.797797010228166,
+        "validation_c_index": 0.9121608813264033,
+        "validation_ipcw_brier": 0.01055210144065079
+      },
+      {
+        "threshold": 0.0017252839202346027,
+        "mean_acquired_tests": 3.9793863099921323,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 14.703383162863886,
+        "acquire_all_percent": 61.71203776553894,
+        "validation_c_index": 0.9122570880349518,
+        "validation_ipcw_brier": 0.010552077322301217
+      },
+      {
+        "threshold": 0.0017906561663732078,
+        "mean_acquired_tests": 3.9126986624704956,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 15.66955153422502,
+        "acquire_all_percent": 60.58851298190401,
+        "validation_c_index": 0.9122854712937534,
+        "validation_ipcw_brier": 0.010552005676017358
+      },
+      {
+        "threshold": 0.0018576399897526341,
+        "mean_acquired_tests": 3.8471754523996853,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 16.619984264358774,
+        "acquire_all_percent": 59.49016522423288,
+        "validation_c_index": 0.9122849013487976,
+        "validation_ipcw_brier": 0.010551913121548486
+      },
+      {
+        "threshold": 0.0019269004905794129,
+        "mean_acquired_tests": 3.784232887490165,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 17.532651455546812,
+        "acquire_all_percent": 58.40440597954366,
+        "validation_c_index": 0.9128376339669867,
+        "validation_ipcw_brier": 0.010551854540884321
+      },
+      {
+        "threshold": 0.0019976645058362107,
+        "mean_acquired_tests": 3.7195594020456335,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 18.546026750590087,
+        "acquire_all_percent": 57.29346970889063,
+        "validation_c_index": 0.9127995616439355,
+        "validation_ipcw_brier": 0.010551833666635917
+      },
+      {
+        "threshold": 0.0020688927158355286,
+        "mean_acquired_tests": 3.655987411487018,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 19.487018095987413,
+        "acquire_all_percent": 56.14162077104642,
+        "validation_c_index": 0.9127067746051222,
+        "validation_ipcw_brier": 0.01055184325826298
+      },
+      {
+        "threshold": 0.002145289116957735,
+        "mean_acquired_tests": 3.5897088906372936,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 20.528717545239967,
+        "acquire_all_percent": 54.977183320220306,
+        "validation_c_index": 0.9117929248629026,
+        "validation_ipcw_brier": 0.010553828392364122
+      },
+      {
+        "threshold": 0.0022237498083091476,
+        "mean_acquired_tests": 3.5201888276947284,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 21.510621557828483,
+        "acquire_all_percent": 53.86309992132179,
+        "validation_c_index": 0.9109893024751455,
+        "validation_ipcw_brier": 0.010553979884932538
+      },
+      {
+        "threshold": 0.002302439739369522,
+        "mean_acquired_tests": 3.458599527930763,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 22.45476003147128,
+        "acquire_all_percent": 52.8654602675059,
+        "validation_c_index": 0.9108262982177707,
+        "validation_ipcw_brier": 0.01055389154830497
+      },
+      {
+        "threshold": 0.0023835223003270123,
+        "mean_acquired_tests": 3.3937372147915026,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 23.546813532651456,
+        "acquire_all_percent": 51.782848151062154,
+        "validation_c_index": 0.910669335376928,
+        "validation_ipcw_brier": 0.010553886742130097
+      },
+      {
+        "threshold": 0.002467556792925152,
+        "mean_acquired_tests": 3.3353894571203777,
+        "median_acquired_tests": 6.0,
+        "stop_without_labs_percent": 24.53501180173092,
+        "acquire_all_percent": 50.77261998426435,
+        "validation_c_index": 0.9108489820270138,
+        "validation_ipcw_brier": 0.010553810988573015
+      },
+      {
+        "threshold": 0.002554451596722511,
+        "mean_acquired_tests": 3.2715342250196695,
+        "median_acquired_tests": 5.0,
+        "stop_without_labs_percent": 25.532651455546812,
+        "acquire_all_percent": 49.69315499606609,
+        "validation_c_index": 0.9107245060486548,
+        "validation_ipcw_brier": 0.010553764091468998
+      },
+      {
+        "threshold": 0.0026458984046978384,
+        "mean_acquired_tests": 3.207710464201416,
+        "median_acquired_tests": 2.0,
+        "stop_without_labs_percent": 26.561762391817467,
+        "acquire_all_percent": 48.59795436664044,
+        "validation_c_index": 0.9105002897030211,
+        "validation_ipcw_brier": 0.010553686592600123
+      },
+      {
+        "threshold": 0.00274088773189054,
+        "mean_acquired_tests": 3.1415892997639654,
+        "median_acquired_tests": 1.0,
+        "stop_without_labs_percent": 27.710464201416208,
+        "acquire_all_percent": 47.55940204563336,
+        "validation_c_index": 0.9103706842200594,
+        "validation_ipcw_brier": 0.010553498611225738
+      },
+      {
+        "threshold": 0.002838062220673299,
+        "mean_acquired_tests": 3.08,
+        "median_acquired_tests": 1.0,
+        "stop_without_labs_percent": 28.72383949645948,
+        "acquire_all_percent": 46.52084972462628,
+        "validation_c_index": 0.9105291289177874,
+        "validation_ipcw_brier": 0.010553505024224768
+      },
+      {
+        "threshold": 0.0029381998847623557,
+        "mean_acquired_tests": 3.0168371361132964,
+        "median_acquired_tests": 1.0,
+        "stop_without_labs_percent": 29.797010228166798,
+        "acquire_all_percent": 45.45712037765539,
+        "validation_c_index": 0.9105159061948115,
+        "validation_ipcw_brier": 0.010553138722192339
+      },
+      {
+        "threshold": 0.003042149900521938,
+        "mean_acquired_tests": 2.9560031471282455,
+        "median_acquired_tests": 1.0,
+        "stop_without_labs_percent": 30.84500393391031,
+        "acquire_all_percent": 44.43430369787569,
+        "validation_c_index": 0.9102907779372483,
+        "validation_ipcw_brier": 0.010553106569238439
+      },
+      {
+        "threshold": 0.003152191828375446,
+        "mean_acquired_tests": 2.8935955940204563,
+        "median_acquired_tests": 1.0,
+        "stop_without_labs_percent": 31.96852871754524,
+        "acquire_all_percent": 43.43981117230527,
+        "validation_c_index": 0.9106818741659568,
+        "validation_ipcw_brier": 0.010552846046288835
+      },
+      {
+        "threshold": 0.003265869950694964,
+        "mean_acquired_tests": 2.8267820613690007,
+        "median_acquired_tests": 1.0,
+        "stop_without_labs_percent": 33.139260424862314,
+        "acquire_all_percent": 42.34146341463415,
+        "validation_c_index": 0.9102097317645257,
+        "validation_ipcw_brier": 0.01055284296588505
+      },
+      {
+        "threshold": 0.0033820756054305234,
+        "mean_acquired_tests": 2.7672383949645947,
+        "median_acquired_tests": 1.0,
+        "stop_without_labs_percent": 34.18095987411487,
+        "acquire_all_percent": 41.40676632572777,
+        "validation_c_index": 0.9098760859873675,
+        "validation_ipcw_brier": 0.010552716316349197
+      },
+      {
+        "threshold": 0.0035006877269064163,
+        "mean_acquired_tests": 2.7029425649095202,
+        "median_acquired_tests": 1.0,
+        "stop_without_labs_percent": 35.26042486231314,
+        "acquire_all_percent": 40.343036978756885,
+        "validation_c_index": 0.9096328334802082,
+        "validation_ipcw_brier": 0.010552703961070487
+      },
+      {
+        "threshold": 0.003628191059830015,
+        "mean_acquired_tests": 2.6440912667191188,
+        "median_acquired_tests": 1.0,
+        "stop_without_labs_percent": 36.33988985051141,
+        "acquire_all_percent": 39.39260424862313,
+        "validation_c_index": 0.9090122774122721,
+        "validation_ipcw_brier": 0.010552569823719361
+      },
+      {
+        "threshold": 0.003760432010586892,
+        "mean_acquired_tests": 2.5833202202989773,
+        "median_acquired_tests": 1.0,
+        "stop_without_labs_percent": 37.488591660110146,
+        "acquire_all_percent": 38.41699449252557,
+        "validation_c_index": 0.908719895649918,
+        "validation_ipcw_brier": 0.010552455245558146
+      },
+      {
+        "threshold": 0.003896723527459103,
+        "mean_acquired_tests": 2.5149645948072386,
+        "median_acquired_tests": 1.0,
+        "stop_without_labs_percent": 38.70653029110937,
+        "acquire_all_percent": 37.25570416994493,
+        "validation_c_index": 0.9075152599912205,
+        "validation_ipcw_brier": 0.01056098055651432
+      },
+      {
+        "threshold": 0.004042549333099572,
+        "mean_acquired_tests": 2.4498505114083398,
+        "median_acquired_tests": 1.0,
+        "stop_without_labs_percent": 39.98426435877262,
+        "acquire_all_percent": 36.19512195121951,
+        "validation_c_index": 0.9067369431595036,
+        "validation_ipcw_brier": 0.010560446461994048
+      },
+      {
+        "threshold": 0.0041906852681064125,
+        "mean_acquired_tests": 2.382155782848151,
+        "median_acquired_tests": 1.0,
+        "stop_without_labs_percent": 41.249409913453974,
+        "acquire_all_percent": 35.084185680566485,
+        "validation_c_index": 0.906455618329293,
+        "validation_ipcw_brier": 0.010562716338066118
+      },
+      {
+        "threshold": 0.004347178389809611,
+        "mean_acquired_tests": 2.313831628638867,
+        "median_acquired_tests": 1.0,
+        "stop_without_labs_percent": 42.555468135326514,
+        "acquire_all_percent": 34.064516129032256,
+        "validation_c_index": 0.9059350306066141,
+        "validation_ipcw_brier": 0.010562647161193475
+      },
+      {
+        "threshold": 0.004512219306279721,
+        "mean_acquired_tests": 2.2529346970889064,
+        "median_acquired_tests": 1.0,
+        "stop_without_labs_percent": 43.723052714398115,
+        "acquire_all_percent": 33.04169944925256,
+        "validation_c_index": 0.9041091549460336,
+        "validation_ipcw_brier": 0.01056312800369554
+      },
+      {
+        "threshold": 0.0046875237584113995,
+        "mean_acquired_tests": 2.1910936270653028,
+        "median_acquired_tests": 1.0,
+        "stop_without_labs_percent": 44.92525570416995,
+        "acquire_all_percent": 32.1447678992919,
+        "validation_c_index": 0.9031492536513809,
+        "validation_ipcw_brier": 0.010561035925584003
+      },
+      {
+        "threshold": 0.004866912573531711,
+        "mean_acquired_tests": 2.126734854445319,
+        "median_acquired_tests": 1.0,
+        "stop_without_labs_percent": 46.221872541306055,
+        "acquire_all_percent": 31.125098347757675,
+        "validation_c_index": 0.9026188628754612,
+        "validation_ipcw_brier": 0.010560562701979139
+      },
+      {
+        "threshold": 0.005053719808137672,
+        "mean_acquired_tests": 2.070180959874115,
+        "median_acquired_tests": 1.0,
+        "stop_without_labs_percent": 47.44295830055075,
+        "acquire_all_percent": 30.250196695515342,
+        "validation_c_index": 0.9012789222842437,
+        "validation_ipcw_brier": 0.010561102823048066
+      },
+      {
+        "threshold": 0.00525067736273843,
+        "mean_acquired_tests": 2.0078363493312352,
+        "median_acquired_tests": 1.0,
+        "stop_without_labs_percent": 48.68607395751377,
+        "acquire_all_percent": 29.249409913453974,
+        "validation_c_index": 0.9014884340500163,
+        "validation_ipcw_brier": 0.01056403611015706
+      },
+      {
+        "threshold": 0.005453372913985182,
+        "mean_acquired_tests": 1.9475688434303697,
+        "median_acquired_tests": 1.0,
+        "stop_without_labs_percent": 49.89142407553108,
+        "acquire_all_percent": 28.298977183320222,
+        "validation_c_index": 0.9003649585530329,
+        "validation_ipcw_brier": 0.010564007341149047
+      },
+      {
+        "threshold": 0.005669141359262593,
+        "mean_acquired_tests": 1.891801730920535,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 51.128245476003144,
+        "acquire_all_percent": 27.43351691581432,
+        "validation_c_index": 0.8996321233287932,
+        "validation_ipcw_brier": 0.010562727054887255
+      },
+      {
+        "threshold": 0.005896635063832448,
+        "mean_acquired_tests": 1.8287332808811958,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 52.424862313139265,
+        "acquire_all_percent": 26.451612903225808,
+        "validation_c_index": 0.897588756673058,
+        "validation_ipcw_brier": 0.010571521936993095
+      },
+      {
+        "threshold": 0.006136369472973003,
+        "mean_acquired_tests": 1.771266719118804,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 53.60503540519276,
+        "acquire_all_percent": 25.548387096774196,
+        "validation_c_index": 0.8964773640091387,
+        "validation_ipcw_brier": 0.010572212053980866
+      },
+      {
+        "threshold": 0.006388133733124281,
+        "mean_acquired_tests": 1.714366640440598,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 54.813532651455546,
+        "acquire_all_percent": 24.664044059795437,
+        "validation_c_index": 0.8943572827623454,
+        "validation_ipcw_brier": 0.010584656886795527
+      },
+      {
+        "threshold": 0.006651184024320004,
+        "mean_acquired_tests": 1.6512667191188042,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 56.09441384736428,
+        "acquire_all_percent": 23.6978756884343,
+        "validation_c_index": 0.8950026884303568,
+        "validation_ipcw_brier": 0.010584234925435055
+      },
+      {
+        "threshold": 0.006938797623607729,
+        "mean_acquired_tests": 1.589110936270653,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 57.45397324940992,
+        "acquire_all_percent": 22.76317859952793,
+        "validation_c_index": 0.8925163605549303,
+        "validation_ipcw_brier": 0.010596536872065531
+      },
+      {
+        "threshold": 0.007243115484426788,
+        "mean_acquired_tests": 1.5285601888276947,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 58.785208497246266,
+        "acquire_all_percent": 21.8882769472856,
+        "validation_c_index": 0.8907428058412975,
+        "validation_ipcw_brier": 0.01059535458234442
+      },
+      {
+        "threshold": 0.007564419857410237,
+        "mean_acquired_tests": 1.4709677419354839,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 60.06923682140047,
+        "acquire_all_percent": 20.98190401258851,
+        "validation_c_index": 0.88945153854931,
+        "validation_ipcw_brier": 0.010592209463505775
+      },
+      {
+        "threshold": 0.007909549294202213,
+        "mean_acquired_tests": 1.4099134539732494,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 61.39103068450039,
+        "acquire_all_percent": 20.044059795436663,
+        "validation_c_index": 0.8875296841581634,
+        "validation_ipcw_brier": 0.010592960560700622
+      },
+      {
+        "threshold": 0.008281269571564191,
+        "mean_acquired_tests": 1.3530763178599527,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 62.82612116443745,
+        "acquire_all_percent": 19.21951219512195,
+        "validation_c_index": 0.8857247824719584,
+        "validation_ipcw_brier": 0.010592478650005083
+      },
+      {
+        "threshold": 0.008684531259915836,
+        "mean_acquired_tests": 1.296239181746656,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 64.14791502753737,
+        "acquire_all_percent": 18.319433516915815,
+        "validation_c_index": 0.8860278791994827,
+        "validation_ipcw_brier": 0.010593699120039237
+      },
+      {
+        "threshold": 0.00910509947835611,
+        "mean_acquired_tests": 1.2398111723052714,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 65.46970889063729,
+        "acquire_all_percent": 17.44767899291896,
+        "validation_c_index": 0.884194480265485,
+        "validation_ipcw_brier": 0.010594504235644349
+      },
+      {
+        "threshold": 0.009561768674402957,
+        "mean_acquired_tests": 1.1819669551534224,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 66.88276947285601,
+        "acquire_all_percent": 16.55704169944925,
+        "validation_c_index": 0.8830035232857281,
+        "validation_ipcw_brier": 0.010594361432872715
+      },
+      {
+        "threshold": 0.010058818565682815,
+        "mean_acquired_tests": 1.1204091266719118,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 68.28324154209284,
+        "acquire_all_percent": 15.638080251770258,
+        "validation_c_index": 0.882212553675991,
+        "validation_ipcw_brier": 0.010596224971664944
+      },
+      {
+        "threshold": 0.01059342805055816,
+        "mean_acquired_tests": 1.0579071597167584,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 69.76239181746656,
+        "acquire_all_percent": 14.71597167584579,
+        "validation_c_index": 0.8795341543504411,
+        "validation_ipcw_brier": 0.010616963879211553
+      },
+      {
+        "threshold": 0.011180261911709323,
+        "mean_acquired_tests": 0.998552321007081,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 71.23524783634933,
+        "acquire_all_percent": 13.878835562549174,
+        "validation_c_index": 0.8770975256751653,
+        "validation_ipcw_brier": 0.010617744577009241
+      },
+      {
+        "threshold": 0.011818648458590111,
+        "mean_acquired_tests": 0.9386309992132179,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 72.70495672698662,
+        "acquire_all_percent": 12.972462627852085,
+        "validation_c_index": 0.8744996025773822,
+        "validation_ipcw_brier": 0.010637965744221805
+      },
+      {
+        "threshold": 0.012520569443964817,
+        "mean_acquired_tests": 0.8764122738001574,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 74.30369787568843,
+        "acquire_all_percent": 12.069236821400473,
+        "validation_c_index": 0.8727238820729172,
+        "validation_ipcw_brier": 0.010651463532189973
+      },
+      {
+        "threshold": 0.013289160613079855,
+        "mean_acquired_tests": 0.8157671125098348,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 75.8426435877262,
+        "acquire_all_percent": 11.216365066876476,
+        "validation_c_index": 0.8700242807950094,
+        "validation_ipcw_brier": 0.010651626545416144
+      },
+      {
+        "threshold": 0.014145315890501413,
+        "mean_acquired_tests": 0.7554366640440598,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 77.36900078678207,
+        "acquire_all_percent": 10.366640440597955,
+        "validation_c_index": 0.8672068149002305,
+        "validation_ipcw_brier": 0.010659276971534314
+      },
+      {
+        "threshold": 0.015093280819229924,
+        "mean_acquired_tests": 0.7007710464201417,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 78.948859166011,
+        "acquire_all_percent": 9.567269866247049,
+        "validation_c_index": 0.8662434939358427,
+        "validation_ipcw_brier": 0.010678885553093511
+      },
+      {
+        "threshold": 0.016149640048821523,
+        "mean_acquired_tests": 0.6411959087332809,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 80.61054287962234,
+        "acquire_all_percent": 8.720692368214005,
+        "validation_c_index": 0.8640244702447127,
+        "validation_ipcw_brier": 0.01067889878103892
+      },
+      {
+        "threshold": 0.01732379534853799,
+        "mean_acquired_tests": 0.5848937844217151,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 82.17466561762392,
+        "acquire_all_percent": 7.918174665617624,
+        "validation_c_index": 0.8614557283286695,
+        "validation_ipcw_brier": 0.010703836991862996
+      },
+      {
+        "threshold": 0.018692456780271812,
+        "mean_acquired_tests": 0.5250668764752163,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 83.8300550747443,
+        "acquire_all_percent": 7.077891424075531,
+        "validation_c_index": 0.858896789465867,
+        "validation_ipcw_brier": 0.01077364582314352
+      },
+      {
+        "threshold": 0.020247816816190214,
+        "mean_acquired_tests": 0.46766325727773406,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 85.42564909520063,
+        "acquire_all_percent": 6.2439024390243905,
+        "validation_c_index": 0.8549601796557692,
+        "validation_ipcw_brier": 0.010875808423019493
+      },
+      {
+        "threshold": 0.022026648501863356,
+        "mean_acquired_tests": 0.4124311565696302,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 87.02439024390245,
+        "acquire_all_percent": 5.476003147128246,
+        "validation_c_index": 0.8525090743786147,
+        "validation_ipcw_brier": 0.010949577254615636
+      },
+      {
+        "threshold": 0.024120763453076743,
+        "mean_acquired_tests": 0.3571675845790716,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 88.51298190401259,
+        "acquire_all_percent": 4.695515342250197,
+        "validation_c_index": 0.851403381164254,
+        "validation_ipcw_brier": 0.011021339732427811
+      },
+      {
+        "threshold": 0.02663829581954368,
+        "mean_acquired_tests": 0.30571203776553896,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 89.98269079464988,
+        "acquire_all_percent": 3.996852871754524,
+        "validation_c_index": 0.8488011264848063,
+        "validation_ipcw_brier": 0.011144072594763693
+      },
+      {
+        "threshold": 0.029750300029924185,
+        "mean_acquired_tests": 0.252714398111723,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 91.62234461054288,
+        "acquire_all_percent": 3.2856018882769478,
+        "validation_c_index": 0.84469239329804,
+        "validation_ipcw_brier": 0.011162898795993364
+      },
+      {
+        "threshold": 0.03364313369340584,
+        "mean_acquired_tests": 0.20368214004720692,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 93.04484657749803,
+        "acquire_all_percent": 2.590086546026751,
+        "validation_c_index": 0.8435462339918135,
+        "validation_ipcw_brier": 0.011242621885297836
+      },
+      {
+        "threshold": 0.038466622304995084,
+        "mean_acquired_tests": 0.15666404405979545,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 94.49567269866247,
+        "acquire_all_percent": 1.973249409913454,
+        "validation_c_index": 0.8397767320427728,
+        "validation_ipcw_brier": 0.011237768478405838
+      },
+      {
+        "threshold": 0.04500705147338158,
+        "mean_acquired_tests": 0.11776553894571204,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 95.87096774193549,
+        "acquire_all_percent": 1.4885916601101497,
+        "validation_c_index": 0.8367068945215409,
+        "validation_ipcw_brier": 0.01131633361239917
+      },
+      {
+        "threshold": 0.05428154610643136,
+        "mean_acquired_tests": 0.08443745082612117,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 97.00078678206137,
+        "acquire_all_percent": 1.0542879622344612,
+        "validation_c_index": 0.8326421610853667,
+        "validation_ipcw_brier": 0.011414903698730511
+      },
+      {
+        "threshold": 0.06871799008156157,
+        "mean_acquired_tests": 0.04830841856805665,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 98.16207710464201,
+        "acquire_all_percent": 0.5822187254130606,
+        "validation_c_index": 0.829153641999563,
+        "validation_ipcw_brier": 0.011554231696182738
+      },
+      {
+        "threshold": 0.09519751196235869,
+        "mean_acquired_tests": 0.0196066089693155,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 99.213217938631,
+        "acquire_all_percent": 0.22029897718332023,
+        "validation_c_index": 0.826144332632643,
+        "validation_ipcw_brier": 0.011551970589778563
+      },
+      {
+        "threshold": 0.15354512099437756,
+        "mean_acquired_tests": 0.006042486231313926,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 99.77970102281668,
+        "acquire_all_percent": 0.07553107789142408,
+        "validation_c_index": 0.8254273418781761,
+        "validation_ipcw_brier": 0.011547271344950543
+      },
+      {
+        "threshold": 0.820269573196186,
+        "mean_acquired_tests": 0.0,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 100.0,
+        "acquire_all_percent": 0.0,
+        "validation_c_index": 0.8249852925704141,
+        "validation_ipcw_brier": 0.011622980558558116
+      },
+      {
+        "threshold": null,
+        "mean_acquired_tests": 0.0,
+        "median_acquired_tests": 0.0,
+        "stop_without_labs_percent": 100.0,
+        "acquire_all_percent": 0.0,
+        "validation_c_index": 0.8249852925704141,
+        "validation_ipcw_brier": 0.011622980558558116
+      }
+    ]
+  },
+  "evaluation": {
+    "horizon_years": 3.0,
+    "brier": "single-horizon IPCW; censoring distribution estimated on train only",
+    "selected_policy": {
+      "validation": {
+        "prediction": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9117929248629026,
+          "ipcw_brier_at_horizon": 0.010553828392364122,
+          "mean_predicted_risk_at_horizon": 0.011775749464167921,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00017394274995886222
+        },
+        "acquisition": {
+          "mean_acquired_tests": 3.5897088906372936,
+          "median_acquired_tests": 6.0,
+          "p25_acquired_tests": 1.0,
+          "p75_acquired_tests": 6.0,
+          "stop_without_labs_percent": 20.528717545239967,
+          "acquire_all_percent": 54.977183320220306,
+          "next_actions_total": 114063,
+          "stop_actions_total": 31775,
+          "stage_distribution": [
+            {
+              "acquired_count": 0,
+              "acquired_features": [],
+              "participants": 6523,
+              "percent": 20.528717545239967
+            },
+            {
+              "acquired_count": 1,
+              "acquired_features": [
+                "fpg"
+              ],
+              "participants": 7084,
+              "percent": 22.294256490952005
+            },
+            {
+              "acquired_count": 2,
+              "acquired_features": [
+                "fpg",
+                "alt"
+              ],
+              "participants": 311,
+              "percent": 0.978756884343037
+            },
+            {
+              "acquired_count": 3,
+              "acquired_features": [
+                "fpg",
+                "alt",
+                "triglycerides"
+              ],
+              "participants": 129,
+              "percent": 0.40597954366640443
+            },
+            {
+              "acquired_count": 4,
+              "acquired_features": [
+                "fpg",
+                "alt",
+                "triglycerides",
+                "total_cholesterol"
+              ],
+              "participants": 139,
+              "percent": 0.4374508261211644
+            },
+            {
+              "acquired_count": 5,
+              "acquired_features": [
+                "fpg",
+                "alt",
+                "triglycerides",
+                "total_cholesterol",
+                "ccr"
+              ],
+              "participants": 120,
+              "percent": 0.3776553894571204
+            },
+            {
+              "acquired_count": 6,
+              "acquired_features": [
+                "fpg",
+                "alt",
+                "triglycerides",
+                "total_cholesterol",
+                "ccr",
+                "bun"
+              ],
+              "participants": 17469,
+              "percent": 54.9771833202203
+            }
+          ],
+          "cost_by_scheme": {
+            "uniform_unit": {
+              "mean": 3.5897088906372936,
+              "median": 6.0,
+              "p25": 1.0,
+              "p75": 6.0,
+              "min": 0.0,
+              "max": 6.0
+            },
+            "fpg_discounted_sensitivity": {
+              "mean": 3.1923524783634933,
+              "median": 5.5,
+              "p25": 0.5,
+              "p75": 5.5,
+              "min": 0.0,
+              "max": 5.5
+            },
+            "fpg_premium_sensitivity": {
+              "mean": 4.384421715184894,
+              "median": 7.0,
+              "p25": 2.0,
+              "p75": 7.0,
+              "min": 0.0,
+              "max": 7.0
+            }
+          },
+          "attempted_source_missingness": [
+            {
+              "feature": "fpg",
+              "attempted": 25252,
+              "source_value_available": 25252,
+              "source_value_missing": 0,
+              "missing_percent_of_attempts": 0.0
+            },
+            {
+              "feature": "alt",
+              "attempted": 18168,
+              "source_value_available": 17991,
+              "source_value_missing": 177,
+              "missing_percent_of_attempts": 0.9742404227212682
+            },
+            {
+              "feature": "triglycerides",
+              "attempted": 17857,
+              "source_value_available": 17487,
+              "source_value_missing": 370,
+              "missing_percent_of_attempts": 2.0720165761326093
+            },
+            {
+              "feature": "total_cholesterol",
+              "attempted": 17728,
+              "source_value_available": 17363,
+              "source_value_missing": 365,
+              "missing_percent_of_attempts": 2.058889891696751
+            },
+            {
+              "feature": "ccr",
+              "attempted": 17589,
+              "source_value_available": 16661,
+              "source_value_missing": 928,
+              "missing_percent_of_attempts": 5.27602478821991
+            },
+            {
+              "feature": "bun",
+              "attempted": 17469,
+              "source_value_available": 15723,
+              "source_value_missing": 1746,
+              "missing_percent_of_attempts": 9.994848016486348
+            }
+          ],
+          "missing_result_rule": "charge the requested action; use the train-fitted imputation value; retain the participant and continue normal NEXT/STOP evaluation"
+        }
+      },
+      "test": {
+        "prediction": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9064319691029205,
+          "ipcw_brier_at_horizon": 0.010337429807197707,
+          "mean_predicted_risk_at_horizon": 0.011763367838666392,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.00025204697499502625
+        },
+        "acquisition": {
+          "mean_acquired_tests": 3.560818253343824,
+          "median_acquired_tests": 6.0,
+          "p25_acquired_tests": 1.0,
+          "p75_acquired_tests": 6.0,
+          "stop_without_labs_percent": 20.96931549960661,
+          "acquire_all_percent": 54.57120377655389,
+          "next_actions_total": 113145,
+          "stop_actions_total": 31775,
+          "stage_distribution": [
+            {
+              "acquired_count": 0,
+              "acquired_features": [],
+              "participants": 6663,
+              "percent": 20.96931549960661
+            },
+            {
+              "acquired_count": 1,
+              "acquired_features": [
+                "fpg"
+              ],
+              "participants": 7146,
+              "percent": 22.489378442171517
+            },
+            {
+              "acquired_count": 2,
+              "acquired_features": [
+                "fpg",
+                "alt"
+              ],
+              "participants": 273,
+              "percent": 0.8591660110149488
+            },
+            {
+              "acquired_count": 3,
+              "acquired_features": [
+                "fpg",
+                "alt",
+                "triglycerides"
+              ],
+              "participants": 105,
+              "percent": 0.3304484657749803
+            },
+            {
+              "acquired_count": 4,
+              "acquired_features": [
+                "fpg",
+                "alt",
+                "triglycerides",
+                "total_cholesterol"
+              ],
+              "participants": 142,
+              "percent": 0.44689221085759245
+            },
+            {
+              "acquired_count": 5,
+              "acquired_features": [
+                "fpg",
+                "alt",
+                "triglycerides",
+                "total_cholesterol",
+                "ccr"
+              ],
+              "participants": 106,
+              "percent": 0.33359559402045635
+            },
+            {
+              "acquired_count": 6,
+              "acquired_features": [
+                "fpg",
+                "alt",
+                "triglycerides",
+                "total_cholesterol",
+                "ccr",
+                "bun"
+              ],
+              "participants": 17340,
+              "percent": 54.571203776553894
+            }
+          ],
+          "cost_by_scheme": {
+            "uniform_unit": {
+              "mean": 3.560818253343824,
+              "median": 6.0,
+              "p25": 1.0,
+              "p75": 6.0,
+              "min": 0.0,
+              "max": 6.0
+            },
+            "fpg_discounted_sensitivity": {
+              "mean": 3.1656648308418567,
+              "median": 5.5,
+              "p25": 0.5,
+              "p75": 5.5,
+              "min": 0.0,
+              "max": 5.5
+            },
+            "fpg_premium_sensitivity": {
+              "mean": 4.351125098347758,
+              "median": 7.0,
+              "p25": 2.0,
+              "p75": 7.0,
+              "min": 0.0,
+              "max": 7.0
+            }
+          },
+          "attempted_source_missingness": [
+            {
+              "feature": "fpg",
+              "attempted": 25112,
+              "source_value_available": 25112,
+              "source_value_missing": 0,
+              "missing_percent_of_attempts": 0.0
+            },
+            {
+              "feature": "alt",
+              "attempted": 17966,
+              "source_value_available": 17806,
+              "source_value_missing": 160,
+              "missing_percent_of_attempts": 0.890571078704219
+            },
+            {
+              "feature": "triglycerides",
+              "attempted": 17693,
+              "source_value_available": 17346,
+              "source_value_missing": 347,
+              "missing_percent_of_attempts": 1.9612276041372294
+            },
+            {
+              "feature": "total_cholesterol",
+              "attempted": 17588,
+              "source_value_available": 17248,
+              "source_value_missing": 340,
+              "missing_percent_of_attempts": 1.933136229247214
+            },
+            {
+              "feature": "ccr",
+              "attempted": 17446,
+              "source_value_available": 16606,
+              "source_value_missing": 840,
+              "missing_percent_of_attempts": 4.814857273873668
+            },
+            {
+              "feature": "bun",
+              "attempted": 17340,
+              "source_value_available": 15652,
+              "source_value_missing": 1688,
+              "missing_percent_of_attempts": 9.734717416378317
+            }
+          ],
+          "missing_result_rule": "charge the requested action; use the train-fitted imputation value; retain the participant and continue normal NEXT/STOP evaluation"
+        }
+      }
+    },
+    "static_references": {
+      "base_only": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8249852925704141,
+          "ipcw_brier_at_horizon": 0.011622980558558116,
+          "mean_predicted_risk_at_horizon": 0.011476437286784852,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00047325492734193175
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8383382563675945,
+          "ipcw_brier_at_horizon": 0.011595375132287363,
+          "mean_predicted_risk_at_horizon": 0.0115004855581473,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0005149292555141176
+        }
+      },
+      "full_features": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9120198769443245,
+          "ipcw_brier_at_horizon": 0.010552421064035377,
+          "mean_predicted_risk_at_horizon": 0.011801219933880717,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00014847228024606612
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9086049339527642,
+          "ipcw_brier_at_horizon": 0.010338086523554993,
+          "mean_predicted_risk_at_horizon": 0.01180483971186714,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0002105751017942789
+        }
+      }
+    }
+  },
+  "costs": {
+    "config_path": "configs/costs.yaml",
+    "default_scheme": "uniform_unit",
+    "unit_type": "relative_experimental",
+    "real_prices": false,
+    "stop_cost": 0.0,
+    "schemes": {
+      "uniform_unit": {
+        "role": "primary",
+        "costs": {
+          "fpg": 1.0,
+          "total_cholesterol": 1.0,
+          "triglycerides": 1.0,
+          "alt": 1.0,
+          "ccr": 1.0,
+          "bun": 1.0
+        }
+      },
+      "fpg_discounted_sensitivity": {
+        "role": "sensitivity_only",
+        "costs": {
+          "fpg": 0.5,
+          "total_cholesterol": 1.0,
+          "triglycerides": 1.0,
+          "alt": 1.0,
+          "ccr": 1.0,
+          "bun": 1.0
+        }
+      },
+      "fpg_premium_sensitivity": {
+        "role": "sensitivity_only",
+        "costs": {
+          "fpg": 2.0,
+          "total_cholesterol": 1.0,
+          "triglycerides": 1.0,
+          "alt": 1.0,
+          "ccr": 1.0,
+          "bun": 1.0
+        }
+      }
+    }
+  },
+  "participant_level_output": null,
+  "adaptive_acquisition_policy": null,
+  "environment": {
+    "python": "3.12.4",
+    "numpy": "1.26.4",
+    "pandas": "2.2.3",
+    "scikit-learn": "1.4.2",
+    "statsmodels": "0.14.2",
+    "joblib": "1.4.2"
+  },
+  "artifact_migration": {
+    "date": "2026-11-10",
+    "source_commit": "0b9a4f4",
+    "original_sha256": "7450cd38bd3f2a396972cfa4c515a150a3e0ea1dec63c293c5a7f8c247d34b4b",
+    "changes": "Descriptive identifiers, paths and dependent checksums; numerical results unchanged.",
+    "models_refitted": false,
+    "metrics_recomputed": false
+  }
+}

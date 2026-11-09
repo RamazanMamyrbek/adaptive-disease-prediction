@@ -1,0 +1,162 @@
+{
+  "schema_version": "feature_cost_design_manifest_v1",
+  "created_at_utc": "2026-08-27T10:57:53.643523+00:00",
+  "stage": 4,
+  "scope": "feature roles and relative experimental costs; no model training or acquisition policy",
+  "inputs": {
+    "feature_config_path": "configs/features.yaml",
+    "feature_config_sha256": "f8dab97867f474440f45705fad6acc9b4444f1e14d26fbf77218bdeb9b76b3c7",
+    "cost_config_path": "configs/costs.yaml",
+    "cost_config_sha256": "dcae2a077f824840c61751b03407d987da375ae5c636c7284dcfbc2fea53b32a",
+    "cohort_path": "data/processed/primary_cohort.csv",
+    "cohort_sha256": "d407cd4bd148d01fd06f34b3a1c8f64970e9a8dabad4875d43eec6fd1c605866",
+    "cohort_manifest_path": "data/processed/primary_cohort_manifest.json",
+    "cohort_manifest_sha256": "c6e6b16087108152a157f6b5a559d355561eda9a809b8dedaf604f380b2a7a51"
+  },
+  "feature_registry_schema_version": "feature_registry_v1",
+  "cost_config_schema_version": "relative_costs_v1",
+  "roles": {
+    "base": [
+      "age",
+      "gender",
+      "bmi",
+      "sbp",
+      "dbp",
+      "family_history_diabetes"
+    ],
+    "acquirable": [
+      "fpg",
+      "total_cholesterol",
+      "triglycerides",
+      "alt",
+      "ccr",
+      "bun"
+    ],
+    "optional": [
+      "height_cm",
+      "weight_kg",
+      "smoking_status",
+      "drinking_status",
+      "hdl_c",
+      "ldl",
+      "ast"
+    ],
+    "metadata": [
+      "participant_id",
+      "site",
+      "split"
+    ],
+    "target": [
+      "event",
+      "duration_years"
+    ]
+  },
+  "raw_excluded_fields": [
+    {
+      "name": "id",
+      "mapped_to": "participant_id",
+      "reason": "Identifier; retained only as metadata after renaming."
+    },
+    {
+      "name": "FPG of final visit(mmol/L)",
+      "mapped_to": null,
+      "reason": "Definite future/post-baseline leakage; absent from the processed cohort."
+    },
+    {
+      "name": "Diabetes diagnosed during followupпј€1,Yesпј‰",
+      "mapped_to": null,
+      "reason": "Follow-up outcome flag and incomplete target proxy; absent from the processed cohort."
+    },
+    {
+      "name": "censor of diabetes at followup(1, Yes; 0, No)",
+      "mapped_to": "event",
+      "reason": "Outcome status; target only."
+    },
+    {
+      "name": "year of followup",
+      "mapped_to": "duration_years",
+      "reason": "Follow-up time; target only."
+    }
+  ],
+  "costs": {
+    "default_scheme": "uniform_unit",
+    "semantics": {
+      "unit_type": "relative_experimental",
+      "currency": null,
+      "real_prices": false,
+      "base_features_are_zero_incremental_cost": true,
+      "stop_cost": 0.0,
+      "aggregation": "additive_per_feature",
+      "shared_panel_or_blood_draw_discount": false,
+      "missing_result_policy": "deferred_to_acquisition",
+      "note": "Costs support controlled research comparisons and must not be interpreted as clinical prices."
+    },
+    "base_feature_costs": {
+      "age": 0.0,
+      "gender": 0.0,
+      "bmi": 0.0,
+      "sbp": 0.0,
+      "dbp": 0.0,
+      "family_history_diabetes": 0.0
+    },
+    "schemes": {
+      "uniform_unit": {
+        "role": "primary",
+        "description": "Neutral count-like scheme; every core laboratory action costs one relative unit.",
+        "costs": {
+          "fpg": 1.0,
+          "total_cholesterol": 1.0,
+          "triglycerides": 1.0,
+          "alt": 1.0,
+          "ccr": 1.0,
+          "bun": 1.0
+        },
+        "all_candidate_cost": 6.0
+      },
+      "fpg_discounted_sensitivity": {
+        "role": "sensitivity_only",
+        "description": "Stress test in which FPG costs half a unit and all other candidates remain at one unit.",
+        "costs": {
+          "fpg": 0.5,
+          "total_cholesterol": 1.0,
+          "triglycerides": 1.0,
+          "alt": 1.0,
+          "ccr": 1.0,
+          "bun": 1.0
+        },
+        "all_candidate_cost": 5.5
+      },
+      "fpg_premium_sensitivity": {
+        "role": "sensitivity_only",
+        "description": "Stress test in which FPG costs two units and all other candidates remain at one unit.",
+        "costs": {
+          "fpg": 2.0,
+          "total_cholesterol": 1.0,
+          "triglycerides": 1.0,
+          "alt": 1.0,
+          "ccr": 1.0,
+          "bun": 1.0
+        },
+        "all_candidate_cost": 7.0
+      }
+    }
+  },
+  "validation": {
+    "cohort_header_matches_registry": true,
+    "cohort_manifest_matches_registry": true,
+    "all_base_costs_zero": true,
+    "all_candidate_costs_positive": true,
+    "stop_cost_zero": true,
+    "real_prices_claimed": false
+  },
+  "model_training": null,
+  "acquisition_policy": null,
+  "artifact_migration": {
+    "date": "2026-11-10",
+    "source_commit": "0b9a4f4",
+    "original_sha256": "305bdabded2196bed2b184a061d8d1360217aa7b6958bb93a87d2f816df0bd02",
+    "changes": "Descriptive identifiers, paths and dependent checksums; numerical results unchanged.",
+    "models_refitted": false,
+    "metrics_recomputed": false
+  }
+}

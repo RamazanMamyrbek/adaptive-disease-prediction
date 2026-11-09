@@ -1,0 +1,2061 @@
+{
+  "schema_version": "nagala_external_validation_v1",
+  "created_at_utc": "2026-08-27T18:15:21.093346+00:00",
+  "stage": 9,
+  "scope": "partial compatible-feature external validation on NAGALA",
+  "external_dataset": {
+    "doi": "10.5061/dryad.8q0p192",
+    "path": "data/external/Data set Int J Obesity.xlsx",
+    "file_size_bytes": 3255571,
+    "md5": "47edfb147078657a0eecfff7f9364532",
+    "sha256": "671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+    "participants": 15464,
+    "events": 373,
+    "event_percent": 2.4120538023797207,
+    "profile_path": "reports/nagala_dataset_profile.md",
+    "raw_file_committed": false
+  },
+  "primary_provenance": {
+    "static_metrics": {
+      "path": "reports/static_baselines_metrics.json",
+      "sha256": "83ae8c7be5fe85b7c3d09fa8c931c7d787172544372f0e1ea66e89ace43eed8e"
+    },
+    "static_local_model": {
+      "path": "models/static_subsets.joblib",
+      "sha256": "3248e5694f06b0bbf8bd83f84b472bbc8f8f90c6a6e405a95e855b743e988b4e",
+      "committed": false
+    },
+    "ordered_metrics": {
+      "path": "reports/ordered_acquisition_metrics.json",
+      "sha256": "889aa0a67762f43b901a8240d4dcc9e94f204e48e83ae579af01358524c7c9e5"
+    },
+    "adaptive_metrics": {
+      "path": "reports/adaptive_acquisition_metrics.json",
+      "sha256": "5cc1ee86629d4d243a6538092d807d4e729508a13c5b0440a3d5304c6dc6cf8a"
+    },
+    "adaptive_local_model": {
+      "path": "models/adaptive_value_policy.joblib",
+      "sha256": "c3cda5336d7cea63f2db358febbbf72a0a8d3803f66d194fcf232ddf0249a4a8",
+      "committed": false
+    },
+    "evaluation_metrics": {
+      "path": "reports/cost_performance_metrics.json",
+      "sha256": "051e563147817fdfd82e437fcd2c13c5c92c51b17e978e44b205a4cda3b0d326"
+    }
+  },
+  "mapping": {
+    "compatible_base_features": [
+      "age",
+      "gender",
+      "bmi",
+      "sbp",
+      "dbp"
+    ],
+    "unavailable_base_features": [
+      "family_history_diabetes"
+    ],
+    "compatible_acquirable_features": [
+      "fpg",
+      "total_cholesterol",
+      "triglycerides",
+      "alt"
+    ],
+    "unavailable_acquirable_features": [
+      "ccr",
+      "bun"
+    ],
+    "gender": "NAGALA raw 1 -> primary 1 male; raw 0 -> primary 2 female",
+    "duration": "NAGALA days / 365.25 -> years",
+    "family_history": "all source-missing; primary train-fitted imputation",
+    "unavailable_actions": "removed from the external action space; never acquired"
+  },
+  "evaluation": {
+    "horizon_years": 3.0,
+    "external_outcomes_used_for_selection_or_recalibration": false,
+    "external_outcomes_used_for_metrics_only": true,
+    "censoring_distribution": "estimated on NAGALA for external IPCW metrics only",
+    "calibration": "10 equal-count bins; no recalibration",
+    "primary_cost_scheme": "uniform_unit",
+    "policy_metadata": {
+      "primary_order": [
+        "fpg",
+        "alt",
+        "triglycerides",
+        "total_cholesterol",
+        "ccr",
+        "bun"
+      ],
+      "compatible_order": [
+        "fpg",
+        "alt",
+        "triglycerides",
+        "total_cholesterol"
+      ],
+      "ordered_threshold": 0.002145289116957735,
+      "adaptive_penalty": 0.0010131473450483849,
+      "available_adaptive_actions": [
+        "fpg",
+        "total_cholesterol",
+        "triglycerides",
+        "alt",
+        "STOP"
+      ],
+      "external_outcomes_used_for_selection_or_recalibration": false,
+      "participants": 15464
+    }
+  },
+  "methods": {
+    "base_only": {
+      "definition": "primary Base Only Cox model; family history source-missing",
+      "acquired_features": [],
+      "prediction": {
+        "participants": 15464,
+        "events_total": 373,
+        "harrell_c_index": 0.7811766930804264,
+        "ipcw_brier_at_horizon": 0.007709221432319596,
+        "ipcw_cumulative_dynamic_auc": 0.7761637808279946,
+        "ipcw_average_precision": 0.03237519733791168,
+        "horizon_cases": 101,
+        "horizon_controls": 10998,
+        "excluded_censored_before_or_at_horizon": 4365,
+        "mean_predicted_risk_at_horizon": 0.007437358127670412,
+        "km_observed_risk_at_horizon": 0.007841098030138993,
+        "calibration_in_the_large_difference": -0.00040373990246858095,
+        "calibration_mean_absolute_bin_gap": 0.001549184984905062,
+        "calibration_maximum_absolute_bin_gap": 0.003827150839824005,
+        "calibration_bins": [
+          {
+            "bin": 1,
+            "participants": 1547,
+            "events_total": 2,
+            "mean_predicted_risk": 0.0010942973373499014,
+            "km_observed_risk": 0.0007874015748031704,
+            "absolute_gap": 0.000306895762546731,
+            "minimum_predicted_risk": 0.0002681366055586887,
+            "maximum_predicted_risk": 0.0014782067868858162
+          },
+          {
+            "bin": 2,
+            "participants": 1547,
+            "events_total": 4,
+            "mean_predicted_risk": 0.001796343929876432,
+            "km_observed_risk": 0.0,
+            "absolute_gap": 0.001796343929876432,
+            "minimum_predicted_risk": 0.001478522033476204,
+            "maximum_predicted_risk": 0.002123622400436842
+          },
+          {
+            "bin": 3,
+            "participants": 1547,
+            "events_total": 11,
+            "mean_predicted_risk": 0.0024960315200987598,
+            "km_observed_risk": 0.002891181337171811,
+            "absolute_gap": 0.00039514981707305117,
+            "minimum_predicted_risk": 0.0021237986661456487,
+            "maximum_predicted_risk": 0.002882155971908884
+          },
+          {
+            "bin": 4,
+            "participants": 1547,
+            "events_total": 15,
+            "mean_predicted_risk": 0.003304034684473272,
+            "km_observed_risk": 0.0022108451198332713,
+            "absolute_gap": 0.0010931895646400006,
+            "minimum_predicted_risk": 0.0028823429399595923,
+            "maximum_predicted_risk": 0.0037381856647226153
+          },
+          {
+            "bin": 5,
+            "participants": 1546,
+            "events_total": 23,
+            "mean_predicted_risk": 0.004226178271913614,
+            "km_observed_risk": 0.0037702341321580457,
+            "absolute_gap": 0.000455944139755568,
+            "minimum_predicted_risk": 0.0037387509481477954,
+            "maximum_predicted_risk": 0.004739974745938347
+          },
+          {
+            "bin": 6,
+            "participants": 1546,
+            "events_total": 21,
+            "mean_predicted_risk": 0.005363965158485995,
+            "km_observed_risk": 0.003817248350463265,
+            "absolute_gap": 0.0015467168080227304,
+            "minimum_predicted_risk": 0.0047422950462781,
+            "maximum_predicted_risk": 0.00602935783302283
+          },
+          {
+            "bin": 7,
+            "participants": 1546,
+            "events_total": 45,
+            "mean_predicted_risk": 0.006896194416458374,
+            "km_observed_risk": 0.01072334525628238,
+            "absolute_gap": 0.003827150839824005,
+            "minimum_predicted_risk": 0.006033597732203133,
+            "maximum_predicted_risk": 0.007871174919353408
+          },
+          {
+            "bin": 8,
+            "participants": 1546,
+            "events_total": 48,
+            "mean_predicted_risk": 0.009208199789441353,
+            "km_observed_risk": 0.010113096176341152,
+            "absolute_gap": 0.0009048963868997992,
+            "minimum_predicted_risk": 0.00787164097103743,
+            "maximum_predicted_risk": 0.010736851351261567
+          },
+          {
+            "bin": 9,
+            "participants": 1546,
+            "events_total": 72,
+            "mean_predicted_risk": 0.013096509922975156,
+            "km_observed_risk": 0.015188388163929423,
+            "absolute_gap": 0.002091878240954267,
+            "minimum_predicted_risk": 0.010736886564927772,
+            "maximum_predicted_risk": 0.01617960976217081
+          },
+          {
+            "bin": 10,
+            "participants": 1546,
+            "events_total": 132,
+            "mean_predicted_risk": 0.026905447671917732,
+            "km_observed_risk": 0.02998081712896017,
+            "absolute_gap": 0.0030753694570424366,
+            "minimum_predicted_risk": 0.016192830215071452,
+            "maximum_predicted_risk": 0.35878543376124306
+          }
+        ]
+      },
+      "acquisition": {
+        "mean_acquired_tests": 0.0,
+        "median_acquired_tests": 0.0,
+        "p25_acquired_tests": 0.0,
+        "p75_acquired_tests": 0.0,
+        "mean_cost": 0.0,
+        "median_cost": 0.0,
+        "p25_cost": 0.0,
+        "p75_cost": 0.0,
+        "stop_without_labs_percent": 100.0,
+        "acquire_all_compatible_percent": 0.0
+      }
+    },
+    "compatible_full": {
+      "definition": "all four NAGALA-compatible laboratory candidates",
+      "acquired_features": [
+        "fpg",
+        "total_cholesterol",
+        "triglycerides",
+        "alt"
+      ],
+      "prediction": {
+        "participants": 15464,
+        "events_total": 373,
+        "harrell_c_index": 0.8574328484206047,
+        "ipcw_brier_at_horizon": 0.0075782131047505774,
+        "ipcw_cumulative_dynamic_auc": 0.8616172871458702,
+        "ipcw_average_precision": 0.06260889466107435,
+        "horizon_cases": 101,
+        "horizon_controls": 10998,
+        "excluded_censored_before_or_at_horizon": 4365,
+        "mean_predicted_risk_at_horizon": 0.007932046399533025,
+        "km_observed_risk_at_horizon": 0.007841098030138993,
+        "calibration_in_the_large_difference": 9.09483693940314e-05,
+        "calibration_mean_absolute_bin_gap": 0.0031339134857614483,
+        "calibration_maximum_absolute_bin_gap": 0.012872249696663382,
+        "calibration_bins": [
+          {
+            "bin": 1,
+            "participants": 1547,
+            "events_total": 2,
+            "mean_predicted_risk": 0.0007291619535047823,
+            "km_observed_risk": 0.0,
+            "absolute_gap": 0.0007291619535047823,
+            "minimum_predicted_risk": 4.2949839782369104e-05,
+            "maximum_predicted_risk": 0.0010673645214898109
+          },
+          {
+            "bin": 2,
+            "participants": 1547,
+            "events_total": 1,
+            "mean_predicted_risk": 0.0013866971285040996,
+            "km_observed_risk": 0.0,
+            "absolute_gap": 0.0013866971285040996,
+            "minimum_predicted_risk": 0.0010674672115998929,
+            "maximum_predicted_risk": 0.0016842057551256229
+          },
+          {
+            "bin": 3,
+            "participants": 1547,
+            "events_total": 8,
+            "mean_predicted_risk": 0.0020186953827896173,
+            "km_observed_risk": 0.002149926128130697,
+            "absolute_gap": 0.00013123074534107963,
+            "minimum_predicted_risk": 0.001684359907073496,
+            "maximum_predicted_risk": 0.002375446543035231
+          },
+          {
+            "bin": 4,
+            "participants": 1547,
+            "events_total": 9,
+            "mean_predicted_risk": 0.0027882088901063163,
+            "km_observed_risk": 0.0015796746044589582,
+            "absolute_gap": 0.001208534285647358,
+            "minimum_predicted_risk": 0.0023765617720414856,
+            "maximum_predicted_risk": 0.0032282212541077104
+          },
+          {
+            "bin": 5,
+            "participants": 1546,
+            "events_total": 12,
+            "mean_predicted_risk": 0.003762149489079927,
+            "km_observed_risk": 0.0016798519194685113,
+            "absolute_gap": 0.0020822975696114156,
+            "minimum_predicted_risk": 0.0032284201774018806,
+            "maximum_predicted_risk": 0.004342587351030103
+          },
+          {
+            "bin": 6,
+            "participants": 1546,
+            "events_total": 12,
+            "mean_predicted_risk": 0.005051967077781046,
+            "km_observed_risk": 0.002924946175992593,
+            "absolute_gap": 0.0021270209017884524,
+            "minimum_predicted_risk": 0.00434286302431619,
+            "maximum_predicted_risk": 0.005857851985755835
+          },
+          {
+            "bin": 7,
+            "participants": 1546,
+            "events_total": 19,
+            "mean_predicted_risk": 0.006876246713777162,
+            "km_observed_risk": 0.0023694251745064454,
+            "absolute_gap": 0.004506821539270717,
+            "minimum_predicted_risk": 0.005858070276403393,
+            "maximum_predicted_risk": 0.008013041230573226
+          },
+          {
+            "bin": 8,
+            "participants": 1546,
+            "events_total": 35,
+            "mean_predicted_risk": 0.009744431431537737,
+            "km_observed_risk": 0.006460797804966223,
+            "absolute_gap": 0.0032836336265715145,
+            "minimum_predicted_risk": 0.008015633401289857,
+            "maximum_predicted_risk": 0.011815819823655871
+          },
+          {
+            "bin": 9,
+            "participants": 1546,
+            "events_total": 84,
+            "mean_predicted_risk": 0.015063433127308849,
+            "km_observed_risk": 0.018080793778531556,
+            "absolute_gap": 0.003017360651222708,
+            "minimum_predicted_risk": 0.01181645192879921,
+            "maximum_predicted_risk": 0.019380302092339208
+          },
+          {
+            "bin": 10,
+            "participants": 1546,
+            "events_total": 191,
+            "mean_predicted_risk": 0.031915517705367116,
+            "km_observed_risk": 0.0447877674020305,
+            "absolute_gap": 0.012872249696663382,
+            "minimum_predicted_risk": 0.019386826669679502,
+            "maximum_predicted_risk": 0.12454837999507928
+          }
+        ]
+      },
+      "acquisition": {
+        "mean_acquired_tests": 4.0,
+        "median_acquired_tests": 4.0,
+        "p25_acquired_tests": 4.0,
+        "p75_acquired_tests": 4.0,
+        "mean_cost": 4.0,
+        "median_cost": 4.0,
+        "p25_cost": 4.0,
+        "p75_cost": 4.0,
+        "stop_without_labs_percent": 0.0,
+        "acquire_all_compatible_percent": 100.0
+      }
+    },
+    "static_top_k": {
+      "definition": "locked cost-performance evaluation Static Top-K subset",
+      "acquired_features": [
+        "fpg",
+        "triglycerides",
+        "alt"
+      ],
+      "prediction": {
+        "participants": 15464,
+        "events_total": 373,
+        "harrell_c_index": 0.8577781949954211,
+        "ipcw_brier_at_horizon": 0.007576288690468015,
+        "ipcw_cumulative_dynamic_auc": 0.8604520457258893,
+        "ipcw_average_precision": 0.060267215798888794,
+        "horizon_cases": 101,
+        "horizon_controls": 10998,
+        "excluded_censored_before_or_at_horizon": 4365,
+        "mean_predicted_risk_at_horizon": 0.008315822556051657,
+        "km_observed_risk_at_horizon": 0.007841098030138993,
+        "calibration_in_the_large_difference": 0.0004747245259126634,
+        "calibration_mean_absolute_bin_gap": 0.0029919621758494734,
+        "calibration_maximum_absolute_bin_gap": 0.01340138195742361,
+        "calibration_bins": [
+          {
+            "bin": 1,
+            "participants": 1547,
+            "events_total": 2,
+            "mean_predicted_risk": 0.0007420848014334286,
+            "km_observed_risk": 0.0,
+            "absolute_gap": 0.0007420848014334286,
+            "minimum_predicted_risk": 4.2834290257975915e-05,
+            "maximum_predicted_risk": 0.0010946537787438482
+          },
+          {
+            "bin": 2,
+            "participants": 1547,
+            "events_total": 1,
+            "mean_predicted_risk": 0.0014123077598590544,
+            "km_observed_risk": 0.0,
+            "absolute_gap": 0.0014123077598590544,
+            "minimum_predicted_risk": 0.0010951799279576013,
+            "maximum_predicted_risk": 0.001711701929241194
+          },
+          {
+            "bin": 3,
+            "participants": 1547,
+            "events_total": 5,
+            "mean_predicted_risk": 0.0020713242297626284,
+            "km_observed_risk": 0.0014774113307511882,
+            "absolute_gap": 0.0005939128990114402,
+            "minimum_predicted_risk": 0.001712372508500315,
+            "maximum_predicted_risk": 0.002452033664793851
+          },
+          {
+            "bin": 4,
+            "participants": 1547,
+            "events_total": 11,
+            "mean_predicted_risk": 0.002881781283009076,
+            "km_observed_risk": 0.0022564817114030244,
+            "absolute_gap": 0.0006252995716060517,
+            "minimum_predicted_risk": 0.002452036643899924,
+            "maximum_predicted_risk": 0.0033363869410731883
+          },
+          {
+            "bin": 5,
+            "participants": 1546,
+            "events_total": 13,
+            "mean_predicted_risk": 0.003907887996817819,
+            "km_observed_risk": 0.001674711161333886,
+            "absolute_gap": 0.002233176835483933,
+            "minimum_predicted_risk": 0.003336485074329598,
+            "maximum_predicted_risk": 0.004511021835192031
+          },
+          {
+            "bin": 6,
+            "participants": 1546,
+            "events_total": 12,
+            "mean_predicted_risk": 0.005270688080607968,
+            "km_observed_risk": 0.0022364341329177417,
+            "absolute_gap": 0.0030342539476902264,
+            "minimum_predicted_risk": 0.004511176871384692,
+            "maximum_predicted_risk": 0.006118001091935166
+          },
+          {
+            "bin": 7,
+            "participants": 1546,
+            "events_total": 21,
+            "mean_predicted_risk": 0.0071920102029262795,
+            "km_observed_risk": 0.004884117249199682,
+            "absolute_gap": 0.0023078929537265975,
+            "minimum_predicted_risk": 0.006118334885312882,
+            "maximum_predicted_risk": 0.008421211454374022
+          },
+          {
+            "bin": 8,
+            "participants": 1546,
+            "events_total": 34,
+            "mean_predicted_risk": 0.010230192598278192,
+            "km_observed_risk": 0.0054707913151648135,
+            "absolute_gap": 0.004759401283113378,
+            "minimum_predicted_risk": 0.008421357917089867,
+            "maximum_predicted_risk": 0.012414023157703902
+          },
+          {
+            "bin": 9,
+            "participants": 1546,
+            "events_total": 80,
+            "mean_predicted_risk": 0.015893956080176026,
+            "km_observed_risk": 0.015078487311836586,
+            "absolute_gap": 0.0008154687683394404,
+            "minimum_predicted_risk": 0.01241455041213746,
+            "maximum_predicted_risk": 0.020431231139380834
+          },
+          {
+            "bin": 10,
+            "participants": 1546,
+            "events_total": 194,
+            "mean_predicted_risk": 0.03357291089255562,
+            "km_observed_risk": 0.04697429284997923,
+            "absolute_gap": 0.01340138195742361,
+            "minimum_predicted_risk": 0.020448058225290278,
+            "maximum_predicted_risk": 0.13225101928251648
+          }
+        ]
+      },
+      "acquisition": {
+        "mean_acquired_tests": 3.0,
+        "median_acquired_tests": 3.0,
+        "p25_acquired_tests": 3.0,
+        "p75_acquired_tests": 3.0,
+        "mean_cost": 3.0,
+        "median_cost": 3.0,
+        "p25_cost": 3.0,
+        "p75_cost": 3.0,
+        "stop_without_labs_percent": 0.0,
+        "acquire_all_compatible_percent": 0.0
+      }
+    },
+    "importance_greedy": {
+      "definition": "locked cost-performance evaluation Importance Greedy subset",
+      "acquired_features": [
+        "fpg",
+        "triglycerides",
+        "alt"
+      ],
+      "prediction": {
+        "participants": 15464,
+        "events_total": 373,
+        "harrell_c_index": 0.8577781949954211,
+        "ipcw_brier_at_horizon": 0.007576288690468015,
+        "ipcw_cumulative_dynamic_auc": 0.8604520457258893,
+        "ipcw_average_precision": 0.060267215798888794,
+        "horizon_cases": 101,
+        "horizon_controls": 10998,
+        "excluded_censored_before_or_at_horizon": 4365,
+        "mean_predicted_risk_at_horizon": 0.008315822556051657,
+        "km_observed_risk_at_horizon": 0.007841098030138993,
+        "calibration_in_the_large_difference": 0.0004747245259126634,
+        "calibration_mean_absolute_bin_gap": 0.0029919621758494734,
+        "calibration_maximum_absolute_bin_gap": 0.01340138195742361,
+        "calibration_bins": [
+          {
+            "bin": 1,
+            "participants": 1547,
+            "events_total": 2,
+            "mean_predicted_risk": 0.0007420848014334286,
+            "km_observed_risk": 0.0,
+            "absolute_gap": 0.0007420848014334286,
+            "minimum_predicted_risk": 4.2834290257975915e-05,
+            "maximum_predicted_risk": 0.0010946537787438482
+          },
+          {
+            "bin": 2,
+            "participants": 1547,
+            "events_total": 1,
+            "mean_predicted_risk": 0.0014123077598590544,
+            "km_observed_risk": 0.0,
+            "absolute_gap": 0.0014123077598590544,
+            "minimum_predicted_risk": 0.0010951799279576013,
+            "maximum_predicted_risk": 0.001711701929241194
+          },
+          {
+            "bin": 3,
+            "participants": 1547,
+            "events_total": 5,
+            "mean_predicted_risk": 0.0020713242297626284,
+            "km_observed_risk": 0.0014774113307511882,
+            "absolute_gap": 0.0005939128990114402,
+            "minimum_predicted_risk": 0.001712372508500315,
+            "maximum_predicted_risk": 0.002452033664793851
+          },
+          {
+            "bin": 4,
+            "participants": 1547,
+            "events_total": 11,
+            "mean_predicted_risk": 0.002881781283009076,
+            "km_observed_risk": 0.0022564817114030244,
+            "absolute_gap": 0.0006252995716060517,
+            "minimum_predicted_risk": 0.002452036643899924,
+            "maximum_predicted_risk": 0.0033363869410731883
+          },
+          {
+            "bin": 5,
+            "participants": 1546,
+            "events_total": 13,
+            "mean_predicted_risk": 0.003907887996817819,
+            "km_observed_risk": 0.001674711161333886,
+            "absolute_gap": 0.002233176835483933,
+            "minimum_predicted_risk": 0.003336485074329598,
+            "maximum_predicted_risk": 0.004511021835192031
+          },
+          {
+            "bin": 6,
+            "participants": 1546,
+            "events_total": 12,
+            "mean_predicted_risk": 0.005270688080607968,
+            "km_observed_risk": 0.0022364341329177417,
+            "absolute_gap": 0.0030342539476902264,
+            "minimum_predicted_risk": 0.004511176871384692,
+            "maximum_predicted_risk": 0.006118001091935166
+          },
+          {
+            "bin": 7,
+            "participants": 1546,
+            "events_total": 21,
+            "mean_predicted_risk": 0.0071920102029262795,
+            "km_observed_risk": 0.004884117249199682,
+            "absolute_gap": 0.0023078929537265975,
+            "minimum_predicted_risk": 0.006118334885312882,
+            "maximum_predicted_risk": 0.008421211454374022
+          },
+          {
+            "bin": 8,
+            "participants": 1546,
+            "events_total": 34,
+            "mean_predicted_risk": 0.010230192598278192,
+            "km_observed_risk": 0.0054707913151648135,
+            "absolute_gap": 0.004759401283113378,
+            "minimum_predicted_risk": 0.008421357917089867,
+            "maximum_predicted_risk": 0.012414023157703902
+          },
+          {
+            "bin": 9,
+            "participants": 1546,
+            "events_total": 80,
+            "mean_predicted_risk": 0.015893956080176026,
+            "km_observed_risk": 0.015078487311836586,
+            "absolute_gap": 0.0008154687683394404,
+            "minimum_predicted_risk": 0.01241455041213746,
+            "maximum_predicted_risk": 0.020431231139380834
+          },
+          {
+            "bin": 10,
+            "participants": 1546,
+            "events_total": 194,
+            "mean_predicted_risk": 0.03357291089255562,
+            "km_observed_risk": 0.04697429284997923,
+            "absolute_gap": 0.01340138195742361,
+            "minimum_predicted_risk": 0.020448058225290278,
+            "maximum_predicted_risk": 0.13225101928251648
+          }
+        ]
+      },
+      "acquisition": {
+        "mean_acquired_tests": 3.0,
+        "median_acquired_tests": 3.0,
+        "p25_acquired_tests": 3.0,
+        "p75_acquired_tests": 3.0,
+        "mean_cost": 3.0,
+        "median_cost": 3.0,
+        "p25_cost": 3.0,
+        "p75_cost": 3.0,
+        "stop_without_labs_percent": 0.0,
+        "acquire_all_compatible_percent": 0.0
+      }
+    },
+    "ordered_compatible": {
+      "definition": "locked threshold along the compatible primary order; forced STOP before CCR",
+      "acquired_features": "participant-specific compatible prefix",
+      "prediction": {
+        "participants": 15464,
+        "events_total": 373,
+        "harrell_c_index": 0.855593398261687,
+        "ipcw_brier_at_horizon": 0.007578967872419079,
+        "ipcw_cumulative_dynamic_auc": 0.8572803817150562,
+        "ipcw_average_precision": 0.0626388884518851,
+        "horizon_cases": 101,
+        "horizon_controls": 10998,
+        "excluded_censored_before_or_at_horizon": 4365,
+        "mean_predicted_risk_at_horizon": 0.00786911816820967,
+        "km_observed_risk_at_horizon": 0.007841098030138993,
+        "calibration_in_the_large_difference": 2.8020138070676548e-05,
+        "calibration_mean_absolute_bin_gap": 0.0029011118898161865,
+        "calibration_maximum_absolute_bin_gap": 0.012901714950169098,
+        "calibration_bins": [
+          {
+            "bin": 1,
+            "participants": 1547,
+            "events_total": 2,
+            "mean_predicted_risk": 0.0009575922649956529,
+            "km_observed_risk": 0.0,
+            "absolute_gap": 0.0009575922649956529,
+            "minimum_predicted_risk": 0.00018118343376827273,
+            "maximum_predicted_risk": 0.0012677544209959146
+          },
+          {
+            "bin": 2,
+            "participants": 1547,
+            "events_total": 2,
+            "mean_predicted_risk": 0.0014932044979462933,
+            "km_observed_risk": 0.0007621951219511924,
+            "absolute_gap": 0.0007310093759951009,
+            "minimum_predicted_risk": 0.0012682041404211697,
+            "maximum_predicted_risk": 0.0017022831244620784
+          },
+          {
+            "bin": 3,
+            "participants": 1547,
+            "events_total": 6,
+            "mean_predicted_risk": 0.0019061797124114738,
+            "km_observed_risk": 0.0014757916241061597,
+            "absolute_gap": 0.0004303880883053141,
+            "minimum_predicted_risk": 0.0017026257849852566,
+            "maximum_predicted_risk": 0.0020804575483348575
+          },
+          {
+            "bin": 4,
+            "participants": 1547,
+            "events_total": 10,
+            "mean_predicted_risk": 0.0024560795082720563,
+            "km_observed_risk": 0.0022432439964361617,
+            "absolute_gap": 0.0002128355118358946,
+            "minimum_predicted_risk": 0.0020805308961843183,
+            "maximum_predicted_risk": 0.0029707313409820246
+          },
+          {
+            "bin": 5,
+            "participants": 1546,
+            "events_total": 13,
+            "mean_predicted_risk": 0.0035474983564218374,
+            "km_observed_risk": 0.00165690204543123,
+            "absolute_gap": 0.0018905963109906074,
+            "minimum_predicted_risk": 0.0029723380862399784,
+            "maximum_predicted_risk": 0.004162742169176226
+          },
+          {
+            "bin": 6,
+            "participants": 1546,
+            "events_total": 10,
+            "mean_predicted_risk": 0.0049114580124538735,
+            "km_observed_risk": 0.002234629257954479,
+            "absolute_gap": 0.0026768287544993944,
+            "minimum_predicted_risk": 0.004163269364787947,
+            "maximum_predicted_risk": 0.005757155743465803
+          },
+          {
+            "bin": 7,
+            "participants": 1546,
+            "events_total": 20,
+            "mean_predicted_risk": 0.0067972704574796265,
+            "km_observed_risk": 0.0030545360031490887,
+            "absolute_gap": 0.0037427344543305378,
+            "minimum_predicted_risk": 0.005757161555928536,
+            "maximum_predicted_risk": 0.007970538885634593
+          },
+          {
+            "bin": 8,
+            "participants": 1546,
+            "events_total": 35,
+            "mean_predicted_risk": 0.009700303869881287,
+            "km_observed_risk": 0.006451011316522037,
+            "absolute_gap": 0.00324929255335925,
+            "minimum_predicted_risk": 0.007971923466835173,
+            "maximum_predicted_risk": 0.01177418384711193
+          },
+          {
+            "bin": 9,
+            "participants": 1546,
+            "events_total": 84,
+            "mean_predicted_risk": 0.015051495601271768,
+            "km_observed_risk": 0.01727562005016503,
+            "absolute_gap": 0.002224124448893262,
+            "minimum_predicted_risk": 0.011779497080363077,
+            "maximum_predicted_risk": 0.01937389675242196
+          },
+          {
+            "bin": 10,
+            "participants": 1546,
+            "events_total": 191,
+            "mean_predicted_risk": 0.0318860524518614,
+            "km_observed_risk": 0.0447877674020305,
+            "absolute_gap": 0.012901714950169098,
+            "minimum_predicted_risk": 0.019380302092339208,
+            "maximum_predicted_risk": 0.12454837999507928
+          }
+        ]
+      },
+      "acquisition": {
+        "mean_acquired_tests": 2.8682100362131404,
+        "median_acquired_tests": 4.0,
+        "p25_acquired_tests": 1.0,
+        "p75_acquired_tests": 4.0,
+        "mean_cost": 2.8682100362131404,
+        "median_cost": 4.0,
+        "p25_cost": 1.0,
+        "p75_cost": 4.0,
+        "stop_without_labs_percent": 20.29875840662183,
+        "acquire_all_compatible_percent": 68.50103466114848
+      }
+    },
+    "adaptive_compatible": {
+      "definition": "locked lambda with only the four compatible actions plus STOP",
+      "acquired_features": "participant-specific compatible subset",
+      "prediction": {
+        "participants": 15464,
+        "events_total": 373,
+        "harrell_c_index": 0.8524842512711529,
+        "ipcw_brier_at_horizon": 0.007583281942201293,
+        "ipcw_cumulative_dynamic_auc": 0.8521528369341776,
+        "ipcw_average_precision": 0.06207250582958304,
+        "horizon_cases": 101,
+        "horizon_controls": 10998,
+        "excluded_censored_before_or_at_horizon": 4365,
+        "mean_predicted_risk_at_horizon": 0.008338341771740794,
+        "km_observed_risk_at_horizon": 0.007841098030138993,
+        "calibration_in_the_large_difference": 0.0004972437416018004,
+        "calibration_mean_absolute_bin_gap": 0.0030185090086670627,
+        "calibration_maximum_absolute_bin_gap": 0.01342537414776878,
+        "calibration_bins": [
+          {
+            "bin": 1,
+            "participants": 1547,
+            "events_total": 3,
+            "mean_predicted_risk": 0.0008848449853600767,
+            "km_observed_risk": 0.0,
+            "absolute_gap": 0.0008848449853600767,
+            "minimum_predicted_risk": 0.00016765816245045695,
+            "maximum_predicted_risk": 0.001178051056474172
+          },
+          {
+            "bin": 2,
+            "participants": 1547,
+            "events_total": 1,
+            "mean_predicted_risk": 0.0013965026255106814,
+            "km_observed_risk": 0.0007547169811320531,
+            "absolute_gap": 0.0006417856443786283,
+            "minimum_predicted_risk": 0.0011786003305892523,
+            "maximum_predicted_risk": 0.0016168426665919
+          },
+          {
+            "bin": 3,
+            "participants": 1547,
+            "events_total": 5,
+            "mean_predicted_risk": 0.001974968951565847,
+            "km_observed_risk": 0.0014769146832162017,
+            "absolute_gap": 0.0004980542683496454,
+            "minimum_predicted_risk": 0.0016170310249430386,
+            "maximum_predicted_risk": 0.0024235112168470296
+          },
+          {
+            "bin": 4,
+            "participants": 1547,
+            "events_total": 11,
+            "mean_predicted_risk": 0.002915641048004042,
+            "km_observed_risk": 0.0022444992676118325,
+            "absolute_gap": 0.0006711417803922097,
+            "minimum_predicted_risk": 0.002423987449921561,
+            "maximum_predicted_risk": 0.003441615559588551
+          },
+          {
+            "bin": 5,
+            "participants": 1546,
+            "events_total": 15,
+            "mean_predicted_risk": 0.004078120067926492,
+            "km_observed_risk": 0.00236767688036299,
+            "absolute_gap": 0.001710443187563502,
+            "minimum_predicted_risk": 0.00344191416954831,
+            "maximum_predicted_risk": 0.004748005443369729
+          },
+          {
+            "bin": 6,
+            "participants": 1546,
+            "events_total": 10,
+            "mean_predicted_risk": 0.00555619000163108,
+            "km_observed_risk": 0.001535636493325443,
+            "absolute_gap": 0.004020553508305637,
+            "minimum_predicted_risk": 0.004751876825717205,
+            "maximum_predicted_risk": 0.006459871899710756
+          },
+          {
+            "bin": 7,
+            "participants": 1546,
+            "events_total": 23,
+            "mean_predicted_risk": 0.00759805790476854,
+            "km_observed_risk": 0.003841756727933854,
+            "absolute_gap": 0.003756301176834686,
+            "minimum_predicted_risk": 0.006460285612246208,
+            "maximum_predicted_risk": 0.008842363916156337
+          },
+          {
+            "bin": 8,
+            "participants": 1546,
+            "events_total": 34,
+            "mean_predicted_risk": 0.010679642125965423,
+            "km_observed_risk": 0.0071973960664711845,
+            "absolute_gap": 0.003482246059494239,
+            "minimum_predicted_risk": 0.008850559915760225,
+            "maximum_predicted_risk": 0.012901612230889592
+          },
+          {
+            "bin": 9,
+            "participants": 1546,
+            "events_total": 78,
+            "mean_predicted_risk": 0.016242540980419183,
+            "km_observed_risk": 0.015142129540063887,
+            "absolute_gap": 0.0011004114403552964,
+            "minimum_predicted_risk": 0.012909710368745997,
+            "maximum_predicted_risk": 0.02048998480621167
+          },
+          {
+            "bin": 10,
+            "participants": 1546,
+            "events_total": 193,
+            "mean_predicted_risk": 0.03207384396123492,
+            "km_observed_risk": 0.0454992181090037,
+            "absolute_gap": 0.01342537414776878,
+            "minimum_predicted_risk": 0.020491772900479877,
+            "maximum_predicted_risk": 0.12454837999507928
+          }
+        ]
+      },
+      "acquisition": {
+        "mean_acquired_tests": 1.2968830832902225,
+        "median_acquired_tests": 1.0,
+        "p25_acquired_tests": 1.0,
+        "p75_acquired_tests": 1.0,
+        "mean_cost": 1.2968830832902225,
+        "median_cost": 1.0,
+        "p25_cost": 1.0,
+        "p75_cost": 1.0,
+        "stop_without_labs_percent": 12.577599586135541,
+        "acquire_all_compatible_percent": 7.6758923952405596
+      }
+    }
+  },
+  "primary_internal_references": {
+    "base_only": {
+      "harrell_c_index": 0.8383382563675945,
+      "ipcw_brier_at_horizon": 0.011595375132287363,
+      "mean_cost": 0.0
+    },
+    "static_top_k": {
+      "harrell_c_index": 0.9088681886557438,
+      "ipcw_brier_at_horizon": 0.010357641020032643,
+      "mean_cost": 3.0
+    }
+  },
+  "bootstrap": {
+    "method": "participant-level event-stratified paired percentile bootstrap",
+    "seed": 20260827,
+    "replicates_requested": 200,
+    "stratification": "event status within the unchanged test split",
+    "training_censoring_distribution_refit_per_replicate": false,
+    "methods": {
+      "base_only": {
+        "harrell_c_index": {
+          "point_estimate": 0.7811766930804264,
+          "ci95_lower": 0.7596920049721706,
+          "ci95_upper": 0.8028463612024821,
+          "valid_replicates": 200
+        },
+        "ipcw_brier_at_horizon": {
+          "point_estimate": 0.007709221432319596,
+          "ci95_lower": 0.006474215017248764,
+          "ci95_upper": 0.008957896532988549,
+          "valid_replicates": 200
+        },
+        "ipcw_cumulative_dynamic_auc": {
+          "point_estimate": 0.7761637808279946,
+          "ci95_lower": 0.7415302686794298,
+          "ci95_upper": 0.8130583939013116,
+          "valid_replicates": 200
+        },
+        "ipcw_average_precision": {
+          "point_estimate": 0.03237519733791168,
+          "ci95_lower": 0.02189083984646861,
+          "ci95_upper": 0.060669254675520215,
+          "valid_replicates": 200
+        },
+        "mean_cost": {
+          "point_estimate": 0.0,
+          "ci95_lower": 0.0,
+          "ci95_upper": 0.0,
+          "valid_replicates": 200
+        }
+      },
+      "compatible_full": {
+        "harrell_c_index": {
+          "point_estimate": 0.8574328484206047,
+          "ci95_lower": 0.8386902420658608,
+          "ci95_upper": 0.874302685315802,
+          "valid_replicates": 200
+        },
+        "ipcw_brier_at_horizon": {
+          "point_estimate": 0.0075782131047505774,
+          "ci95_lower": 0.006389746786892329,
+          "ci95_upper": 0.008812456561370351,
+          "valid_replicates": 200
+        },
+        "ipcw_cumulative_dynamic_auc": {
+          "point_estimate": 0.8616172871458702,
+          "ci95_lower": 0.8250316414966863,
+          "ci95_upper": 0.8905150555290788,
+          "valid_replicates": 200
+        },
+        "ipcw_average_precision": {
+          "point_estimate": 0.06260889466107435,
+          "ci95_lower": 0.04374945823242142,
+          "ci95_upper": 0.10566331813532197,
+          "valid_replicates": 200
+        },
+        "mean_cost": {
+          "point_estimate": 4.0,
+          "ci95_lower": 4.0,
+          "ci95_upper": 4.0,
+          "valid_replicates": 200
+        }
+      },
+      "static_top_k": {
+        "harrell_c_index": {
+          "point_estimate": 0.8577781949954211,
+          "ci95_lower": 0.8384469662732551,
+          "ci95_upper": 0.874389532157151,
+          "valid_replicates": 200
+        },
+        "ipcw_brier_at_horizon": {
+          "point_estimate": 0.007576288690468015,
+          "ci95_lower": 0.006391166390208969,
+          "ci95_upper": 0.008805748674216232,
+          "valid_replicates": 200
+        },
+        "ipcw_cumulative_dynamic_auc": {
+          "point_estimate": 0.8604520457258893,
+          "ci95_lower": 0.825691146303709,
+          "ci95_upper": 0.8894632070697771,
+          "valid_replicates": 200
+        },
+        "ipcw_average_precision": {
+          "point_estimate": 0.060267215798888794,
+          "ci95_lower": 0.04214737085114137,
+          "ci95_upper": 0.09655368724564047,
+          "valid_replicates": 200
+        },
+        "mean_cost": {
+          "point_estimate": 3.0,
+          "ci95_lower": 3.0,
+          "ci95_upper": 3.0,
+          "valid_replicates": 200
+        }
+      },
+      "ordered_compatible": {
+        "harrell_c_index": {
+          "point_estimate": 0.855593398261687,
+          "ci95_lower": 0.8349068634254259,
+          "ci95_upper": 0.8732825031056258,
+          "valid_replicates": 200
+        },
+        "ipcw_brier_at_horizon": {
+          "point_estimate": 0.007578967872419079,
+          "ci95_lower": 0.006390201429142392,
+          "ci95_upper": 0.00881187617373669,
+          "valid_replicates": 200
+        },
+        "ipcw_cumulative_dynamic_auc": {
+          "point_estimate": 0.8572803817150562,
+          "ci95_lower": 0.820783780726291,
+          "ci95_upper": 0.8896134608717616,
+          "valid_replicates": 200
+        },
+        "ipcw_average_precision": {
+          "point_estimate": 0.0626388884518851,
+          "ci95_lower": 0.04359835162788612,
+          "ci95_upper": 0.10512158556166398,
+          "valid_replicates": 200
+        },
+        "mean_cost": {
+          "point_estimate": 2.8682100362131404,
+          "ci95_lower": 2.846498318675634,
+          "ci95_upper": 2.8906767330574237,
+          "valid_replicates": 200
+        }
+      },
+      "adaptive_compatible": {
+        "harrell_c_index": {
+          "point_estimate": 0.8524842512711529,
+          "ci95_lower": 0.8318227569306359,
+          "ci95_upper": 0.8702034327469512,
+          "valid_replicates": 200
+        },
+        "ipcw_brier_at_horizon": {
+          "point_estimate": 0.007583281942201293,
+          "ci95_lower": 0.006393747905398135,
+          "ci95_upper": 0.008812863395717883,
+          "valid_replicates": 200
+        },
+        "ipcw_cumulative_dynamic_auc": {
+          "point_estimate": 0.8521528369341776,
+          "ci95_lower": 0.8132157812930274,
+          "ci95_upper": 0.8833399068713287,
+          "valid_replicates": 200
+        },
+        "ipcw_average_precision": {
+          "point_estimate": 0.06207250582958304,
+          "ci95_lower": 0.04321118746048666,
+          "ci95_upper": 0.10458350814317065,
+          "valid_replicates": 200
+        },
+        "mean_cost": {
+          "point_estimate": 1.2968830832902225,
+          "ci95_lower": 1.2836879203310916,
+          "ci95_upper": 1.3139792421107086,
+          "valid_replicates": 200
+        }
+      }
+    },
+    "contrasts": {
+      "adaptive_compatible_minus_ordered_compatible": {
+        "harrell_c_index": {
+          "point_estimate": -0.0031091469905341063,
+          "ci95_lower": -0.005089848024977922,
+          "ci95_upper": -0.0008618802448347422,
+          "valid_replicates": 200
+        },
+        "ipcw_brier_at_horizon": {
+          "point_estimate": 4.314069782214783e-06,
+          "ci95_lower": 2.0073314457365755e-06,
+          "ci95_upper": 6.6007482775730075e-06,
+          "valid_replicates": 200
+        },
+        "ipcw_cumulative_dynamic_auc": {
+          "point_estimate": -0.005127544780878512,
+          "ci95_lower": -0.00830848619066806,
+          "ci95_upper": -0.0017002553419199358,
+          "valid_replicates": 200
+        },
+        "ipcw_average_precision": {
+          "point_estimate": -0.0005663826223020613,
+          "ci95_lower": -0.0011832546282103784,
+          "ci95_upper": 0.00011748841215696964,
+          "valid_replicates": 200
+        },
+        "mean_cost": {
+          "point_estimate": -1.571326952922918,
+          "ci95_lower": -1.5907995990688049,
+          "ci95_upper": -1.5460391877909985,
+          "valid_replicates": 200
+        }
+      },
+      "adaptive_compatible_minus_static_top_k": {
+        "harrell_c_index": {
+          "point_estimate": -0.005293943724268169,
+          "ci95_lower": -0.011313508791444262,
+          "ci95_upper": -0.0012132929661866575,
+          "valid_replicates": 200
+        },
+        "ipcw_brier_at_horizon": {
+          "point_estimate": 6.9932517332785965e-06,
+          "ci95_lower": -1.1568185855982507e-06,
+          "ci95_upper": 1.5592207845656043e-05,
+          "valid_replicates": 200
+        },
+        "ipcw_cumulative_dynamic_auc": {
+          "point_estimate": -0.008299208791711643,
+          "ci95_lower": -0.021923990417935593,
+          "ci95_upper": 0.00017896164551684652,
+          "valid_replicates": 200
+        },
+        "ipcw_average_precision": {
+          "point_estimate": 0.0018052900306942468,
+          "ci95_lower": -0.003039648573317425,
+          "ci95_upper": 0.00960412147743786,
+          "valid_replicates": 200
+        },
+        "mean_cost": {
+          "point_estimate": -1.7031169167097775,
+          "ci95_lower": -1.7163120796689084,
+          "ci95_upper": -1.6860207578892914,
+          "valid_replicates": 200
+        }
+      }
+    }
+  },
+  "not_evaluated_exactly": {
+    "full_features": "CCR and BUN are absent",
+    "random_acquisition": "the locked cost-performance evaluation selected endpoint is K=6",
+    "unconstrained_ordered": "the final two fixed-order actions are absent",
+    "unconstrained_adaptive": "two of six candidate actions are absent"
+  },
+  "external_data_audit": {
+    "dataset_doi": "10.5061/dryad.8q0p192",
+    "file_name": "Data set Int J Obesity.xlsx",
+    "file_size_bytes": 3255571,
+    "md5": "47edfb147078657a0eecfff7f9364532",
+    "sha256": "671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+    "workbook": {
+      "sheets": [
+        "Sheet 1"
+      ],
+      "data_rows": 15464,
+      "columns": 31,
+      "row_meaning": "one participant-level follow-up summary per row"
+    },
+    "integrity": {
+      "duplicate_rows": 0,
+      "missing_identifiers": 0,
+      "duplicate_identifiers": 0,
+      "rows_excluded": 0
+    },
+    "column_profiles": [
+      {
+        "position": 1,
+        "name": "Patient Number",
+        "group": "identifier",
+        "dtype": "int64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 15464,
+        "mapped_to": "participant_id"
+      },
+      {
+        "position": 2,
+        "name": "Sex, 1:Men, 2:Women",
+        "group": "demographics",
+        "dtype": "int64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 2,
+        "mapped_to": "gender",
+        "summary": {
+          "count": 15464,
+          "minimum": 0.0,
+          "p01": 0.0,
+          "p25": 0.0,
+          "median": 1.0,
+          "p75": 1.0,
+          "p99": 1.0,
+          "maximum": 1.0
+        }
+      },
+      {
+        "position": 3,
+        "name": "Baseline Age, yrs",
+        "group": "demographics",
+        "dtype": "int64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 62,
+        "mapped_to": "age",
+        "summary": {
+          "count": 15464,
+          "minimum": 18.0,
+          "p01": 25.0,
+          "p25": 37.0,
+          "median": 42.0,
+          "p75": 50.0,
+          "p99": 66.0,
+          "maximum": 79.0
+        }
+      },
+      {
+        "position": 4,
+        "name": "Baseline Ethanol consumption g/wk",
+        "group": "lifestyle",
+        "dtype": "float64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 402,
+        "mapped_to": null,
+        "summary": {
+          "count": 15464,
+          "minimum": 0.0,
+          "p01": 0.0,
+          "p25": 0.0,
+          "median": 1.0,
+          "p75": 60.5,
+          "p99": 367.5,
+          "maximum": 413.0
+        }
+      },
+      {
+        "position": 5,
+        "name": "Baseline Fatty liver 0/1",
+        "group": "fatty liver",
+        "dtype": "int64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 2,
+        "mapped_to": null,
+        "summary": {
+          "count": 15464,
+          "minimum": 0.0,
+          "p01": 0.0,
+          "p25": 0.0,
+          "median": 0.0,
+          "p75": 0.0,
+          "p99": 1.0,
+          "maximum": 1.0
+        }
+      },
+      {
+        "position": 6,
+        "name": "Baseline BMI, kg/m2",
+        "group": "anthropometry/obesity",
+        "dtype": "float64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 14128,
+        "mapped_to": "bmi",
+        "summary": {
+          "count": 15464,
+          "minimum": 13.76620316,
+          "p01": 16.3458900993,
+          "p25": 19.891256730000002,
+          "median": 21.789894725,
+          "p75": 23.9243488525,
+          "p99": 31.062714269399994,
+          "maximum": 49.92312898
+        }
+      },
+      {
+        "position": 7,
+        "name": "Baseline Waist circumference(WC), cm",
+        "group": "anthropometry/obesity",
+        "dtype": "float64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 491,
+        "mapped_to": null,
+        "summary": {
+          "count": 15464,
+          "minimum": 36.9,
+          "p01": 58.5,
+          "p25": 70.0,
+          "median": 76.0,
+          "p75": 82.5,
+          "p99": 99.9369999999999,
+          "maximum": 130.0
+        }
+      },
+      {
+        "position": 8,
+        "name": "Baseline WC≥90 in Men, ≥80 in Women 0/1",
+        "group": "anthropometry/obesity",
+        "dtype": "int64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 2,
+        "mapped_to": null,
+        "summary": {
+          "count": 15464,
+          "minimum": 0.0,
+          "p01": 0.0,
+          "p25": 0.0,
+          "median": 0.0,
+          "p75": 0.0,
+          "p99": 1.0,
+          "maximum": 1.0
+        }
+      },
+      {
+        "position": 9,
+        "name": "Baseline BMI≥25 0/1",
+        "group": "anthropometry/obesity",
+        "dtype": "int64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 2,
+        "mapped_to": null,
+        "summary": {
+          "count": 15464,
+          "minimum": 0.0,
+          "p01": 0.0,
+          "p25": 0.0,
+          "median": 0.0,
+          "p75": 0.0,
+          "p99": 1.0,
+          "maximum": 1.0
+        }
+      },
+      {
+        "position": 10,
+        "name": "Obesity phenotype 1-8",
+        "group": "anthropometry/obesity",
+        "dtype": "int64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 15,
+        "mapped_to": null,
+        "summary": {
+          "count": 15464,
+          "minimum": 0.0,
+          "p01": 0.0,
+          "p25": 0.0,
+          "median": 1.0,
+          "p75": 2.0,
+          "p99": 111.0,
+          "maximum": 111.0
+        }
+      },
+      {
+        "position": 11,
+        "name": "Follow up duration, days",
+        "group": "follow-up",
+        "dtype": "int64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 3666,
+        "mapped_to": "duration_years",
+        "summary": {
+          "count": 15464,
+          "minimum": 164.0,
+          "p01": 298.0,
+          "p25": 986.75,
+          "median": 1967.0,
+          "p75": 3425.25,
+          "p99": 4545.369999999999,
+          "maximum": 4732.0
+        }
+      },
+      {
+        "position": 12,
+        "name": "Baseline ALT, IU/L",
+        "group": "liver laboratory",
+        "dtype": "int64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 127,
+        "mapped_to": "alt",
+        "summary": {
+          "count": 15464,
+          "minimum": 2.0,
+          "p01": 6.0,
+          "p25": 13.0,
+          "median": 17.0,
+          "p75": 23.0,
+          "p99": 71.0,
+          "maximum": 856.0
+        }
+      },
+      {
+        "position": 13,
+        "name": "Baseline AST, IU/L",
+        "group": "liver laboratory",
+        "dtype": "int64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 88,
+        "mapped_to": null,
+        "summary": {
+          "count": 15464,
+          "minimum": 3.0,
+          "p01": 8.0,
+          "p25": 14.0,
+          "median": 17.0,
+          "p75": 21.0,
+          "p99": 44.0,
+          "maximum": 590.0
+        }
+      },
+      {
+        "position": 14,
+        "name": "Baseline Body Weight, kg",
+        "group": "anthropometry/obesity",
+        "dtype": "float64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 667,
+        "mapped_to": null,
+        "summary": {
+          "count": 15464,
+          "minimum": 32.3,
+          "p01": 40.4,
+          "p25": 51.8,
+          "median": 59.7,
+          "p75": 68.2,
+          "p99": 92.2,
+          "maximum": 150.8
+        }
+      },
+      {
+        "position": 15,
+        "name": "Baseline Habit of exercise 0/1",
+        "group": "lifestyle",
+        "dtype": "int64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 2,
+        "mapped_to": null,
+        "summary": {
+          "count": 15464,
+          "minimum": 0.0,
+          "p01": 0.0,
+          "p25": 0.0,
+          "median": 0.0,
+          "p75": 0.0,
+          "p99": 1.0,
+          "maximum": 1.0
+        }
+      },
+      {
+        "position": 16,
+        "name": "Baseline GGT, IU/L",
+        "group": "liver laboratory",
+        "dtype": "int64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 170,
+        "mapped_to": null,
+        "summary": {
+          "count": 15464,
+          "minimum": 3.0,
+          "p01": 6.0,
+          "p25": 11.0,
+          "median": 15.0,
+          "p75": 22.0,
+          "p99": 94.36999999999898,
+          "maximum": 399.0
+        }
+      },
+      {
+        "position": 17,
+        "name": "Baseline HDL-cholesterol, mg/dL",
+        "group": "lipids",
+        "dtype": "float64",
+        "missing": 11,
+        "missing_percent": 0.07113295395757889,
+        "unique_non_missing": 805,
+        "mapped_to": null,
+        "summary": {
+          "count": 15453,
+          "minimum": 16.7,
+          "p01": 29.152,
+          "p25": 45.0,
+          "median": 54.6,
+          "p75": 66.0,
+          "p99": 100.74799999999996,
+          "maximum": 173.6
+        }
+      },
+      {
+        "position": 18,
+        "name": "Baseline HDL-cholesterol, mmol/L",
+        "group": "lipids",
+        "dtype": "float64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 806,
+        "mapped_to": null,
+        "summary": {
+          "count": 15464,
+          "minimum": 0.0,
+          "p01": 0.74994,
+          "p25": 1.1637,
+          "median": 1.411956,
+          "p75": 1.70676,
+          "p99": 2.6050588199999973,
+          "maximum": 4.489296
+        }
+      },
+      {
+        "position": 19,
+        "name": "Baseline Total Cholesterol, mg/dL",
+        "group": "lipids",
+        "dtype": "int64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 231,
+        "mapped_to": null,
+        "summary": {
+          "count": 15464,
+          "minimum": 99.0,
+          "p01": 131.0,
+          "p25": 174.0,
+          "median": 196.0,
+          "p75": 219.0,
+          "p99": 285.0,
+          "maximum": 475.0
+        }
+      },
+      {
+        "position": 20,
+        "name": "Baseline Total Cholesterol, mmol/L",
+        "group": "lipids",
+        "dtype": "float64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 231,
+        "mapped_to": "total_cholesterol",
+        "summary": {
+          "count": 15464,
+          "minimum": 2.56014,
+          "p01": 3.3876600000000003,
+          "p25": 4.49964,
+          "median": 5.068560000000001,
+          "p75": 5.66334,
+          "p99": 7.3701,
+          "maximum": 12.2835
+        }
+      },
+      {
+        "position": 21,
+        "name": "Baseline Triglycerides, mg/dL",
+        "group": "lipids",
+        "dtype": "int64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 394,
+        "mapped_to": null,
+        "summary": {
+          "count": 15464,
+          "minimum": 6.0,
+          "p01": 16.0,
+          "p25": 44.0,
+          "median": 65.0,
+          "p75": 99.0,
+          "p99": 299.0,
+          "maximum": 910.0
+        }
+      },
+      {
+        "position": 22,
+        "name": "Baseline Triglycerides, mmol/L",
+        "group": "lipids",
+        "dtype": "float64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 394,
+        "mapped_to": "triglycerides",
+        "summary": {
+          "count": 15464,
+          "minimum": 0.06774,
+          "p01": 0.18064,
+          "p25": 0.49676,
+          "median": 0.73385,
+          "p75": 1.11771,
+          "p99": 3.3757099999999998,
+          "maximum": 10.2739
+        }
+      },
+      {
+        "position": 23,
+        "name": "Baseline HbA1c, %",
+        "group": "glucose",
+        "dtype": "float64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 47,
+        "mapped_to": null,
+        "summary": {
+          "count": 15464,
+          "minimum": 3.7,
+          "p01": 4.4,
+          "p25": 5.0,
+          "median": 5.2,
+          "p75": 5.4,
+          "p99": 5.9,
+          "maximum": 6.4
+        }
+      },
+      {
+        "position": 24,
+        "name": "Baseline HbA1c, mmol/mol",
+        "group": "glucose",
+        "dtype": "float64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 47,
+        "mapped_to": null,
+        "summary": {
+          "count": 15464,
+          "minimum": 16.941000000000003,
+          "p01": 24.592000000000006,
+          "p25": 31.15,
+          "median": 33.336,
+          "p75": 35.522000000000006,
+          "p99": 40.98700000000001,
+          "maximum": 46.452
+        }
+      },
+      {
+        "position": 25,
+        "name": "Baseline Alcohol consumption, non:1, light:2, moderate:3, heavy:4",
+        "group": "lifestyle",
+        "dtype": "int64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 4,
+        "mapped_to": null,
+        "summary": {
+          "count": 15464,
+          "minimum": 1.0,
+          "p01": 1.0,
+          "p25": 1.0,
+          "median": 1.0,
+          "p75": 1.0,
+          "p99": 4.0,
+          "maximum": 4.0
+        }
+      },
+      {
+        "position": 26,
+        "name": "Baseline Smoking status, 1:never, 2:past, 3:current",
+        "group": "lifestyle",
+        "dtype": "int64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 3,
+        "mapped_to": null,
+        "summary": {
+          "count": 15464,
+          "minimum": 1.0,
+          "p01": 1.0,
+          "p25": 1.0,
+          "median": 1.0,
+          "p75": 2.0,
+          "p99": 3.0,
+          "maximum": 3.0
+        }
+      },
+      {
+        "position": 27,
+        "name": "Baseline Fasting plasma glucose, mg/dl",
+        "group": "liver laboratory",
+        "dtype": "int64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 47,
+        "mapped_to": null,
+        "summary": {
+          "count": 15464,
+          "minimum": 51.0,
+          "p01": 76.0,
+          "p25": 88.0,
+          "median": 93.0,
+          "p75": 98.0,
+          "p99": 109.0,
+          "maximum": 109.0
+        }
+      },
+      {
+        "position": 28,
+        "name": "Baseline Fasting plasma glucose, mmol/L",
+        "group": "liver laboratory",
+        "dtype": "float64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 47,
+        "mapped_to": "fpg",
+        "summary": {
+          "count": 15464,
+          "minimum": 2.83101,
+          "p01": 4.21876,
+          "p25": 4.88488,
+          "median": 5.16243,
+          "p75": 5.439979999999999,
+          "p99": 6.05059,
+          "maximum": 6.05059
+        }
+      },
+      {
+        "position": 29,
+        "name": "Baseline Systolic blood pressure, mmHg",
+        "group": "blood pressure",
+        "dtype": "float64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 217,
+        "mapped_to": "sbp",
+        "summary": {
+          "count": 15464,
+          "minimum": 71.0,
+          "p01": 85.5,
+          "p25": 103.5,
+          "median": 113.0,
+          "p75": 124.0,
+          "p99": 156.0,
+          "maximum": 251.0
+        }
+      },
+      {
+        "position": 30,
+        "name": "Baseline Diastolic blood pressure, mmHg",
+        "group": "blood pressure",
+        "dtype": "float64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 154,
+        "mapped_to": "dbp",
+        "summary": {
+          "count": 15464,
+          "minimum": 39.0,
+          "p01": 50.5,
+          "p25": 64.0,
+          "median": 71.0,
+          "p75": 78.0,
+          "p99": 99.0,
+          "maximum": 156.0
+        }
+      },
+      {
+        "position": 31,
+        "name": "Incident DM 0/1",
+        "group": "diabetes outcome",
+        "dtype": "int64",
+        "missing": 0,
+        "missing_percent": 0.0,
+        "unique_non_missing": 2,
+        "mapped_to": "event",
+        "summary": {
+          "count": 15464,
+          "minimum": 0.0,
+          "p01": 0.0,
+          "p25": 0.0,
+          "median": 0.0,
+          "p75": 0.0,
+          "p99": 1.0,
+          "maximum": 1.0
+        }
+      }
+    ],
+    "outcome": {
+      "event_raw_column": "Incident DM 0/1",
+      "event_mapping": "1 = incident diabetes; 0 = right-censored",
+      "events": 373,
+      "event_percent": 2.4120538023797207,
+      "duration_raw_column": "Follow up duration, days",
+      "duration_mapping": "duration_years = days / 365.25",
+      "duration_years": {
+        "count": 15464,
+        "minimum": 0.4490075290896646,
+        "p01": 0.8158795345653662,
+        "p25": 2.701574264202601,
+        "median": 5.385352498288843,
+        "p75": 9.37782340862423,
+        "p99": 12.444544832306637,
+        "maximum": 12.955509924709103
+      },
+      "censoring": "event = 0 at the recorded follow-up duration"
+    },
+    "sex_coding": {
+      "header_claim": "1:Men, 2:Women",
+      "observed_codes": {
+        "0": 7034,
+        "1": 8430
+      },
+      "published_counts": {
+        "women": 7034,
+        "men": 8430
+      },
+      "confirmed_mapping_to_primary": "raw 1 -> primary 1 (male); raw 0 -> primary 2 (female)"
+    },
+    "confirmed_schema_issues": {
+      "sex_header_mismatch": "header claims 1/2 but observed values are 0/1; published sex counts confirm 1 = male and 0 = female",
+      "obesity_phenotype_header_mismatch": {
+        "header_claim": "1-8",
+        "observed_codes": {
+          "0": 5716,
+          "1": 5477,
+          "2": 497,
+          "3": 48,
+          "4": 244,
+          "5": 1043,
+          "6": 540,
+          "7": 57,
+          "8": 615,
+          "10": 153,
+          "11": 24,
+          "100": 453,
+          "101": 288,
+          "110": 84,
+          "111": 225
+        },
+        "handling": "not mapped or used by the primary predictors or policies"
+      },
+      "hdl_dual_unit_missingness": {
+        "mg_dl_missing": 11,
+        "mmol_l_zero": 11,
+        "handling": "HDL is optional and is not used in external validation"
+      }
+    },
+    "feature_compatibility": {
+      "compatible_base": [
+        "age",
+        "gender",
+        "bmi",
+        "sbp",
+        "dbp"
+      ],
+      "unavailable_base": [
+        "family_history_diabetes"
+      ],
+      "compatible_acquirable": [
+        "fpg",
+        "total_cholesterol",
+        "triglycerides",
+        "alt"
+      ],
+      "unavailable_acquirable": [
+        "ccr",
+        "bun"
+      ],
+      "unavailable_handling": "family history is represented as source-missing and receives the primary train-fitted imputation; CCR and BUN are removed from external actions"
+    },
+    "clinical_audit": [
+      {
+        "feature": "age",
+        "count": 15464,
+        "minimum": 18.0,
+        "p01": 25.0,
+        "p25": 37.0,
+        "median": 42.0,
+        "p75": 50.0,
+        "p99": 66.0,
+        "maximum": 79.0,
+        "audit_lower": 18.0,
+        "audit_upper": 110.0,
+        "audit_rationale": "years; broad adult sanity range",
+        "below": 0,
+        "above": 0,
+        "action": "retain; document only"
+      },
+      {
+        "feature": "bmi",
+        "count": 15464,
+        "minimum": 13.76620316,
+        "p01": 16.3458900993,
+        "p25": 19.891256730000002,
+        "median": 21.789894725,
+        "p75": 23.9243488525,
+        "p99": 31.062714269399994,
+        "maximum": 49.92312898,
+        "audit_lower": 10.0,
+        "audit_upper": 80.0,
+        "audit_rationale": "kg/m2; broad adult sanity range",
+        "below": 0,
+        "above": 0,
+        "action": "retain; document only"
+      },
+      {
+        "feature": "sbp",
+        "count": 15464,
+        "minimum": 71.0,
+        "p01": 85.5,
+        "p25": 103.5,
+        "median": 113.0,
+        "p75": 124.0,
+        "p99": 156.0,
+        "maximum": 251.0,
+        "audit_lower": 50.0,
+        "audit_upper": 260.0,
+        "audit_rationale": "mmHg; broad systolic sanity range",
+        "below": 0,
+        "above": 0,
+        "action": "retain; document only"
+      },
+      {
+        "feature": "dbp",
+        "count": 15464,
+        "minimum": 39.0,
+        "p01": 50.5,
+        "p25": 64.0,
+        "median": 71.0,
+        "p75": 78.0,
+        "p99": 99.0,
+        "maximum": 156.0,
+        "audit_lower": 30.0,
+        "audit_upper": 180.0,
+        "audit_rationale": "mmHg; broad diastolic sanity range",
+        "below": 0,
+        "above": 0,
+        "action": "retain; document only"
+      },
+      {
+        "feature": "fpg",
+        "count": 15464,
+        "minimum": 2.83101,
+        "p01": 4.21876,
+        "p25": 4.88488,
+        "median": 5.16243,
+        "p75": 5.439979999999999,
+        "p99": 6.05059,
+        "maximum": 6.05059,
+        "audit_lower": 2.0,
+        "audit_upper": 7.0,
+        "audit_rationale": "mmol/L; baseline diabetes-free plausibility range",
+        "below": 0,
+        "above": 0,
+        "action": "retain; document only"
+      },
+      {
+        "feature": "total_cholesterol",
+        "count": 15464,
+        "minimum": 2.56014,
+        "p01": 3.3876600000000003,
+        "p25": 4.49964,
+        "median": 5.068560000000001,
+        "p75": 5.66334,
+        "p99": 7.3701,
+        "maximum": 12.2835,
+        "audit_lower": 1.0,
+        "audit_upper": 20.0,
+        "audit_rationale": "mmol/L; broad sanity range",
+        "below": 0,
+        "above": 0,
+        "action": "retain; document only"
+      },
+      {
+        "feature": "triglycerides",
+        "count": 15464,
+        "minimum": 0.06774,
+        "p01": 0.18064,
+        "p25": 0.49676,
+        "median": 0.73385,
+        "p75": 1.11771,
+        "p99": 3.3757099999999998,
+        "maximum": 10.2739,
+        "audit_lower": 0.1,
+        "audit_upper": 50.0,
+        "audit_rationale": "mmol/L; broad sanity range",
+        "below": 4,
+        "above": 0,
+        "action": "retain; document only"
+      },
+      {
+        "feature": "alt",
+        "count": 15464,
+        "minimum": 2.0,
+        "p01": 6.0,
+        "p25": 13.0,
+        "median": 17.0,
+        "p75": 23.0,
+        "p99": 71.0,
+        "maximum": 856.0,
+        "audit_lower": 1.0,
+        "audit_upper": 2000.0,
+        "audit_rationale": "IU/L; broad sanity range",
+        "below": 0,
+        "above": 0,
+        "action": "retain; document only"
+      }
+    ],
+    "unit_consistency": {
+      "fpg_max_abs_mmol_minus_mgdl_over_18": 0.004965555555555667,
+      "total_cholesterol_max_abs_mmol_minus_mgdl_times_0_02586": 0.0,
+      "triglycerides_max_abs_mmol_minus_mgdl_times_0_01129": 0.0
+    }
+  },
+  "figures": {
+    "cost_performance": "reports/figures/external_cost_performance.png",
+    "calibration": "reports/figures/external_calibration.png"
+  },
+  "participant_level_output": null,
+  "external_rows_excluded": 0,
+  "model_or_policy_refit_on_external": false,
+  "environment": {
+    "python": "3.12.4",
+    "numpy": "1.26.4",
+    "pandas": "2.2.3",
+    "scikit-learn": "1.4.2",
+    "statsmodels": "0.14.2",
+    "joblib": "1.4.2"
+  },
+  "artifact_migration": {
+    "date": "2026-11-10",
+    "source_commit": "0b9a4f4",
+    "original_sha256": "8fd70eb2293ed044d038a78e5b8f4433c955382f54a1eef2dedfb1169dcaeeaa",
+    "changes": "Descriptive identifiers, paths and dependent checksums; numerical results unchanged.",
+    "models_refitted": false,
+    "metrics_recomputed": false
+  }
+}

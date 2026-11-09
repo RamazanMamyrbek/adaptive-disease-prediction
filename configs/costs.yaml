@@ -1,0 +1,56 @@
+schema_version: relative_costs_v1
+feature_registry_schema_version: feature_registry_v1
+default_scheme: uniform_unit
+
+semantics:
+  unit_type: relative_experimental
+  currency: null
+  real_prices: false
+  base_features_are_zero_incremental_cost: true
+  stop_cost: 0.0
+  aggregation: additive_per_feature
+  shared_panel_or_blood_draw_discount: false
+  missing_result_policy: deferred_to_acquisition
+  note: Costs support controlled research comparisons and must not be interpreted as clinical prices.
+
+base_feature_costs:
+  age: 0.0
+  gender: 0.0
+  bmi: 0.0
+  sbp: 0.0
+  dbp: 0.0
+  family_history_diabetes: 0.0
+
+schemes:
+  uniform_unit:
+    role: primary
+    description: Neutral count-like scheme; every core laboratory action costs one relative unit.
+    costs:
+      fpg: 1.0
+      total_cholesterol: 1.0
+      triglycerides: 1.0
+      alt: 1.0
+      ccr: 1.0
+      bun: 1.0
+
+  fpg_discounted_sensitivity:
+    role: sensitivity_only
+    description: Stress test in which FPG costs half a unit and all other candidates remain at one unit.
+    costs:
+      fpg: 0.5
+      total_cholesterol: 1.0
+      triglycerides: 1.0
+      alt: 1.0
+      ccr: 1.0
+      bun: 1.0
+
+  fpg_premium_sensitivity:
+    role: sensitivity_only
+    description: Stress test in which FPG costs two units and all other candidates remain at one unit.
+    costs:
+      fpg: 2.0
+      total_cholesterol: 1.0
+      triglycerides: 1.0
+      alt: 1.0
+      ccr: 1.0
+      bun: 1.0

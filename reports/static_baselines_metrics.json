@@ -1,0 +1,4560 @@
+{
+  "schema_version": "static_baselines_v1",
+  "created_at_utc": "2026-08-27T13:11:54.725429+00:00",
+  "stage": 5,
+  "scope": "global static feature-set baselines; no ordered NEXT/STOP or adaptive policy",
+  "seeds": {
+    "cohort_split": 20260821,
+    "random_baseline": 20260827
+  },
+  "dataset": {
+    "cohort_path": "data/processed/primary_cohort.csv",
+    "cohort_sha256": "d407cd4bd148d01fd06f34b3a1c8f64970e9a8dabad4875d43eec6fd1c605866",
+    "cohort_manifest_path": "data/processed/primary_cohort_manifest.json",
+    "cohort_manifest_sha256": "c6e6b16087108152a157f6b5a559d355561eda9a809b8dedaf604f380b2a7a51"
+  },
+  "target": {
+    "event": "event",
+    "duration": "duration_years",
+    "censoring": "event = 0"
+  },
+  "features": {
+    "base": [
+      "age",
+      "gender",
+      "bmi",
+      "sbp",
+      "dbp",
+      "family_history_diabetes"
+    ],
+    "acquisition_candidates": [
+      "fpg",
+      "total_cholesterol",
+      "triglycerides",
+      "alt",
+      "ccr",
+      "bun"
+    ],
+    "optional_not_used": [
+      "height_cm",
+      "weight_kg",
+      "smoking_status",
+      "drinking_status",
+      "hdl_c",
+      "ldl",
+      "ast"
+    ],
+    "excluded_from_predictors": [
+      "participant_id",
+      "site",
+      "event",
+      "duration_years",
+      "final_fpg",
+      "diabetes_diagnosed_followup"
+    ]
+  },
+  "model": {
+    "type": "Cox proportional hazards",
+    "ties": "breslow",
+    "penalization": null,
+    "optimizer": "bfgs",
+    "fit_split": "train",
+    "models_fitted": 64,
+    "all_candidate_subsets_fitted": true
+  },
+  "preprocessing": {
+    "fit_split": "train",
+    "continuous_strategy": "median imputation followed by standard scaling",
+    "binary_strategy": "most-frequent imputation without scaling",
+    "missing_indicators_added": false,
+    "continuous": {
+      "age": {
+        "imputation_median": 39.0,
+        "post_imputation_mean": 42.06608984172157,
+        "post_imputation_scale": 12.653671526924036
+      },
+      "bmi": {
+        "imputation_median": 23.0,
+        "post_imputation_mean": 23.22811805803767,
+        "post_imputation_scale": 3.3457744076083795
+      },
+      "sbp": {
+        "imputation_median": 118.0,
+        "post_imputation_mean": 119.06542894330435,
+        "post_imputation_scale": 16.376335314851836
+      },
+      "dbp": {
+        "imputation_median": 73.0,
+        "post_imputation_mean": 74.16174477182145,
+        "post_imputation_scale": 10.815973509656192
+      },
+      "fpg": {
+        "imputation_median": 4.9,
+        "post_imputation_mean": 4.912746977064127,
+        "post_imputation_scale": 0.6113248161867433
+      },
+      "total_cholesterol": {
+        "imputation_median": 4.62,
+        "post_imputation_mean": 4.7027568231017725,
+        "post_imputation_scale": 0.8892948182818347
+      },
+      "triglycerides": {
+        "imputation_median": 1.07,
+        "post_imputation_mean": 1.3304689681217672,
+        "post_imputation_scale": 1.014536984161472
+      },
+      "alt": {
+        "imputation_median": 18.0,
+        "post_imputation_mean": 23.900503092060454,
+        "post_imputation_scale": 22.326722756853165
+      },
+      "ccr": {
+        "imputation_median": 69.3,
+        "post_imputation_mean": 70.01946339094839,
+        "post_imputation_scale": 15.537855752993993
+      },
+      "bun": {
+        "imputation_median": 4.53,
+        "post_imputation_mean": 4.645274846071364,
+        "post_imputation_scale": 1.1255251654752614
+      }
+    },
+    "binary": {
+      "gender": {
+        "imputation_mode": 1.0
+      },
+      "family_history_diabetes": {
+        "imputation_mode": 0.0
+      }
+    }
+  },
+  "evaluation": {
+    "horizon_years": 3.0,
+    "selection_metric": "validation Harrell C-index",
+    "test_used_for_selection": false,
+    "reported_splits": [
+      "validation",
+      "test"
+    ],
+    "brier": "single-horizon IPCW; censoring distribution estimated on train only"
+  },
+  "costs": {
+    "config_path": "configs/costs.yaml",
+    "default_scheme": "uniform_unit",
+    "unit_type": "relative_experimental",
+    "real_prices": false,
+    "schemes": {
+      "uniform_unit": {
+        "role": "primary",
+        "costs": {
+          "fpg": 1.0,
+          "total_cholesterol": 1.0,
+          "triglycerides": 1.0,
+          "alt": 1.0,
+          "ccr": 1.0,
+          "bun": 1.0
+        }
+      },
+      "fpg_discounted_sensitivity": {
+        "role": "sensitivity_only",
+        "costs": {
+          "fpg": 0.5,
+          "total_cholesterol": 1.0,
+          "triglycerides": 1.0,
+          "alt": 1.0,
+          "ccr": 1.0,
+          "bun": 1.0
+        }
+      },
+      "fpg_premium_sensitivity": {
+        "role": "sensitivity_only",
+        "costs": {
+          "fpg": 2.0,
+          "total_cholesterol": 1.0,
+          "triglycerides": 1.0,
+          "alt": 1.0,
+          "ccr": 1.0,
+          "bun": 1.0
+        }
+      }
+    }
+  },
+  "methods": {
+    "base_only": {
+      "definition": "all base features and no laboratory candidates",
+      "selection_data": "none",
+      "result": {
+        "subset_id": "base_only",
+        "acquired_features": [],
+        "acquired_count": 0,
+        "predictor_features": [
+          "age",
+          "bmi",
+          "sbp",
+          "dbp",
+          "gender",
+          "family_history_diabetes"
+        ],
+        "cost_by_scheme": {
+          "uniform_unit": 0.0,
+          "fpg_discounted_sensitivity": 0.0,
+          "fpg_premium_sensitivity": 0.0
+        },
+        "fit_warnings": [],
+        "metrics": {
+          "validation": {
+            "participants": 31775,
+            "events_total": 626,
+            "harrell_c_index": 0.8249852925704141,
+            "ipcw_brier_at_horizon": 0.011622980558558116,
+            "mean_predicted_risk_at_horizon": 0.011476437286784852,
+            "km_observed_risk_at_horizon": 0.011949692214126784,
+            "calibration_in_the_large_difference": -0.00047325492734193175
+          },
+          "test": {
+            "participants": 31775,
+            "events_total": 626,
+            "harrell_c_index": 0.8383382563675945,
+            "ipcw_brier_at_horizon": 0.011595375132287363,
+            "mean_predicted_risk_at_horizon": 0.0115004855581473,
+            "km_observed_risk_at_horizon": 0.012015414813661418,
+            "calibration_in_the_large_difference": -0.0005149292555141176
+          }
+        }
+      }
+    },
+    "full_features": {
+      "definition": "all base features and all six laboratory candidates",
+      "selection_data": "none",
+      "result": {
+        "subset_id": "fpg+total_cholesterol+triglycerides+alt+ccr+bun",
+        "acquired_features": [
+          "fpg",
+          "total_cholesterol",
+          "triglycerides",
+          "alt",
+          "ccr",
+          "bun"
+        ],
+        "acquired_count": 6,
+        "predictor_features": [
+          "age",
+          "bmi",
+          "sbp",
+          "dbp",
+          "fpg",
+          "total_cholesterol",
+          "triglycerides",
+          "alt",
+          "ccr",
+          "bun",
+          "gender",
+          "family_history_diabetes"
+        ],
+        "cost_by_scheme": {
+          "uniform_unit": 6.0,
+          "fpg_discounted_sensitivity": 5.5,
+          "fpg_premium_sensitivity": 7.0
+        },
+        "fit_warnings": [],
+        "metrics": {
+          "validation": {
+            "participants": 31775,
+            "events_total": 626,
+            "harrell_c_index": 0.9120198769443245,
+            "ipcw_brier_at_horizon": 0.010552421064035377,
+            "mean_predicted_risk_at_horizon": 0.011801219933880717,
+            "km_observed_risk_at_horizon": 0.011949692214126784,
+            "calibration_in_the_large_difference": -0.00014847228024606612
+          },
+          "test": {
+            "participants": 31775,
+            "events_total": 626,
+            "harrell_c_index": 0.9086049339527642,
+            "ipcw_brier_at_horizon": 0.010338086523554993,
+            "mean_predicted_risk_at_horizon": 0.01180483971186714,
+            "km_observed_risk_at_horizon": 0.012015414813661418,
+            "calibration_in_the_large_difference": -0.0002105751017942789
+          }
+        }
+      }
+    },
+    "static_top_k": {
+      "definition": "fixed order ranked by singleton incremental validation C-index over base",
+      "selection_data": "validation only",
+      "order": [
+        "fpg",
+        "triglycerides",
+        "alt",
+        "total_cholesterol",
+        "bun",
+        "ccr"
+      ],
+      "points": [
+        {
+          "subset_id": "base_only",
+          "acquired_features": [],
+          "acquired_count": 0,
+          "predictor_features": [
+            "age",
+            "bmi",
+            "sbp",
+            "dbp",
+            "gender",
+            "family_history_diabetes"
+          ],
+          "cost_by_scheme": {
+            "uniform_unit": 0.0,
+            "fpg_discounted_sensitivity": 0.0,
+            "fpg_premium_sensitivity": 0.0
+          },
+          "fit_warnings": [],
+          "metrics": {
+            "validation": {
+              "participants": 31775,
+              "events_total": 626,
+              "harrell_c_index": 0.8249852925704141,
+              "ipcw_brier_at_horizon": 0.011622980558558116,
+              "mean_predicted_risk_at_horizon": 0.011476437286784852,
+              "km_observed_risk_at_horizon": 0.011949692214126784,
+              "calibration_in_the_large_difference": -0.00047325492734193175
+            },
+            "test": {
+              "participants": 31775,
+              "events_total": 626,
+              "harrell_c_index": 0.8383382563675945,
+              "ipcw_brier_at_horizon": 0.011595375132287363,
+              "mean_predicted_risk_at_horizon": 0.0115004855581473,
+              "km_observed_risk_at_horizon": 0.012015414813661418,
+              "calibration_in_the_large_difference": -0.0005149292555141176
+            }
+          },
+          "added_feature": null
+        },
+        {
+          "subset_id": "fpg",
+          "acquired_features": [
+            "fpg"
+          ],
+          "acquired_count": 1,
+          "predictor_features": [
+            "age",
+            "bmi",
+            "sbp",
+            "dbp",
+            "fpg",
+            "gender",
+            "family_history_diabetes"
+          ],
+          "cost_by_scheme": {
+            "uniform_unit": 1.0,
+            "fpg_discounted_sensitivity": 0.5,
+            "fpg_premium_sensitivity": 2.0
+          },
+          "fit_warnings": [],
+          "metrics": {
+            "validation": {
+              "participants": 31775,
+              "events_total": 626,
+              "harrell_c_index": 0.9095193004450016,
+              "ipcw_brier_at_horizon": 0.010492366403661291,
+              "mean_predicted_risk_at_horizon": 0.011914598971905924,
+              "km_observed_risk_at_horizon": 0.011949692214126784,
+              "calibration_in_the_large_difference": -3.509324222085962e-05
+            },
+            "test": {
+              "participants": 31775,
+              "events_total": 626,
+              "harrell_c_index": 0.9080043020729509,
+              "ipcw_brier_at_horizon": 0.010368000220594297,
+              "mean_predicted_risk_at_horizon": 0.011896187687904446,
+              "km_observed_risk_at_horizon": 0.012015414813661418,
+              "calibration_in_the_large_difference": -0.00011922712575697207
+            }
+          },
+          "added_feature": "fpg"
+        },
+        {
+          "subset_id": "fpg+triglycerides",
+          "acquired_features": [
+            "fpg",
+            "triglycerides"
+          ],
+          "acquired_count": 2,
+          "predictor_features": [
+            "age",
+            "bmi",
+            "sbp",
+            "dbp",
+            "fpg",
+            "triglycerides",
+            "gender",
+            "family_history_diabetes"
+          ],
+          "cost_by_scheme": {
+            "uniform_unit": 2.0,
+            "fpg_discounted_sensitivity": 1.5,
+            "fpg_premium_sensitivity": 3.0
+          },
+          "fit_warnings": [],
+          "metrics": {
+            "validation": {
+              "participants": 31775,
+              "events_total": 626,
+              "harrell_c_index": 0.9103277103703878,
+              "ipcw_brier_at_horizon": 0.010505719809152733,
+              "mean_predicted_risk_at_horizon": 0.01190254568443135,
+              "km_observed_risk_at_horizon": 0.011949692214126784,
+              "calibration_in_the_large_difference": -4.7146529695432995e-05
+            },
+            "test": {
+              "participants": 31775,
+              "events_total": 626,
+              "harrell_c_index": 0.9081897795730112,
+              "ipcw_brier_at_horizon": 0.01034522824858925,
+              "mean_predicted_risk_at_horizon": 0.011852775410757016,
+              "km_observed_risk_at_horizon": 0.012015414813661418,
+              "calibration_in_the_large_difference": -0.0001626394029044017
+            }
+          },
+          "added_feature": "triglycerides"
+        },
+        {
+          "subset_id": "fpg+triglycerides+alt",
+          "acquired_features": [
+            "fpg",
+            "triglycerides",
+            "alt"
+          ],
+          "acquired_count": 3,
+          "predictor_features": [
+            "age",
+            "bmi",
+            "sbp",
+            "dbp",
+            "fpg",
+            "triglycerides",
+            "alt",
+            "gender",
+            "family_history_diabetes"
+          ],
+          "cost_by_scheme": {
+            "uniform_unit": 3.0,
+            "fpg_discounted_sensitivity": 2.5,
+            "fpg_premium_sensitivity": 4.0
+          },
+          "fit_warnings": [],
+          "metrics": {
+            "validation": {
+              "participants": 31775,
+              "events_total": 626,
+              "harrell_c_index": 0.9112352907180931,
+              "ipcw_brier_at_horizon": 0.010508424116032419,
+              "mean_predicted_risk_at_horizon": 0.011835264951212341,
+              "km_observed_risk_at_horizon": 0.011949692214126784,
+              "calibration_in_the_large_difference": -0.00011442726291444223
+            },
+            "test": {
+              "participants": 31775,
+              "events_total": 626,
+              "harrell_c_index": 0.9088681886557438,
+              "ipcw_brier_at_horizon": 0.010357641020032643,
+              "mean_predicted_risk_at_horizon": 0.01184042583376938,
+              "km_observed_risk_at_horizon": 0.012015414813661418,
+              "calibration_in_the_large_difference": -0.00017498897989203822
+            }
+          },
+          "added_feature": "alt"
+        },
+        {
+          "subset_id": "fpg+total_cholesterol+triglycerides+alt",
+          "acquired_features": [
+            "fpg",
+            "total_cholesterol",
+            "triglycerides",
+            "alt"
+          ],
+          "acquired_count": 4,
+          "predictor_features": [
+            "age",
+            "bmi",
+            "sbp",
+            "dbp",
+            "fpg",
+            "total_cholesterol",
+            "triglycerides",
+            "alt",
+            "gender",
+            "family_history_diabetes"
+          ],
+          "cost_by_scheme": {
+            "uniform_unit": 4.0,
+            "fpg_discounted_sensitivity": 3.5,
+            "fpg_premium_sensitivity": 5.0
+          },
+          "fit_warnings": [],
+          "metrics": {
+            "validation": {
+              "participants": 31775,
+              "events_total": 626,
+              "harrell_c_index": 0.9116038171265496,
+              "ipcw_brier_at_horizon": 0.010516864509103725,
+              "mean_predicted_risk_at_horizon": 0.011823348234407245,
+              "km_observed_risk_at_horizon": 0.011949692214126784,
+              "calibration_in_the_large_difference": -0.00012634397971953912
+            },
+            "test": {
+              "participants": 31775,
+              "events_total": 626,
+              "harrell_c_index": 0.9088887465067357,
+              "ipcw_brier_at_horizon": 0.010328585221932017,
+              "mean_predicted_risk_at_horizon": 0.011831182029546911,
+              "km_observed_risk_at_horizon": 0.012015414813661418,
+              "calibration_in_the_large_difference": -0.00018423278411450715
+            }
+          },
+          "added_feature": "total_cholesterol"
+        },
+        {
+          "subset_id": "fpg+total_cholesterol+triglycerides+alt+bun",
+          "acquired_features": [
+            "fpg",
+            "total_cholesterol",
+            "triglycerides",
+            "alt",
+            "bun"
+          ],
+          "acquired_count": 5,
+          "predictor_features": [
+            "age",
+            "bmi",
+            "sbp",
+            "dbp",
+            "fpg",
+            "total_cholesterol",
+            "triglycerides",
+            "alt",
+            "bun",
+            "gender",
+            "family_history_diabetes"
+          ],
+          "cost_by_scheme": {
+            "uniform_unit": 5.0,
+            "fpg_discounted_sensitivity": 4.5,
+            "fpg_premium_sensitivity": 6.0
+          },
+          "fit_warnings": [],
+          "metrics": {
+            "validation": {
+              "participants": 31775,
+              "events_total": 626,
+              "harrell_c_index": 0.9117784482610238,
+              "ipcw_brier_at_horizon": 0.01053288854350843,
+              "mean_predicted_risk_at_horizon": 0.01182074508963737,
+              "km_observed_risk_at_horizon": 0.011949692214126784,
+              "calibration_in_the_large_difference": -0.00012894712448941435
+            },
+            "test": {
+              "participants": 31775,
+              "events_total": 626,
+              "harrell_c_index": 0.9083552702734959,
+              "ipcw_brier_at_horizon": 0.010324515686808054,
+              "mean_predicted_risk_at_horizon": 0.011819582645556003,
+              "km_observed_risk_at_horizon": 0.012015414813661418,
+              "calibration_in_the_large_difference": -0.00019583216810541496
+            }
+          },
+          "added_feature": "bun"
+        },
+        {
+          "subset_id": "fpg+total_cholesterol+triglycerides+alt+ccr+bun",
+          "acquired_features": [
+            "fpg",
+            "total_cholesterol",
+            "triglycerides",
+            "alt",
+            "ccr",
+            "bun"
+          ],
+          "acquired_count": 6,
+          "predictor_features": [
+            "age",
+            "bmi",
+            "sbp",
+            "dbp",
+            "fpg",
+            "total_cholesterol",
+            "triglycerides",
+            "alt",
+            "ccr",
+            "bun",
+            "gender",
+            "family_history_diabetes"
+          ],
+          "cost_by_scheme": {
+            "uniform_unit": 6.0,
+            "fpg_discounted_sensitivity": 5.5,
+            "fpg_premium_sensitivity": 7.0
+          },
+          "fit_warnings": [],
+          "metrics": {
+            "validation": {
+              "participants": 31775,
+              "events_total": 626,
+              "harrell_c_index": 0.9120198769443245,
+              "ipcw_brier_at_horizon": 0.010552421064035377,
+              "mean_predicted_risk_at_horizon": 0.011801219933880717,
+              "km_observed_risk_at_horizon": 0.011949692214126784,
+              "calibration_in_the_large_difference": -0.00014847228024606612
+            },
+            "test": {
+              "participants": 31775,
+              "events_total": 626,
+              "harrell_c_index": 0.9086049339527642,
+              "ipcw_brier_at_horizon": 0.010338086523554993,
+              "mean_predicted_risk_at_horizon": 0.01180483971186714,
+              "km_observed_risk_at_horizon": 0.012015414813661418,
+              "calibration_in_the_large_difference": -0.0002105751017942789
+            }
+          },
+          "added_feature": "ccr"
+        }
+      ]
+    },
+    "random": {
+      "definition": "fixed-seed random permutations; each K uses the first K laboratories",
+      "seed": 20260827,
+      "repeats": 1000,
+      "selection_data": "none",
+      "points": [
+        {
+          "acquired_count": 0,
+          "unique_subsets_sampled": 1,
+          "cost_by_scheme": {
+            "uniform_unit": {
+              "mean": 0.0,
+              "sd": 0.0,
+              "p05": 0.0,
+              "median": 0.0,
+              "p95": 0.0
+            },
+            "fpg_discounted_sensitivity": {
+              "mean": 0.0,
+              "sd": 0.0,
+              "p05": 0.0,
+              "median": 0.0,
+              "p95": 0.0
+            },
+            "fpg_premium_sensitivity": {
+              "mean": 0.0,
+              "sd": 0.0,
+              "p05": 0.0,
+              "median": 0.0,
+              "p95": 0.0
+            }
+          },
+          "metrics": {
+            "validation": {
+              "harrell_c_index": {
+                "mean": 0.8249852925704141,
+                "sd": 0.0,
+                "p05": 0.8249852925704141,
+                "median": 0.8249852925704141,
+                "p95": 0.8249852925704141
+              },
+              "ipcw_brier_at_horizon": {
+                "mean": 0.011622980558558121,
+                "sd": 5.206774466336025e-18,
+                "p05": 0.011622980558558116,
+                "median": 0.011622980558558116,
+                "p95": 0.011622980558558116
+              },
+              "mean_predicted_risk_at_horizon": {
+                "mean": 0.011476437286784852,
+                "sd": 0.0,
+                "p05": 0.011476437286784852,
+                "median": 0.011476437286784852,
+                "p95": 0.011476437286784852
+              },
+              "calibration_in_the_large_difference": {
+                "mean": -0.00047325492734193175,
+                "sd": 0.0,
+                "p05": -0.00047325492734193175,
+                "median": -0.00047325492734193175,
+                "p95": -0.00047325492734193175
+              }
+            },
+            "test": {
+              "harrell_c_index": {
+                "mean": 0.8383382563675941,
+                "sd": 4.443114211273408e-16,
+                "p05": 0.8383382563675945,
+                "median": 0.8383382563675945,
+                "p95": 0.8383382563675945
+              },
+              "ipcw_brier_at_horizon": {
+                "mean": 0.011595375132287365,
+                "sd": 1.735591488778675e-18,
+                "p05": 0.011595375132287363,
+                "median": 0.011595375132287363,
+                "p95": 0.011595375132287363
+              },
+              "mean_predicted_risk_at_horizon": {
+                "mean": 0.011500485558147302,
+                "sd": 1.735591488778675e-18,
+                "p05": 0.0115004855581473,
+                "median": 0.0115004855581473,
+                "p95": 0.0115004855581473
+              },
+              "calibration_in_the_large_difference": {
+                "mean": -0.0005149292555141176,
+                "sd": 0.0,
+                "p05": -0.0005149292555141176,
+                "median": -0.0005149292555141176,
+                "p95": -0.0005149292555141176
+              }
+            }
+          }
+        },
+        {
+          "acquired_count": 1,
+          "unique_subsets_sampled": 6,
+          "cost_by_scheme": {
+            "uniform_unit": {
+              "mean": 1.0,
+              "sd": 0.0,
+              "p05": 1.0,
+              "median": 1.0,
+              "p95": 1.0
+            },
+            "fpg_discounted_sensitivity": {
+              "mean": 0.914,
+              "sd": 0.18878463825120845,
+              "p05": 0.5,
+              "median": 1.0,
+              "p95": 1.0
+            },
+            "fpg_premium_sensitivity": {
+              "mean": 1.172,
+              "sd": 0.3775692765024169,
+              "p05": 1.0,
+              "median": 1.0,
+              "p95": 2.0
+            }
+          },
+          "metrics": {
+            "validation": {
+              "harrell_c_index": {
+                "mean": 0.8411516958655167,
+                "sd": 0.03127415271222717,
+                "p05": 0.8246639576043024,
+                "median": 0.8272314456414428,
+                "p95": 0.9095193004450016
+              },
+              "ipcw_brier_at_horizon": {
+                "mean": 0.011419816198180296,
+                "sd": 0.0004231915200543301,
+                "p05": 0.010492366403661291,
+                "median": 0.011618064088883294,
+                "p95": 0.011625281919275332
+              },
+              "mean_predicted_risk_at_horizon": {
+                "mean": 0.01154518728363793,
+                "sd": 0.00017051756236003034,
+                "p05": 0.011414428483854225,
+                "median": 0.011482227104007998,
+                "p95": 0.011914598971905924
+              },
+              "calibration_in_the_large_difference": {
+                "mean": -0.0004045049304888562,
+                "sd": 0.00017051756236003034,
+                "p05": -0.0005352637302725588,
+                "median": -0.00046746511011878586,
+                "p95": -3.509324222085962e-05
+              }
+            },
+            "test": {
+              "harrell_c_index": {
+                "mean": 0.8512673315532517,
+                "sd": 0.025928351995856757,
+                "p05": 0.8374540974595179,
+                "median": 0.8408288971204048,
+                "p95": 0.9080043020729509
+              },
+              "ipcw_brier_at_horizon": {
+                "mean": 0.011383307339516653,
+                "sd": 0.00046305696884523103,
+                "p05": 0.010368000220594297,
+                "median": 0.011590967862814099,
+                "p95": 0.01160827690203575
+              },
+              "mean_predicted_risk_at_horizon": {
+                "mean": 0.011565616481572949,
+                "sd": 0.00015224741839203336,
+                "p05": 0.011453901177937027,
+                "median": 0.011501645798342479,
+                "p95": 0.011896187687904446
+              },
+              "calibration_in_the_large_difference": {
+                "mean": -0.00044979833208846746,
+                "sd": 0.00015224741839203333,
+                "p05": -0.0005615136357243911,
+                "median": -0.0005137690153189396,
+                "p95": -0.00011922712575697207
+              }
+            }
+          }
+        },
+        {
+          "acquired_count": 2,
+          "unique_subsets_sampled": 15,
+          "cost_by_scheme": {
+            "uniform_unit": {
+              "mean": 2.0,
+              "sd": 0.0,
+              "p05": 2.0,
+              "median": 2.0,
+              "p95": 2.0
+            },
+            "fpg_discounted_sensitivity": {
+              "mean": 1.835,
+              "sd": 0.23522400032804974,
+              "p05": 1.5,
+              "median": 2.0,
+              "p95": 2.0
+            },
+            "fpg_premium_sensitivity": {
+              "mean": 2.33,
+              "sd": 0.4704480006560995,
+              "p05": 2.0,
+              "median": 2.0,
+              "p95": 3.0
+            }
+          },
+          "metrics": {
+            "validation": {
+              "harrell_c_index": {
+                "mean": 0.8555281296902907,
+                "sd": 0.03838730301741532,
+                "p05": 0.8249419767537691,
+                "median": 0.8318723934279875,
+                "p95": 0.9105556883527303
+              },
+              "ipcw_brier_at_horizon": {
+                "mean": 0.011242569606073975,
+                "sd": 0.0005162440973394786,
+                "p05": 0.010495568322571062,
+                "median": 0.011583348419746625,
+                "p95": 0.01162389033987405
+              },
+              "mean_predicted_risk_at_horizon": {
+                "mean": 0.01160275976520721,
+                "sd": 0.00020349713582473595,
+                "p05": 0.011413974248742305,
+                "median": 0.011487329808829874,
+                "p95": 0.011912184595932547
+              },
+              "calibration_in_the_large_difference": {
+                "mean": -0.0003469324489195736,
+                "sd": 0.00020349713582473595,
+                "p05": -0.0005357179653844787,
+                "median": -0.00046236240529690976,
+                "p95": -3.7507618194236245e-05
+              }
+            },
+            "test": {
+              "harrell_c_index": {
+                "mean": 0.8627728978769336,
+                "sd": 0.03190025410108043,
+                "p05": 0.8370974187448085,
+                "median": 0.8423901516929562,
+                "p95": 0.9087687114989997
+              },
+              "ipcw_brier_at_horizon": {
+                "mean": 0.011186803174742816,
+                "sd": 0.0005774041626744906,
+                "p05": 0.01034522824858925,
+                "median": 0.011580759348680766,
+                "p95": 0.011608621364910468
+              },
+              "mean_predicted_risk_at_horizon": {
+                "mean": 0.011621408620671481,
+                "sd": 0.00017976247091220276,
+                "p05": 0.011455325982244878,
+                "median": 0.011526126271986147,
+                "p95": 0.011896867436314495
+              },
+              "calibration_in_the_large_difference": {
+                "mean": -0.00039400619298993666,
+                "sd": 0.00017976247091220276,
+                "p05": -0.00056008883141654,
+                "median": -0.0004892885416752715,
+                "p95": -0.0001185473773469229
+              }
+            }
+          }
+        },
+        {
+          "acquired_count": 3,
+          "unique_subsets_sampled": 20,
+          "cost_by_scheme": {
+            "uniform_unit": {
+              "mean": 3.0,
+              "sd": 0.0,
+              "p05": 3.0,
+              "median": 3.0,
+              "p95": 3.0
+            },
+            "fpg_discounted_sensitivity": {
+              "mean": 2.749,
+              "sd": 0.2501230928194388,
+              "p05": 2.5,
+              "median": 2.5,
+              "p95": 3.0
+            },
+            "fpg_premium_sensitivity": {
+              "mean": 3.502,
+              "sd": 0.5002461856388776,
+              "p05": 3.0,
+              "median": 4.0,
+              "p95": 4.0
+            }
+          },
+          "metrics": {
+            "validation": {
+              "harrell_c_index": {
+                "mean": 0.8706646039218824,
+                "sd": 0.040082570725593826,
+                "p05": 0.8271027406715115,
+                "median": 0.9097657446439138,
+                "p95": 0.9109027848308466
+              },
+              "ipcw_brier_at_horizon": {
+                "mean": 0.01105787417289595,
+                "sd": 0.0005383138187260677,
+                "p05": 0.010508424116032419,
+                "median": 0.01053849102672876,
+                "p95": 0.011619737788293132
+              },
+              "mean_predicted_risk_at_horizon": {
+                "mean": 0.011662101656416372,
+                "sd": 0.0002116619809828692,
+                "p05": 0.011419236042207442,
+                "median": 0.011823082260495707,
+                "p95": 0.011910759762152572
+              },
+              "calibration_in_the_large_difference": {
+                "mean": -0.0002875905577104118,
+                "sd": 0.0002116619809828692,
+                "p05": -0.0005304561719193419,
+                "median": -0.00012660995363107663,
+                "p95": -3.893245197421173e-05
+              }
+            },
+            "test": {
+              "harrell_c_index": {
+                "mean": 0.8750176610213666,
+                "sd": 0.033316834838507,
+                "p05": 0.8395391889173996,
+                "median": 0.907389964959143,
+                "p95": 0.9088603081461969
+              },
+              "ipcw_brier_at_horizon": {
+                "mean": 0.010971271396181934,
+                "sd": 0.0006148952751617941,
+                "p05": 0.01033674941674843,
+                "median": 0.010391259217359602,
+                "p95": 0.011608543932414147
+              },
+              "mean_predicted_risk_at_horizon": {
+                "mean": 0.011674966404387902,
+                "sd": 0.00018324499689807388,
+                "p05": 0.011451671419418125,
+                "median": 0.011827723074670643,
+                "p95": 0.011881765105045263
+              },
+              "calibration_in_the_large_difference": {
+                "mean": -0.00034044840927351756,
+                "sd": 0.00018324499689807388,
+                "p05": -0.0005637433942432928,
+                "median": -0.00018769173899077507,
+                "p95": -0.0001336497086161549
+              }
+            }
+          }
+        },
+        {
+          "acquired_count": 4,
+          "unique_subsets_sampled": 15,
+          "cost_by_scheme": {
+            "uniform_unit": {
+              "mean": 4.0,
+              "sd": 0.0,
+              "p05": 4.0,
+              "median": 4.0,
+              "p95": 4.0
+            },
+            "fpg_discounted_sensitivity": {
+              "mean": 3.6635,
+              "sd": 0.23467599541244696,
+              "p05": 3.5,
+              "median": 3.5,
+              "p95": 4.0
+            },
+            "fpg_premium_sensitivity": {
+              "mean": 4.673,
+              "sd": 0.4693519908248939,
+              "p05": 4.0,
+              "median": 5.0,
+              "p95": 5.0
+            }
+          },
+          "metrics": {
+            "validation": {
+              "harrell_c_index": {
+                "mean": 0.8852760021142677,
+                "sd": 0.03697686798520778,
+                "p05": 0.827492594420216,
+                "median": 0.9107834383570903,
+                "p95": 0.9116038171265496
+              },
+              "ipcw_brier_at_horizon": {
+                "mean": 0.010880209199455976,
+                "sd": 0.000496782017626221,
+                "p05": 0.010516864509103725,
+                "median": 0.010539722938103128,
+                "p95": 0.01161485948762071
+              },
+              "mean_predicted_risk_at_horizon": {
+                "mean": 0.011713951274330388,
+                "sd": 0.0001916354231977451,
+                "p05": 0.011424848341952452,
+                "median": 0.011823348234407245,
+                "p95": 0.01189013432295427
+              },
+              "calibration_in_the_large_difference": {
+                "mean": -0.0002357409397963959,
+                "sd": 0.00019163542319774513,
+                "p05": -0.0005248438721743316,
+                "median": -0.00012634397971953912,
+                "p95": -5.955789117251427e-05
+              }
+            },
+            "test": {
+              "harrell_c_index": {
+                "mean": 0.8868909956498445,
+                "sd": 0.030758999462851898,
+                "p05": 0.8400504398295114,
+                "median": 0.9077769093989239,
+                "p95": 0.9089740615883521
+              },
+              "ipcw_brier_at_horizon": {
+                "mean": 0.010756170449788908,
+                "sd": 0.0005775361417200125,
+                "p05": 0.010313817304994062,
+                "median": 0.010369659362906845,
+                "p95": 0.011599683705849148
+              },
+              "mean_predicted_risk_at_horizon": {
+                "mean": 0.01172365415593983,
+                "sd": 0.00016461072579506618,
+                "p05": 0.011452514120241385,
+                "median": 0.011821873448537978,
+                "p95": 0.011865407206229564
+              },
+              "calibration_in_the_large_difference": {
+                "mean": -0.0002917606577215886,
+                "sd": 0.00016461072579506618,
+                "p05": -0.0005629006934200331,
+                "median": -0.00019354136512344036,
+                "p95": -0.0001500076074318537
+              }
+            }
+          }
+        },
+        {
+          "acquired_count": 5,
+          "unique_subsets_sampled": 6,
+          "cost_by_scheme": {
+            "uniform_unit": {
+              "mean": 5.0,
+              "sd": 0.0,
+              "p05": 5.0,
+              "median": 5.0,
+              "p95": 5.0
+            },
+            "fpg_discounted_sensitivity": {
+              "mean": 4.5765,
+              "sd": 0.18008381432038856,
+              "p05": 4.5,
+              "median": 4.5,
+              "p95": 5.0
+            },
+            "fpg_premium_sensitivity": {
+              "mean": 5.847,
+              "sd": 0.3601676286407771,
+              "p05": 5.0,
+              "median": 6.0,
+              "p95": 6.0
+            }
+          },
+          "metrics": {
+            "validation": {
+              "harrell_c_index": {
+                "mean": 0.899701071165949,
+                "sd": 0.02780031896252709,
+                "p05": 0.8343284002317625,
+                "median": 0.9116890808919457,
+                "p95": 0.9119244681587142
+              },
+              "ipcw_brier_at_horizon": {
+                "mean": 0.010703448771268761,
+                "sd": 0.00037537832103036787,
+                "p05": 0.01053288854350843,
+                "median": 0.010544779856458943,
+                "p95": 0.011586081585150523
+              },
+              "mean_predicted_risk_at_horizon": {
+                "mean": 0.011763676785025535,
+                "sd": 0.00014137734833704986,
+                "p05": 0.011434629350710695,
+                "median": 0.011811717562355774,
+                "p95": 0.011867033374282653
+              },
+              "calibration_in_the_large_difference": {
+                "mean": -0.0001860154291012504,
+                "sd": 0.0001413773483370499,
+                "p05": -0.0005150628634160888,
+                "median": -0.00013797465177100947,
+                "p95": -8.265883984413108e-05
+              }
+            },
+            "test": {
+              "harrell_c_index": {
+                "mean": 0.8986165870563888,
+                "sd": 0.023149301007554655,
+                "p05": 0.8441823394583167,
+                "median": 0.9084772468560479,
+                "p95": 0.9089722342238195
+              },
+              "ipcw_brier_at_horizon": {
+                "mean": 0.010536407364453148,
+                "sd": 0.0004443434207839233,
+                "p05": 0.010324515686808054,
+                "median": 0.010363679358341652,
+                "p95": 0.011580541538367604
+              },
+              "mean_predicted_risk_at_horizon": {
+                "mean": 0.011770718518637466,
+                "sd": 0.00012059155495888872,
+                "p05": 0.011488949478346538,
+                "median": 0.011811411039260469,
+                "p95": 0.011849277371937833
+              },
+              "calibration_in_the_large_difference": {
+                "mean": -0.00024469629502395083,
+                "sd": 0.00012059155495888872,
+                "p05": -0.0005264653353148803,
+                "median": -0.0002040037744009491,
+                "p95": -0.00016613744172358502
+              }
+            }
+          }
+        },
+        {
+          "acquired_count": 6,
+          "unique_subsets_sampled": 1,
+          "cost_by_scheme": {
+            "uniform_unit": {
+              "mean": 6.0,
+              "sd": 0.0,
+              "p05": 6.0,
+              "median": 6.0,
+              "p95": 6.0
+            },
+            "fpg_discounted_sensitivity": {
+              "mean": 5.5,
+              "sd": 0.0,
+              "p05": 5.5,
+              "median": 5.5,
+              "p95": 5.5
+            },
+            "fpg_premium_sensitivity": {
+              "mean": 7.0,
+              "sd": 0.0,
+              "p05": 7.0,
+              "median": 7.0,
+              "p95": 7.0
+            }
+          },
+          "metrics": {
+            "validation": {
+              "harrell_c_index": {
+                "mean": 0.9120198769443243,
+                "sd": 2.221557105636704e-16,
+                "p05": 0.9120198769443245,
+                "median": 0.9120198769443245,
+                "p95": 0.9120198769443245
+              },
+              "ipcw_brier_at_horizon": {
+                "mean": 0.010552421064035375,
+                "sd": 1.735591488778675e-18,
+                "p05": 0.010552421064035377,
+                "median": 0.010552421064035377,
+                "p95": 0.010552421064035377
+              },
+              "mean_predicted_risk_at_horizon": {
+                "mean": 0.01180121993388072,
+                "sd": 1.735591488778675e-18,
+                "p05": 0.011801219933880717,
+                "median": 0.011801219933880717,
+                "p95": 0.011801219933880717
+              },
+              "calibration_in_the_large_difference": {
+                "mean": -0.00014847228024606612,
+                "sd": 0.0,
+                "p05": -0.00014847228024606612,
+                "median": -0.00014847228024606612,
+                "p95": -0.00014847228024606612
+              }
+            },
+            "test": {
+              "harrell_c_index": {
+                "mean": 0.9086049339527643,
+                "sd": 1.110778552818352e-16,
+                "p05": 0.9086049339527642,
+                "median": 0.9086049339527642,
+                "p95": 0.9086049339527642
+              },
+              "ipcw_brier_at_horizon": {
+                "mean": 0.010338086523554993,
+                "sd": 0.0,
+                "p05": 0.010338086523554993,
+                "median": 0.010338086523554993,
+                "p95": 0.010338086523554993
+              },
+              "mean_predicted_risk_at_horizon": {
+                "mean": 0.011804839711867136,
+                "sd": 3.47118297755735e-18,
+                "p05": 0.01180483971186714,
+                "median": 0.01180483971186714,
+                "p95": 0.01180483971186714
+              },
+              "calibration_in_the_large_difference": {
+                "mean": -0.0002105751017942789,
+                "sd": 0.0,
+                "p05": -0.0002105751017942789,
+                "median": -0.0002105751017942789,
+                "p95": -0.0002105751017942789
+              }
+            }
+          }
+        }
+      ]
+    },
+    "importance_greedy": {
+      "definition": "fixed global forward order maximizing validation C-index at each step",
+      "selection_data": "validation only",
+      "order": [
+        "fpg",
+        "alt",
+        "triglycerides",
+        "total_cholesterol",
+        "ccr",
+        "bun"
+      ],
+      "points": [
+        {
+          "subset_id": "base_only",
+          "acquired_features": [],
+          "acquired_count": 0,
+          "predictor_features": [
+            "age",
+            "bmi",
+            "sbp",
+            "dbp",
+            "gender",
+            "family_history_diabetes"
+          ],
+          "cost_by_scheme": {
+            "uniform_unit": 0.0,
+            "fpg_discounted_sensitivity": 0.0,
+            "fpg_premium_sensitivity": 0.0
+          },
+          "fit_warnings": [],
+          "metrics": {
+            "validation": {
+              "participants": 31775,
+              "events_total": 626,
+              "harrell_c_index": 0.8249852925704141,
+              "ipcw_brier_at_horizon": 0.011622980558558116,
+              "mean_predicted_risk_at_horizon": 0.011476437286784852,
+              "km_observed_risk_at_horizon": 0.011949692214126784,
+              "calibration_in_the_large_difference": -0.00047325492734193175
+            },
+            "test": {
+              "participants": 31775,
+              "events_total": 626,
+              "harrell_c_index": 0.8383382563675945,
+              "ipcw_brier_at_horizon": 0.011595375132287363,
+              "mean_predicted_risk_at_horizon": 0.0115004855581473,
+              "km_observed_risk_at_horizon": 0.012015414813661418,
+              "calibration_in_the_large_difference": -0.0005149292555141176
+            }
+          },
+          "added_feature": null
+        },
+        {
+          "subset_id": "fpg",
+          "acquired_features": [
+            "fpg"
+          ],
+          "acquired_count": 1,
+          "predictor_features": [
+            "age",
+            "bmi",
+            "sbp",
+            "dbp",
+            "fpg",
+            "gender",
+            "family_history_diabetes"
+          ],
+          "cost_by_scheme": {
+            "uniform_unit": 1.0,
+            "fpg_discounted_sensitivity": 0.5,
+            "fpg_premium_sensitivity": 2.0
+          },
+          "fit_warnings": [],
+          "metrics": {
+            "validation": {
+              "participants": 31775,
+              "events_total": 626,
+              "harrell_c_index": 0.9095193004450016,
+              "ipcw_brier_at_horizon": 0.010492366403661291,
+              "mean_predicted_risk_at_horizon": 0.011914598971905924,
+              "km_observed_risk_at_horizon": 0.011949692214126784,
+              "calibration_in_the_large_difference": -3.509324222085962e-05
+            },
+            "test": {
+              "participants": 31775,
+              "events_total": 626,
+              "harrell_c_index": 0.9080043020729509,
+              "ipcw_brier_at_horizon": 0.010368000220594297,
+              "mean_predicted_risk_at_horizon": 0.011896187687904446,
+              "km_observed_risk_at_horizon": 0.012015414813661418,
+              "calibration_in_the_large_difference": -0.00011922712575697207
+            }
+          },
+          "added_feature": "fpg"
+        },
+        {
+          "subset_id": "fpg+alt",
+          "acquired_features": [
+            "fpg",
+            "alt"
+          ],
+          "acquired_count": 2,
+          "predictor_features": [
+            "age",
+            "bmi",
+            "sbp",
+            "dbp",
+            "fpg",
+            "alt",
+            "gender",
+            "family_history_diabetes"
+          ],
+          "cost_by_scheme": {
+            "uniform_unit": 2.0,
+            "fpg_discounted_sensitivity": 1.5,
+            "fpg_premium_sensitivity": 3.0
+          },
+          "fit_warnings": [],
+          "metrics": {
+            "validation": {
+              "participants": 31775,
+              "events_total": 626,
+              "harrell_c_index": 0.9105556883527303,
+              "ipcw_brier_at_horizon": 0.010502534865048803,
+              "mean_predicted_risk_at_horizon": 0.011845918333765871,
+              "km_observed_risk_at_horizon": 0.011949692214126784,
+              "calibration_in_the_large_difference": -0.00010377388036091235
+            },
+            "test": {
+              "participants": 31775,
+              "events_total": 626,
+              "harrell_c_index": 0.9087687114989997,
+              "ipcw_brier_at_horizon": 0.010378541154287758,
+              "mean_predicted_risk_at_horizon": 0.01187813480057834,
+              "km_observed_risk_at_horizon": 0.012015414813661418,
+              "calibration_in_the_large_difference": -0.00013728001308307806
+            }
+          },
+          "added_feature": "alt"
+        },
+        {
+          "subset_id": "fpg+triglycerides+alt",
+          "acquired_features": [
+            "fpg",
+            "triglycerides",
+            "alt"
+          ],
+          "acquired_count": 3,
+          "predictor_features": [
+            "age",
+            "bmi",
+            "sbp",
+            "dbp",
+            "fpg",
+            "triglycerides",
+            "alt",
+            "gender",
+            "family_history_diabetes"
+          ],
+          "cost_by_scheme": {
+            "uniform_unit": 3.0,
+            "fpg_discounted_sensitivity": 2.5,
+            "fpg_premium_sensitivity": 4.0
+          },
+          "fit_warnings": [],
+          "metrics": {
+            "validation": {
+              "participants": 31775,
+              "events_total": 626,
+              "harrell_c_index": 0.9112352907180931,
+              "ipcw_brier_at_horizon": 0.010508424116032419,
+              "mean_predicted_risk_at_horizon": 0.011835264951212341,
+              "km_observed_risk_at_horizon": 0.011949692214126784,
+              "calibration_in_the_large_difference": -0.00011442726291444223
+            },
+            "test": {
+              "participants": 31775,
+              "events_total": 626,
+              "harrell_c_index": 0.9088681886557438,
+              "ipcw_brier_at_horizon": 0.010357641020032643,
+              "mean_predicted_risk_at_horizon": 0.01184042583376938,
+              "km_observed_risk_at_horizon": 0.012015414813661418,
+              "calibration_in_the_large_difference": -0.00017498897989203822
+            }
+          },
+          "added_feature": "triglycerides"
+        },
+        {
+          "subset_id": "fpg+total_cholesterol+triglycerides+alt",
+          "acquired_features": [
+            "fpg",
+            "total_cholesterol",
+            "triglycerides",
+            "alt"
+          ],
+          "acquired_count": 4,
+          "predictor_features": [
+            "age",
+            "bmi",
+            "sbp",
+            "dbp",
+            "fpg",
+            "total_cholesterol",
+            "triglycerides",
+            "alt",
+            "gender",
+            "family_history_diabetes"
+          ],
+          "cost_by_scheme": {
+            "uniform_unit": 4.0,
+            "fpg_discounted_sensitivity": 3.5,
+            "fpg_premium_sensitivity": 5.0
+          },
+          "fit_warnings": [],
+          "metrics": {
+            "validation": {
+              "participants": 31775,
+              "events_total": 626,
+              "harrell_c_index": 0.9116038171265496,
+              "ipcw_brier_at_horizon": 0.010516864509103725,
+              "mean_predicted_risk_at_horizon": 0.011823348234407245,
+              "km_observed_risk_at_horizon": 0.011949692214126784,
+              "calibration_in_the_large_difference": -0.00012634397971953912
+            },
+            "test": {
+              "participants": 31775,
+              "events_total": 626,
+              "harrell_c_index": 0.9088887465067357,
+              "ipcw_brier_at_horizon": 0.010328585221932017,
+              "mean_predicted_risk_at_horizon": 0.011831182029546911,
+              "km_observed_risk_at_horizon": 0.012015414813661418,
+              "calibration_in_the_large_difference": -0.00018423278411450715
+            }
+          },
+          "added_feature": "total_cholesterol"
+        },
+        {
+          "subset_id": "fpg+total_cholesterol+triglycerides+alt+ccr",
+          "acquired_features": [
+            "fpg",
+            "total_cholesterol",
+            "triglycerides",
+            "alt",
+            "ccr"
+          ],
+          "acquired_count": 5,
+          "predictor_features": [
+            "age",
+            "bmi",
+            "sbp",
+            "dbp",
+            "fpg",
+            "total_cholesterol",
+            "triglycerides",
+            "alt",
+            "ccr",
+            "gender",
+            "family_history_diabetes"
+          ],
+          "cost_by_scheme": {
+            "uniform_unit": 5.0,
+            "fpg_discounted_sensitivity": 4.5,
+            "fpg_premium_sensitivity": 6.0
+          },
+          "fit_warnings": [],
+          "metrics": {
+            "validation": {
+              "participants": 31775,
+              "events_total": 626,
+              "harrell_c_index": 0.9119244681587142,
+              "ipcw_brier_at_horizon": 0.010544779856458943,
+              "mean_predicted_risk_at_horizon": 0.011799651726832387,
+              "km_observed_risk_at_horizon": 0.011949692214126784,
+              "calibration_in_the_large_difference": -0.0001500404872943964
+            },
+            "test": {
+              "participants": 31775,
+              "events_total": 626,
+              "harrell_c_index": 0.9089722342238195,
+              "ipcw_brier_at_horizon": 0.010342314241426594,
+              "mean_predicted_risk_at_horizon": 0.011811411039260469,
+              "km_observed_risk_at_horizon": 0.012015414813661418,
+              "calibration_in_the_large_difference": -0.0002040037744009491
+            }
+          },
+          "added_feature": "ccr"
+        },
+        {
+          "subset_id": "fpg+total_cholesterol+triglycerides+alt+ccr+bun",
+          "acquired_features": [
+            "fpg",
+            "total_cholesterol",
+            "triglycerides",
+            "alt",
+            "ccr",
+            "bun"
+          ],
+          "acquired_count": 6,
+          "predictor_features": [
+            "age",
+            "bmi",
+            "sbp",
+            "dbp",
+            "fpg",
+            "total_cholesterol",
+            "triglycerides",
+            "alt",
+            "ccr",
+            "bun",
+            "gender",
+            "family_history_diabetes"
+          ],
+          "cost_by_scheme": {
+            "uniform_unit": 6.0,
+            "fpg_discounted_sensitivity": 5.5,
+            "fpg_premium_sensitivity": 7.0
+          },
+          "fit_warnings": [],
+          "metrics": {
+            "validation": {
+              "participants": 31775,
+              "events_total": 626,
+              "harrell_c_index": 0.9120198769443245,
+              "ipcw_brier_at_horizon": 0.010552421064035377,
+              "mean_predicted_risk_at_horizon": 0.011801219933880717,
+              "km_observed_risk_at_horizon": 0.011949692214126784,
+              "calibration_in_the_large_difference": -0.00014847228024606612
+            },
+            "test": {
+              "participants": 31775,
+              "events_total": 626,
+              "harrell_c_index": 0.9086049339527642,
+              "ipcw_brier_at_horizon": 0.010338086523554993,
+              "mean_predicted_risk_at_horizon": 0.01180483971186714,
+              "km_observed_risk_at_horizon": 0.012015414813661418,
+              "calibration_in_the_large_difference": -0.0002105751017942789
+            }
+          },
+          "added_feature": "bun"
+        }
+      ]
+    }
+  },
+  "all_subset_results": [
+    {
+      "subset_id": "base_only",
+      "acquired_features": [],
+      "acquired_count": 0,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 0.0,
+        "fpg_discounted_sensitivity": 0.0,
+        "fpg_premium_sensitivity": 0.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8249852925704141,
+          "ipcw_brier_at_horizon": 0.011622980558558116,
+          "mean_predicted_risk_at_horizon": 0.011476437286784852,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00047325492734193175
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8383382563675945,
+          "ipcw_brier_at_horizon": 0.011595375132287363,
+          "mean_predicted_risk_at_horizon": 0.0115004855581473,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0005149292555141176
+        }
+      }
+    },
+    {
+      "subset_id": "alt",
+      "acquired_features": [
+        "alt"
+      ],
+      "acquired_count": 1,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "alt",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 1.0,
+        "fpg_discounted_sensitivity": 1.0,
+        "fpg_premium_sensitivity": 1.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8272314456414428,
+          "ipcw_brier_at_horizon": 0.011625281919275332,
+          "mean_predicted_risk_at_horizon": 0.011414428483854225,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.0005352637302725588
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8408288971204048,
+          "ipcw_brier_at_horizon": 0.01158070627526361,
+          "mean_predicted_risk_at_horizon": 0.011453901177937027,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0005615136357243911
+        }
+      }
+    },
+    {
+      "subset_id": "bun",
+      "acquired_features": [
+        "bun"
+      ],
+      "acquired_count": 1,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 1.0,
+        "fpg_discounted_sensitivity": 1.0,
+        "fpg_premium_sensitivity": 1.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8249939557337431,
+          "ipcw_brier_at_horizon": 0.011621928478643228,
+          "mean_predicted_risk_at_horizon": 0.0114786052890912,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.0004710869250355836
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.838415519624239,
+          "ipcw_brier_at_horizon": 0.01159494369089215,
+          "mean_predicted_risk_at_horizon": 0.011501645798342479,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0005137690153189396
+        }
+      }
+    },
+    {
+      "subset_id": "ccr",
+      "acquired_features": [
+        "ccr"
+      ],
+      "acquired_count": 1,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "ccr",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 1.0,
+        "fpg_discounted_sensitivity": 1.0,
+        "fpg_premium_sensitivity": 1.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8246639576043024,
+          "ipcw_brier_at_horizon": 0.011618064088883294,
+          "mean_predicted_risk_at_horizon": 0.011473629143614232,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.0004760630705125512
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8374540974595179,
+          "ipcw_brier_at_horizon": 0.011590967862814099,
+          "mean_predicted_risk_at_horizon": 0.011520535305561087,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0004948795081003311
+        }
+      }
+    },
+    {
+      "subset_id": "fpg",
+      "acquired_features": [
+        "fpg"
+      ],
+      "acquired_count": 1,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 1.0,
+        "fpg_discounted_sensitivity": 0.5,
+        "fpg_premium_sensitivity": 2.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9095193004450016,
+          "ipcw_brier_at_horizon": 0.010492366403661291,
+          "mean_predicted_risk_at_horizon": 0.011914598971905924,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -3.509324222085962e-05
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9080043020729509,
+          "ipcw_brier_at_horizon": 0.010368000220594297,
+          "mean_predicted_risk_at_horizon": 0.011896187687904446,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.00011922712575697207
+        }
+      }
+    },
+    {
+      "subset_id": "total_cholesterol",
+      "acquired_features": [
+        "total_cholesterol"
+      ],
+      "acquired_count": 1,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "total_cholesterol",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 1.0,
+        "fpg_discounted_sensitivity": 1.0,
+        "fpg_premium_sensitivity": 1.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8253260056650249,
+          "ipcw_brier_at_horizon": 0.011618832941193058,
+          "mean_predicted_risk_at_horizon": 0.011482227104007998,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00046746511011878586
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8379296690791305,
+          "ipcw_brier_at_horizon": 0.01159588813732292,
+          "mean_predicted_risk_at_horizon": 0.011511794587304466,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.000503620226356952
+        }
+      }
+    },
+    {
+      "subset_id": "triglycerides",
+      "acquired_features": [
+        "triglycerides"
+      ],
+      "acquired_count": 1,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "triglycerides",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 1.0,
+        "fpg_discounted_sensitivity": 1.0,
+        "fpg_premium_sensitivity": 1.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8318408184774331,
+          "ipcw_brier_at_horizon": 0.011581066600272635,
+          "mean_predicted_risk_at_horizon": 0.011495952547182185,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.0004537396669445984
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.842255840399809,
+          "ipcw_brier_at_horizon": 0.01160827690203575,
+          "mean_predicted_risk_at_horizon": 0.011501118374395106,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0005142964392663117
+        }
+      }
+    },
+    {
+      "subset_id": "alt+bun",
+      "acquired_features": [
+        "alt",
+        "bun"
+      ],
+      "acquired_count": 2,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "alt",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 2.0,
+        "fpg_discounted_sensitivity": 2.0,
+        "fpg_premium_sensitivity": 2.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8272391968928425,
+          "ipcw_brier_at_horizon": 0.01162389033987405,
+          "mean_predicted_risk_at_horizon": 0.011417220496213376,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.0005324717179134072
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8409276890154491,
+          "ipcw_brier_at_horizon": 0.011580090059845907,
+          "mean_predicted_risk_at_horizon": 0.011455325982244878,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.00056008883141654
+        }
+      }
+    },
+    {
+      "subset_id": "alt+ccr",
+      "acquired_features": [
+        "alt",
+        "ccr"
+      ],
+      "acquired_count": 2,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "alt",
+        "ccr",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 2.0,
+        "fpg_discounted_sensitivity": 2.0,
+        "fpg_premium_sensitivity": 2.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8268998516661258,
+          "ipcw_brier_at_horizon": 0.011622065078475605,
+          "mean_predicted_risk_at_horizon": 0.011413974248742305,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.0005357179653844787
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8400392472217492,
+          "ipcw_brier_at_horizon": 0.011574812387983054,
+          "mean_predicted_risk_at_horizon": 0.011478403938092142,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.000537010875569276
+        }
+      }
+    },
+    {
+      "subset_id": "ccr+bun",
+      "acquired_features": [
+        "ccr",
+        "bun"
+      ],
+      "acquired_count": 2,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "ccr",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 2.0,
+        "fpg_discounted_sensitivity": 2.0,
+        "fpg_premium_sensitivity": 2.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8249419767537691,
+          "ipcw_brier_at_horizon": 0.011613119157537618,
+          "mean_predicted_risk_at_horizon": 0.01148077965104039,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00046891256308639363
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8378587444932084,
+          "ipcw_brier_at_horizon": 0.011589398353872474,
+          "mean_predicted_risk_at_horizon": 0.011530690266079799,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.00048472454758161955
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+alt",
+      "acquired_features": [
+        "fpg",
+        "alt"
+      ],
+      "acquired_count": 2,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "alt",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 2.0,
+        "fpg_discounted_sensitivity": 1.5,
+        "fpg_premium_sensitivity": 3.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9105556883527303,
+          "ipcw_brier_at_horizon": 0.010502534865048803,
+          "mean_predicted_risk_at_horizon": 0.011845918333765871,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00010377388036091235
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9087687114989997,
+          "ipcw_brier_at_horizon": 0.010378541154287758,
+          "mean_predicted_risk_at_horizon": 0.01187813480057834,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.00013728001308307806
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+bun",
+      "acquired_features": [
+        "fpg",
+        "bun"
+      ],
+      "acquired_count": 2,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 2.0,
+        "fpg_discounted_sensitivity": 1.5,
+        "fpg_premium_sensitivity": 3.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9097615270512405,
+          "ipcw_brier_at_horizon": 0.010512253559101844,
+          "mean_predicted_risk_at_horizon": 0.011912184595932547,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -3.7507618194236245e-05
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9073970459967069,
+          "ipcw_brier_at_horizon": 0.010359891163467007,
+          "mean_predicted_risk_at_horizon": 0.011880944689083033,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.00013447012457838518
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+ccr",
+      "acquired_features": [
+        "fpg",
+        "ccr"
+      ],
+      "acquired_count": 2,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "ccr",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 2.0,
+        "fpg_discounted_sensitivity": 1.5,
+        "fpg_premium_sensitivity": 3.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9099040132902044,
+          "ipcw_brier_at_horizon": 0.010524129448734836,
+          "mean_predicted_risk_at_horizon": 0.011888870735621762,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -6.082147850502116e-05
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9080691735138586,
+          "ipcw_brier_at_horizon": 0.01038146587945924,
+          "mean_predicted_risk_at_horizon": 0.011869797212005226,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.00014561760165619254
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+total_cholesterol",
+      "acquired_features": [
+        "fpg",
+        "total_cholesterol"
+      ],
+      "acquired_count": 2,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "total_cholesterol",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 2.0,
+        "fpg_discounted_sensitivity": 1.5,
+        "fpg_premium_sensitivity": 3.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9095472277478386,
+          "ipcw_brier_at_horizon": 0.010495568322571062,
+          "mean_predicted_risk_at_horizon": 0.011911530704064055,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -3.816151006272826e-05
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9079868278996078,
+          "ipcw_brier_at_horizon": 0.01035601355174936,
+          "mean_predicted_risk_at_horizon": 0.011896867436314495,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0001185473773469229
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+triglycerides",
+      "acquired_features": [
+        "fpg",
+        "triglycerides"
+      ],
+      "acquired_count": 2,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "triglycerides",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 2.0,
+        "fpg_discounted_sensitivity": 1.5,
+        "fpg_premium_sensitivity": 3.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9103277103703878,
+          "ipcw_brier_at_horizon": 0.010505719809152733,
+          "mean_predicted_risk_at_horizon": 0.01190254568443135,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -4.7146529695432995e-05
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9081897795730112,
+          "ipcw_brier_at_horizon": 0.01034522824858925,
+          "mean_predicted_risk_at_horizon": 0.011852775410757016,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0001626394029044017
+        }
+      }
+    },
+    {
+      "subset_id": "total_cholesterol+alt",
+      "acquired_features": [
+        "total_cholesterol",
+        "alt"
+      ],
+      "acquired_count": 2,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "total_cholesterol",
+        "alt",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 2.0,
+        "fpg_discounted_sensitivity": 2.0,
+        "fpg_premium_sensitivity": 2.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8274112062805199,
+          "ipcw_brier_at_horizon": 0.011622746999607704,
+          "mean_predicted_risk_at_horizon": 0.01142107298517415,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.0005286192289526339
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8403475007763443,
+          "ipcw_brier_at_horizon": 0.011580759348680766,
+          "mean_predicted_risk_at_horizon": 0.011464934380250945,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0005504804334104732
+        }
+      }
+    },
+    {
+      "subset_id": "total_cholesterol+bun",
+      "acquired_features": [
+        "total_cholesterol",
+        "bun"
+      ],
+      "acquired_count": 2,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "total_cholesterol",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 2.0,
+        "fpg_discounted_sensitivity": 2.0,
+        "fpg_premium_sensitivity": 2.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8253019539878877,
+          "ipcw_brier_at_horizon": 0.011618169448774963,
+          "mean_predicted_risk_at_horizon": 0.011483674096232913,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00046601811789387035
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8379906573704065,
+          "ipcw_brier_at_horizon": 0.011595531993720596,
+          "mean_predicted_risk_at_horizon": 0.011512582005189297,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0005028328084721208
+        }
+      }
+    },
+    {
+      "subset_id": "total_cholesterol+ccr",
+      "acquired_features": [
+        "total_cholesterol",
+        "ccr"
+      ],
+      "acquired_count": 2,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "total_cholesterol",
+        "ccr",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 2.0,
+        "fpg_discounted_sensitivity": 2.0,
+        "fpg_premium_sensitivity": 2.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8251399756314335,
+          "ipcw_brier_at_horizon": 0.011614240242586242,
+          "mean_predicted_risk_at_horizon": 0.011477514431220463,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00047217778290632034
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8370974187448085,
+          "ipcw_brier_at_horizon": 0.011589978805745605,
+          "mean_predicted_risk_at_horizon": 0.011531237153477284,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0004841776601841336
+        }
+      }
+    },
+    {
+      "subset_id": "total_cholesterol+triglycerides",
+      "acquired_features": [
+        "total_cholesterol",
+        "triglycerides"
+      ],
+      "acquired_count": 2,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "total_cholesterol",
+        "triglycerides",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 2.0,
+        "fpg_discounted_sensitivity": 2.0,
+        "fpg_premium_sensitivity": 2.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8318723934279875,
+          "ipcw_brier_at_horizon": 0.01158238503652956,
+          "mean_predicted_risk_at_horizon": 0.011492142267445037,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.0004575499466817467
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8425280035048852,
+          "ipcw_brier_at_horizon": 0.011608621364910468,
+          "mean_predicted_risk_at_horizon": 0.011496829060647563,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0005185857530138546
+        }
+      }
+    },
+    {
+      "subset_id": "triglycerides+alt",
+      "acquired_features": [
+        "triglycerides",
+        "alt"
+      ],
+      "acquired_count": 2,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "triglycerides",
+        "alt",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 2.0,
+        "fpg_discounted_sensitivity": 2.0,
+        "fpg_premium_sensitivity": 2.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8334880733888482,
+          "ipcw_brier_at_horizon": 0.011583348419746625,
+          "mean_predicted_risk_at_horizon": 0.011436463526183802,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.0005132286879429813
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.844050997632535,
+          "ipcw_brier_at_horizon": 0.01159011751351253,
+          "mean_predicted_risk_at_horizon": 0.011457612846594967,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0005578019670664514
+        }
+      }
+    },
+    {
+      "subset_id": "triglycerides+bun",
+      "acquired_features": [
+        "triglycerides",
+        "bun"
+      ],
+      "acquired_count": 2,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "triglycerides",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 2.0,
+        "fpg_discounted_sensitivity": 2.0,
+        "fpg_premium_sensitivity": 2.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8318119792626668,
+          "ipcw_brier_at_horizon": 0.011579228769888632,
+          "mean_predicted_risk_at_horizon": 0.011499014027205727,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00045067818692105625
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8423901516929562,
+          "ipcw_brier_at_horizon": 0.011608253682626336,
+          "mean_predicted_risk_at_horizon": 0.011501950634384528,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0005134641792768901
+        }
+      }
+    },
+    {
+      "subset_id": "triglycerides+ccr",
+      "acquired_features": [
+        "triglycerides",
+        "ccr"
+      ],
+      "acquired_count": 2,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "triglycerides",
+        "ccr",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 2.0,
+        "fpg_discounted_sensitivity": 2.0,
+        "fpg_premium_sensitivity": 2.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8325476642116858,
+          "ipcw_brier_at_horizon": 0.011588747442251137,
+          "mean_predicted_risk_at_horizon": 0.011487329808829874,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00046236240529690976
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8413330213108394,
+          "ipcw_brier_at_horizon": 0.01159847017121156,
+          "mean_predicted_risk_at_horizon": 0.011526126271986147,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0004892885416752715
+        }
+      }
+    },
+    {
+      "subset_id": "alt+ccr+bun",
+      "acquired_features": [
+        "alt",
+        "ccr",
+        "bun"
+      ],
+      "acquired_count": 3,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "alt",
+        "ccr",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 3.0,
+        "fpg_discounted_sensitivity": 3.0,
+        "fpg_premium_sensitivity": 3.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8271932593294005,
+          "ipcw_brier_at_horizon": 0.011616479053737739,
+          "mean_predicted_risk_at_horizon": 0.011420827853704279,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.0005288643604225048
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8404726752468284,
+          "ipcw_brier_at_horizon": 0.011572710837801444,
+          "mean_predicted_risk_at_horizon": 0.011488531996579197,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0005268828170822207
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+alt+bun",
+      "acquired_features": [
+        "fpg",
+        "alt",
+        "bun"
+      ],
+      "acquired_count": 3,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "alt",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 3.0,
+        "fpg_discounted_sensitivity": 2.5,
+        "fpg_premium_sensitivity": 4.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9107688477662205,
+          "ipcw_brier_at_horizon": 0.010521623803193022,
+          "mean_predicted_risk_at_horizon": 0.011844781225305483,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00010491098882130061
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.908207939008054,
+          "ipcw_brier_at_horizon": 0.010372444419554342,
+          "mean_predicted_risk_at_horizon": 0.011864572300414458,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.00015084251324696055
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+alt+ccr",
+      "acquired_features": [
+        "fpg",
+        "alt",
+        "ccr"
+      ],
+      "acquired_count": 3,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "alt",
+        "ccr",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 3.0,
+        "fpg_discounted_sensitivity": 2.5,
+        "fpg_premium_sensitivity": 4.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9109027848308466,
+          "ipcw_brier_at_horizon": 0.010531009886554936,
+          "mean_predicted_risk_at_horizon": 0.011823082260495707,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00012660995363107663
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9088603081461969,
+          "ipcw_brier_at_horizon": 0.010391259217359602,
+          "mean_predicted_risk_at_horizon": 0.01185543579662284,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0001599790170385782
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+ccr+bun",
+      "acquired_features": [
+        "fpg",
+        "ccr",
+        "bun"
+      ],
+      "acquired_count": 3,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "ccr",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 3.0,
+        "fpg_discounted_sensitivity": 2.5,
+        "fpg_premium_sensitivity": 4.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9099977122409472,
+          "ipcw_brier_at_horizon": 0.010532540835286845,
+          "mean_predicted_risk_at_horizon": 0.011891988819724697,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -5.7703394402086605e-05
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9076151876377876,
+          "ipcw_brier_at_horizon": 0.010374878898662261,
+          "mean_predicted_risk_at_horizon": 0.01186181784946951,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0001535969641919075
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+total_cholesterol+alt",
+      "acquired_features": [
+        "fpg",
+        "total_cholesterol",
+        "alt"
+      ],
+      "acquired_count": 3,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "total_cholesterol",
+        "alt",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 3.0,
+        "fpg_discounted_sensitivity": 2.5,
+        "fpg_premium_sensitivity": 4.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9106578224888197,
+          "ipcw_brier_at_horizon": 0.010505246679260413,
+          "mean_predicted_risk_at_horizon": 0.011841071583443646,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.0001086206306831379
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9087558057369881,
+          "ipcw_brier_at_horizon": 0.010363510260427197,
+          "mean_predicted_risk_at_horizon": 0.011878175522437813,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.00013723929122360506
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+total_cholesterol+bun",
+      "acquired_features": [
+        "fpg",
+        "total_cholesterol",
+        "bun"
+      ],
+      "acquired_count": 3,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "total_cholesterol",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 3.0,
+        "fpg_discounted_sensitivity": 2.5,
+        "fpg_premium_sensitivity": 4.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9097657446439138,
+          "ipcw_brier_at_horizon": 0.010514482253173174,
+          "mean_predicted_risk_at_horizon": 0.011910759762152572,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -3.893245197421173e-05
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.907389964959143,
+          "ipcw_brier_at_horizon": 0.010351241273701652,
+          "mean_predicted_risk_at_horizon": 0.011881765105045263,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0001336497086161549
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+total_cholesterol+ccr",
+      "acquired_features": [
+        "fpg",
+        "total_cholesterol",
+        "ccr"
+      ],
+      "acquired_count": 3,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "total_cholesterol",
+        "ccr",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 3.0,
+        "fpg_discounted_sensitivity": 2.5,
+        "fpg_premium_sensitivity": 4.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.909930344747165,
+          "ipcw_brier_at_horizon": 0.010526151843031363,
+          "mean_predicted_risk_at_horizon": 0.011887083607907528,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -6.26086062192558e-05
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9080462172469177,
+          "ipcw_brier_at_horizon": 0.01037144536243317,
+          "mean_predicted_risk_at_horizon": 0.01187067684349923,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.00014473797016218738
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+total_cholesterol+triglycerides",
+      "acquired_features": [
+        "fpg",
+        "total_cholesterol",
+        "triglycerides"
+      ],
+      "acquired_count": 3,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "total_cholesterol",
+        "triglycerides",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 3.0,
+        "fpg_discounted_sensitivity": 2.5,
+        "fpg_premium_sensitivity": 4.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9105620717362358,
+          "ipcw_brier_at_horizon": 0.010516285019085391,
+          "mean_predicted_risk_at_horizon": 0.011892949919766506,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -5.674229436027772e-05
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9081769880212829,
+          "ipcw_brier_at_horizon": 0.010318833109395492,
+          "mean_predicted_risk_at_horizon": 0.011845420882674176,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0001699939309872424
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+triglycerides+alt",
+      "acquired_features": [
+        "fpg",
+        "triglycerides",
+        "alt"
+      ],
+      "acquired_count": 3,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "triglycerides",
+        "alt",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 3.0,
+        "fpg_discounted_sensitivity": 2.5,
+        "fpg_premium_sensitivity": 4.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9112352907180931,
+          "ipcw_brier_at_horizon": 0.010508424116032419,
+          "mean_predicted_risk_at_horizon": 0.011835264951212341,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00011442726291444223
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9088681886557438,
+          "ipcw_brier_at_horizon": 0.010357641020032643,
+          "mean_predicted_risk_at_horizon": 0.01184042583376938,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.00017498897989203822
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+triglycerides+bun",
+      "acquired_features": [
+        "fpg",
+        "triglycerides",
+        "bun"
+      ],
+      "acquired_count": 3,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "triglycerides",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 3.0,
+        "fpg_discounted_sensitivity": 2.5,
+        "fpg_premium_sensitivity": 4.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9105417816958074,
+          "ipcw_brier_at_horizon": 0.010524168112962513,
+          "mean_predicted_risk_at_horizon": 0.011897466431035194,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -5.222578309158933e-05
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9075410651639334,
+          "ipcw_brier_at_horizon": 0.01033674941674843,
+          "mean_predicted_risk_at_horizon": 0.011837736059177584,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0001776787544838336
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+triglycerides+ccr",
+      "acquired_features": [
+        "fpg",
+        "triglycerides",
+        "ccr"
+      ],
+      "acquired_count": 3,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "triglycerides",
+        "ccr",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 3.0,
+        "fpg_discounted_sensitivity": 2.5,
+        "fpg_premium_sensitivity": 4.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9107029621293234,
+          "ipcw_brier_at_horizon": 0.01053849102672876,
+          "mean_predicted_risk_at_horizon": 0.011873777570521235,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -7.59146436055489e-05
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9082635594160154,
+          "ipcw_brier_at_horizon": 0.010357961566411169,
+          "mean_predicted_risk_at_horizon": 0.011827723074670643,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.00018769173899077507
+        }
+      }
+    },
+    {
+      "subset_id": "total_cholesterol+alt+bun",
+      "acquired_features": [
+        "total_cholesterol",
+        "alt",
+        "bun"
+      ],
+      "acquired_count": 3,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "total_cholesterol",
+        "alt",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 3.0,
+        "fpg_discounted_sensitivity": 3.0,
+        "fpg_premium_sensitivity": 3.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8273745018253628,
+          "ipcw_brier_at_horizon": 0.011621684986428956,
+          "mean_predicted_risk_at_horizon": 0.011423507984869572,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.0005261842292572112
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8404653657886979,
+          "ipcw_brier_at_horizon": 0.01157991919076885,
+          "mean_predicted_risk_at_horizon": 0.011466222740942129,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0005491920727192894
+        }
+      }
+    },
+    {
+      "subset_id": "total_cholesterol+alt+ccr",
+      "acquired_features": [
+        "total_cholesterol",
+        "alt",
+        "ccr"
+      ],
+      "acquired_count": 3,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "total_cholesterol",
+        "alt",
+        "ccr",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 3.0,
+        "fpg_discounted_sensitivity": 3.0,
+        "fpg_premium_sensitivity": 3.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8272258601808754,
+          "ipcw_brier_at_horizon": 0.011619737788293132,
+          "mean_predicted_risk_at_horizon": 0.011419236042207442,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.0005304561719193419
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8396480770014867,
+          "ipcw_brier_at_horizon": 0.011573200059105667,
+          "mean_predicted_risk_at_horizon": 0.011488860950477598,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0005265538631838203
+        }
+      }
+    },
+    {
+      "subset_id": "total_cholesterol+ccr+bun",
+      "acquired_features": [
+        "total_cholesterol",
+        "ccr",
+        "bun"
+      ],
+      "acquired_count": 3,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "total_cholesterol",
+        "ccr",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 3.0,
+        "fpg_discounted_sensitivity": 3.0,
+        "fpg_premium_sensitivity": 3.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8253828861716194,
+          "ipcw_brier_at_horizon": 0.011609952787292257,
+          "mean_predicted_risk_at_horizon": 0.011483555592804263,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00046613662132252015
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8374703153197448,
+          "ipcw_brier_at_horizon": 0.011588801237950556,
+          "mean_predicted_risk_at_horizon": 0.011540188209991383,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.00047522660367003457
+        }
+      }
+    },
+    {
+      "subset_id": "total_cholesterol+triglycerides+alt",
+      "acquired_features": [
+        "total_cholesterol",
+        "triglycerides",
+        "alt"
+      ],
+      "acquired_count": 3,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "total_cholesterol",
+        "triglycerides",
+        "alt",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 3.0,
+        "fpg_discounted_sensitivity": 3.0,
+        "fpg_premium_sensitivity": 3.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8336065079506751,
+          "ipcw_brier_at_horizon": 0.011584362726177189,
+          "mean_predicted_risk_at_horizon": 0.011430871228985057,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.0005188209851417266
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8443913442767342,
+          "ipcw_brier_at_horizon": 0.011590927786089413,
+          "mean_predicted_risk_at_horizon": 0.011451671419418125,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0005637433942432928
+        }
+      }
+    },
+    {
+      "subset_id": "total_cholesterol+triglycerides+bun",
+      "acquired_features": [
+        "total_cholesterol",
+        "triglycerides",
+        "bun"
+      ],
+      "acquired_count": 3,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "total_cholesterol",
+        "triglycerides",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 3.0,
+        "fpg_discounted_sensitivity": 3.0,
+        "fpg_premium_sensitivity": 3.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8318684038132965,
+          "ipcw_brier_at_horizon": 0.011580357221106606,
+          "mean_predicted_risk_at_horizon": 0.01149547678516421,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00045421542896257293
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8426826442284576,
+          "ipcw_brier_at_horizon": 0.011608543932414147,
+          "mean_predicted_risk_at_horizon": 0.011497625445145175,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.000517789368516243
+        }
+      }
+    },
+    {
+      "subset_id": "total_cholesterol+triglycerides+ccr",
+      "acquired_features": [
+        "total_cholesterol",
+        "triglycerides",
+        "ccr"
+      ],
+      "acquired_count": 3,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "total_cholesterol",
+        "triglycerides",
+        "ccr",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 3.0,
+        "fpg_discounted_sensitivity": 3.0,
+        "fpg_premium_sensitivity": 3.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.832603746795342,
+          "ipcw_brier_at_horizon": 0.011589726651398577,
+          "mean_predicted_risk_at_horizon": 0.011485013289464342,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.0004646789246624417
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8416277980520066,
+          "ipcw_brier_at_horizon": 0.011598855663458814,
+          "mean_predicted_risk_at_horizon": 0.011522763926868415,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0004926508867930026
+        }
+      }
+    },
+    {
+      "subset_id": "triglycerides+alt+bun",
+      "acquired_features": [
+        "triglycerides",
+        "alt",
+        "bun"
+      ],
+      "acquired_count": 3,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "triglycerides",
+        "alt",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 3.0,
+        "fpg_discounted_sensitivity": 3.0,
+        "fpg_premium_sensitivity": 3.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8334574103502232,
+          "ipcw_brier_at_horizon": 0.011581013143722554,
+          "mean_predicted_risk_at_horizon": 0.011440135060044255,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.0005095571540825287
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8441896489164471,
+          "ipcw_brier_at_horizon": 0.011590235882543326,
+          "mean_predicted_risk_at_horizon": 0.011458490320831845,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0005569244928295726
+        }
+      }
+    },
+    {
+      "subset_id": "triglycerides+alt+ccr",
+      "acquired_features": [
+        "triglycerides",
+        "alt",
+        "ccr"
+      ],
+      "acquired_count": 3,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "triglycerides",
+        "alt",
+        "ccr",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 3.0,
+        "fpg_discounted_sensitivity": 3.0,
+        "fpg_premium_sensitivity": 3.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8342166910204146,
+          "ipcw_brier_at_horizon": 0.011592098584408373,
+          "mean_predicted_risk_at_horizon": 0.011430749107908424,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.0005189431062183596
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8432899003047016,
+          "ipcw_brier_at_horizon": 0.01157925251349202,
+          "mean_predicted_risk_at_horizon": 0.011485999270198326,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0005294155434630923
+        }
+      }
+    },
+    {
+      "subset_id": "triglycerides+ccr+bun",
+      "acquired_features": [
+        "triglycerides",
+        "ccr",
+        "bun"
+      ],
+      "acquired_count": 3,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "triglycerides",
+        "ccr",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 3.0,
+        "fpg_discounted_sensitivity": 3.0,
+        "fpg_premium_sensitivity": 3.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8325470942667299,
+          "ipcw_brier_at_horizon": 0.011582605940606491,
+          "mean_predicted_risk_at_horizon": 0.011495307976533488,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.0004543842375932961
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8418596449270819,
+          "ipcw_brier_at_horizon": 0.011598902938537516,
+          "mean_predicted_risk_at_horizon": 0.011534485040728027,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.00048092977293339063
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+alt+ccr+bun",
+      "acquired_features": [
+        "fpg",
+        "alt",
+        "ccr",
+        "bun"
+      ],
+      "acquired_count": 4,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "alt",
+        "ccr",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 4.0,
+        "fpg_discounted_sensitivity": 3.5,
+        "fpg_premium_sensitivity": 5.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9110017272751832,
+          "ipcw_brier_at_horizon": 0.010539722938103128,
+          "mean_predicted_risk_at_horizon": 0.011826827317629903,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.0001228648964968805
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9084167154059051,
+          "ipcw_brier_at_horizon": 0.010385559007564335,
+          "mean_predicted_risk_at_horizon": 0.011848141787747042,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.00016727302591437558
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+total_cholesterol+alt+bun",
+      "acquired_features": [
+        "fpg",
+        "total_cholesterol",
+        "alt",
+        "bun"
+      ],
+      "acquired_count": 4,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "total_cholesterol",
+        "alt",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 4.0,
+        "fpg_discounted_sensitivity": 3.5,
+        "fpg_premium_sensitivity": 5.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9108679041995482,
+          "ipcw_brier_at_horizon": 0.010523237864558145,
+          "mean_predicted_risk_at_horizon": 0.011841510722595996,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00010818149153078715
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9082192458260996,
+          "ipcw_brier_at_horizon": 0.01035963453593013,
+          "mean_predicted_risk_at_horizon": 0.011865407206229564,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0001500076074318537
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+total_cholesterol+alt+ccr",
+      "acquired_features": [
+        "fpg",
+        "total_cholesterol",
+        "alt",
+        "ccr"
+      ],
+      "acquired_count": 4,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "total_cholesterol",
+        "alt",
+        "ccr",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 4.0,
+        "fpg_discounted_sensitivity": 3.5,
+        "fpg_premium_sensitivity": 5.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9109799553778695,
+          "ipcw_brier_at_horizon": 0.010531968728718711,
+          "mean_predicted_risk_at_horizon": 0.011819694048817801,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00012999816530898274
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9088434050242703,
+          "ipcw_brier_at_horizon": 0.010377148106541188,
+          "mean_predicted_risk_at_horizon": 0.011856595080715099,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.00015881973294631924
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+total_cholesterol+ccr+bun",
+      "acquired_features": [
+        "fpg",
+        "total_cholesterol",
+        "ccr",
+        "bun"
+      ],
+      "acquired_count": 4,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "total_cholesterol",
+        "ccr",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 4.0,
+        "fpg_discounted_sensitivity": 3.5,
+        "fpg_premium_sensitivity": 5.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9100313389933427,
+          "ipcw_brier_at_horizon": 0.010534210159664714,
+          "mean_predicted_risk_at_horizon": 0.01189013432295427,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -5.955789117251427e-05
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9076290070820655,
+          "ipcw_brier_at_horizon": 0.01036638440733071,
+          "mean_predicted_risk_at_horizon": 0.011862677882544224,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0001527369311171943
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+total_cholesterol+triglycerides+alt",
+      "acquired_features": [
+        "fpg",
+        "total_cholesterol",
+        "triglycerides",
+        "alt"
+      ],
+      "acquired_count": 4,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "total_cholesterol",
+        "triglycerides",
+        "alt",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 4.0,
+        "fpg_discounted_sensitivity": 3.5,
+        "fpg_premium_sensitivity": 5.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9116038171265496,
+          "ipcw_brier_at_horizon": 0.010516864509103725,
+          "mean_predicted_risk_at_horizon": 0.011823348234407245,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00012634397971953912
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9088887465067357,
+          "ipcw_brier_at_horizon": 0.010328585221932017,
+          "mean_predicted_risk_at_horizon": 0.011831182029546911,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.00018423278411450715
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+total_cholesterol+triglycerides+bun",
+      "acquired_features": [
+        "fpg",
+        "total_cholesterol",
+        "triglycerides",
+        "bun"
+      ],
+      "acquired_count": 4,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "total_cholesterol",
+        "triglycerides",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 4.0,
+        "fpg_discounted_sensitivity": 3.5,
+        "fpg_premium_sensitivity": 5.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9107598426359179,
+          "ipcw_brier_at_horizon": 0.010533434107044942,
+          "mean_predicted_risk_at_horizon": 0.011889387848294202,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -6.030436583258185e-05
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.907613360273255,
+          "ipcw_brier_at_horizon": 0.010313817304994062,
+          "mean_predicted_risk_at_horizon": 0.011832035423985596,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.000183379389675822
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+total_cholesterol+triglycerides+ccr",
+      "acquired_features": [
+        "fpg",
+        "total_cholesterol",
+        "triglycerides",
+        "ccr"
+      ],
+      "acquired_count": 4,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "total_cholesterol",
+        "triglycerides",
+        "ccr",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 4.0,
+        "fpg_discounted_sensitivity": 3.5,
+        "fpg_premium_sensitivity": 5.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9109114479941757,
+          "ipcw_brier_at_horizon": 0.010547765249657368,
+          "mean_predicted_risk_at_horizon": 0.011865959252940272,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -8.373296118651188e-05
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9082693841404631,
+          "ipcw_brier_at_horizon": 0.010333708732658287,
+          "mean_predicted_risk_at_horizon": 0.011821873448537978,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.00019354136512344036
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+triglycerides+alt+bun",
+      "acquired_features": [
+        "fpg",
+        "triglycerides",
+        "alt",
+        "bun"
+      ],
+      "acquired_count": 4,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "triglycerides",
+        "alt",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 4.0,
+        "fpg_discounted_sensitivity": 3.5,
+        "fpg_premium_sensitivity": 5.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9114442325389098,
+          "ipcw_brier_at_horizon": 0.010526381459249551,
+          "mean_predicted_risk_at_horizon": 0.011831492802009343,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00011819941211744026
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9082827467436079,
+          "ipcw_brier_at_horizon": 0.010350912411798708,
+          "mean_predicted_risk_at_horizon": 0.011826941783035288,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.00018847303062612987
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+triglycerides+alt+ccr",
+      "acquired_features": [
+        "fpg",
+        "triglycerides",
+        "alt",
+        "ccr"
+      ],
+      "acquired_count": 4,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "triglycerides",
+        "alt",
+        "ccr",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 4.0,
+        "fpg_discounted_sensitivity": 3.5,
+        "fpg_premium_sensitivity": 5.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9115631230567014,
+          "ipcw_brier_at_horizon": 0.010537831107604447,
+          "mean_predicted_risk_at_horizon": 0.01180973132733083,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00013996088679595411
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9089740615883521,
+          "ipcw_brier_at_horizon": 0.010369659362906845,
+          "mean_predicted_risk_at_horizon": 0.011818696220919678,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0001967185927417396
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+triglycerides+ccr+bun",
+      "acquired_features": [
+        "fpg",
+        "triglycerides",
+        "ccr",
+        "bun"
+      ],
+      "acquired_count": 4,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "triglycerides",
+        "ccr",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 4.0,
+        "fpg_discounted_sensitivity": 3.5,
+        "fpg_premium_sensitivity": 5.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9107834383570903,
+          "ipcw_brier_at_horizon": 0.010547778593155317,
+          "mean_predicted_risk_at_horizon": 0.011874919650740633,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -7.477256338615096e-05
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9077769093989239,
+          "ipcw_brier_at_horizon": 0.01035091718621566,
+          "mean_predicted_risk_at_horizon": 0.011819453742512349,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.00019596107114906898
+        }
+      }
+    },
+    {
+      "subset_id": "total_cholesterol+alt+ccr+bun",
+      "acquired_features": [
+        "total_cholesterol",
+        "alt",
+        "ccr",
+        "bun"
+      ],
+      "acquired_count": 4,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "total_cholesterol",
+        "alt",
+        "ccr",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 4.0,
+        "fpg_discounted_sensitivity": 4.0,
+        "fpg_premium_sensitivity": 4.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.827492594420216,
+          "ipcw_brier_at_horizon": 0.01161485948762071,
+          "mean_predicted_risk_at_horizon": 0.011424848341952452,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.0005248438721743316
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8400504398295114,
+          "ipcw_brier_at_horizon": 0.011571693594954706,
+          "mean_predicted_risk_at_horizon": 0.011497770086927187,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0005176447267342312
+        }
+      }
+    },
+    {
+      "subset_id": "total_cholesterol+triglycerides+alt+bun",
+      "acquired_features": [
+        "total_cholesterol",
+        "triglycerides",
+        "alt",
+        "bun"
+      ],
+      "acquired_count": 4,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "total_cholesterol",
+        "triglycerides",
+        "alt",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 4.0,
+        "fpg_discounted_sensitivity": 4.0,
+        "fpg_premium_sensitivity": 4.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8335800625047234,
+          "ipcw_brier_at_horizon": 0.011581661999720274,
+          "mean_predicted_risk_at_horizon": 0.011434893810601273,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.0005147984035255102
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8445752228328285,
+          "ipcw_brier_at_horizon": 0.01159081327902381,
+          "mean_predicted_risk_at_horizon": 0.011452514120241385,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0005629006934200331
+        }
+      }
+    },
+    {
+      "subset_id": "total_cholesterol+triglycerides+alt+ccr",
+      "acquired_features": [
+        "total_cholesterol",
+        "triglycerides",
+        "alt",
+        "ccr"
+      ],
+      "acquired_count": 4,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "total_cholesterol",
+        "triglycerides",
+        "alt",
+        "ccr",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 4.0,
+        "fpg_discounted_sensitivity": 4.0,
+        "fpg_premium_sensitivity": 4.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8342978511821285,
+          "ipcw_brier_at_horizon": 0.011592550755617223,
+          "mean_predicted_risk_at_horizon": 0.011426975838798837,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.000522716375327947
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8436305895797507,
+          "ipcw_brier_at_horizon": 0.011579887417378254,
+          "mean_predicted_risk_at_horizon": 0.011481242573645334,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0005341722400160846
+        }
+      }
+    },
+    {
+      "subset_id": "total_cholesterol+triglycerides+ccr+bun",
+      "acquired_features": [
+        "total_cholesterol",
+        "triglycerides",
+        "ccr",
+        "bun"
+      ],
+      "acquired_count": 4,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "total_cholesterol",
+        "triglycerides",
+        "ccr",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 4.0,
+        "fpg_discounted_sensitivity": 4.0,
+        "fpg_premium_sensitivity": 4.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8325768453934256,
+          "ipcw_brier_at_horizon": 0.011583502355037934,
+          "mean_predicted_risk_at_horizon": 0.011492791483694281,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00045690073043250234
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8421591042898638,
+          "ipcw_brier_at_horizon": 0.011599683705849148,
+          "mean_predicted_risk_at_horizon": 0.011530521431011399,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.00048489338265001944
+        }
+      }
+    },
+    {
+      "subset_id": "triglycerides+alt+ccr+bun",
+      "acquired_features": [
+        "triglycerides",
+        "alt",
+        "ccr",
+        "bun"
+      ],
+      "acquired_count": 4,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "triglycerides",
+        "alt",
+        "ccr",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 4.0,
+        "fpg_discounted_sensitivity": 4.0,
+        "fpg_premium_sensitivity": 4.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8342286598644876,
+          "ipcw_brier_at_horizon": 0.011585627141401723,
+          "mean_predicted_risk_at_horizon": 0.011438771937478047,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.0005109202766487367
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8438119555096125,
+          "ipcw_brier_at_horizon": 0.011579088309230823,
+          "mean_predicted_risk_at_horizon": 0.011494344625818326,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.000521070187843092
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+total_cholesterol+alt+ccr+bun",
+      "acquired_features": [
+        "fpg",
+        "total_cholesterol",
+        "alt",
+        "ccr",
+        "bun"
+      ],
+      "acquired_count": 5,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "total_cholesterol",
+        "alt",
+        "ccr",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 5.0,
+        "fpg_discounted_sensitivity": 4.5,
+        "fpg_premium_sensitivity": 6.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9111059132131137,
+          "ipcw_brier_at_horizon": 0.01054044869935953,
+          "mean_predicted_risk_at_horizon": 0.011823373477585403,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00012631873654138023
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9084772468560479,
+          "ipcw_brier_at_horizon": 0.01037328683899509,
+          "mean_predicted_risk_at_horizon": 0.011849277371937833,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.00016613744172358502
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+total_cholesterol+triglycerides+alt+bun",
+      "acquired_features": [
+        "fpg",
+        "total_cholesterol",
+        "triglycerides",
+        "alt",
+        "bun"
+      ],
+      "acquired_count": 5,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "total_cholesterol",
+        "triglycerides",
+        "alt",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 5.0,
+        "fpg_discounted_sensitivity": 4.5,
+        "fpg_premium_sensitivity": 6.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9117784482610238,
+          "ipcw_brier_at_horizon": 0.01053288854350843,
+          "mean_predicted_risk_at_horizon": 0.01182074508963737,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00012894712448941435
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9083552702734959,
+          "ipcw_brier_at_horizon": 0.010324515686808054,
+          "mean_predicted_risk_at_horizon": 0.011819582645556003,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.00019583216810541496
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+total_cholesterol+triglycerides+alt+ccr",
+      "acquired_features": [
+        "fpg",
+        "total_cholesterol",
+        "triglycerides",
+        "alt",
+        "ccr"
+      ],
+      "acquired_count": 5,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "total_cholesterol",
+        "triglycerides",
+        "alt",
+        "ccr",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 5.0,
+        "fpg_discounted_sensitivity": 4.5,
+        "fpg_premium_sensitivity": 6.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9119244681587142,
+          "ipcw_brier_at_horizon": 0.010544779856458943,
+          "mean_predicted_risk_at_horizon": 0.011799651726832387,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.0001500404872943964
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9089722342238195,
+          "ipcw_brier_at_horizon": 0.010342314241426594,
+          "mean_predicted_risk_at_horizon": 0.011811411039260469,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0002040037744009491
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+total_cholesterol+triglycerides+ccr+bun",
+      "acquired_features": [
+        "fpg",
+        "total_cholesterol",
+        "triglycerides",
+        "ccr",
+        "bun"
+      ],
+      "acquired_count": 5,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "total_cholesterol",
+        "triglycerides",
+        "ccr",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 5.0,
+        "fpg_discounted_sensitivity": 4.5,
+        "fpg_premium_sensitivity": 6.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9110103904385122,
+          "ipcw_brier_at_horizon": 0.010555726014058747,
+          "mean_predicted_risk_at_horizon": 0.011867033374282653,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -8.265883984413108e-05
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9078220224608228,
+          "ipcw_brier_at_horizon": 0.010328650999423107,
+          "mean_predicted_risk_at_horizon": 0.011814621145207926,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.00020079366845349167
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+triglycerides+alt+ccr+bun",
+      "acquired_features": [
+        "fpg",
+        "triglycerides",
+        "alt",
+        "ccr",
+        "bun"
+      ],
+      "acquired_count": 5,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "triglycerides",
+        "alt",
+        "ccr",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 5.0,
+        "fpg_discounted_sensitivity": 4.5,
+        "fpg_premium_sensitivity": 6.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9116890808919457,
+          "ipcw_brier_at_horizon": 0.010546959756084705,
+          "mean_predicted_risk_at_horizon": 0.011811717562355774,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00013797465177100947
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.908506598898853,
+          "ipcw_brier_at_horizon": 0.010363679358341652,
+          "mean_predicted_risk_at_horizon": 0.011811104557338718,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.00020431025632270013
+        }
+      }
+    },
+    {
+      "subset_id": "total_cholesterol+triglycerides+alt+ccr+bun",
+      "acquired_features": [
+        "total_cholesterol",
+        "triglycerides",
+        "alt",
+        "ccr",
+        "bun"
+      ],
+      "acquired_count": 5,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "total_cholesterol",
+        "triglycerides",
+        "alt",
+        "ccr",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 5.0,
+        "fpg_discounted_sensitivity": 5.0,
+        "fpg_premium_sensitivity": 5.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8343284002317625,
+          "ipcw_brier_at_horizon": 0.011586081585150523,
+          "mean_predicted_risk_at_horizon": 0.011434629350710695,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.0005150628634160888
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.8441823394583167,
+          "ipcw_brier_at_horizon": 0.011580541538367604,
+          "mean_predicted_risk_at_horizon": 0.011488949478346538,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0005264653353148803
+        }
+      }
+    },
+    {
+      "subset_id": "fpg+total_cholesterol+triglycerides+alt+ccr+bun",
+      "acquired_features": [
+        "fpg",
+        "total_cholesterol",
+        "triglycerides",
+        "alt",
+        "ccr",
+        "bun"
+      ],
+      "acquired_count": 6,
+      "predictor_features": [
+        "age",
+        "bmi",
+        "sbp",
+        "dbp",
+        "fpg",
+        "total_cholesterol",
+        "triglycerides",
+        "alt",
+        "ccr",
+        "bun",
+        "gender",
+        "family_history_diabetes"
+      ],
+      "cost_by_scheme": {
+        "uniform_unit": 6.0,
+        "fpg_discounted_sensitivity": 5.5,
+        "fpg_premium_sensitivity": 7.0
+      },
+      "fit_warnings": [],
+      "metrics": {
+        "validation": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9120198769443245,
+          "ipcw_brier_at_horizon": 0.010552421064035377,
+          "mean_predicted_risk_at_horizon": 0.011801219933880717,
+          "km_observed_risk_at_horizon": 0.011949692214126784,
+          "calibration_in_the_large_difference": -0.00014847228024606612
+        },
+        "test": {
+          "participants": 31775,
+          "events_total": 626,
+          "harrell_c_index": 0.9086049339527642,
+          "ipcw_brier_at_horizon": 0.010338086523554993,
+          "mean_predicted_risk_at_horizon": 0.01180483971186714,
+          "km_observed_risk_at_horizon": 0.012015414813661418,
+          "calibration_in_the_large_difference": -0.0002105751017942789
+        }
+      }
+    }
+  ],
+  "acquisition_policy": null,
+  "environment": {
+    "python": "3.12.4",
+    "numpy": "1.26.4",
+    "pandas": "2.2.3",
+    "scikit-learn": "1.4.2",
+    "statsmodels": "0.14.2",
+    "joblib": "1.4.2"
+  },
+  "artifact_migration": {
+    "date": "2026-11-10",
+    "source_commit": "0b9a4f4",
+    "original_sha256": "988311d802007b903673e772fa1c5aa0547f92ebd57232cc9b18a96515fb8188",
+    "changes": "Descriptive identifiers, paths and dependent checksums; numerical results unchanged.",
+    "models_refitted": false,
+    "metrics_recomputed": false
+  }
+}

@@ -1,0 +1,766 @@
+{
+  "schema": "fpg_comparison_v1",
+  "protocol": {
+    "schema": "frozen_fpg_comparison_v1",
+    "scope": "Post-development, descriptive comparison; not a preregistered confirmatory analysis.",
+    "methods": [
+      "base_plus_fpg",
+      "adaptive"
+    ],
+    "horizon_years": 3.0,
+    "bootstrap_replicates": 200,
+    "bootstrap_seed": 20260827,
+    "contrasts": [
+      [
+        "adaptive",
+        "base_plus_fpg"
+      ]
+    ],
+    "refit_models": false,
+    "retune_policy": false,
+    "new_dataset": false,
+    "participant_level_output": false
+  },
+  "results": {
+    "internal": {
+      "methods": {
+        "base_plus_fpg": {
+          "prediction": {
+            "participants": 31775,
+            "events_total": 626,
+            "harrell_c_index": 0.9080043020729509,
+            "ipcw_brier_at_horizon": 0.010368000220594295,
+            "ipcw_cumulative_dynamic_auc": 0.9239633371219685,
+            "ipcw_average_precision": 0.21216528345886662,
+            "horizon_cases": 271,
+            "horizon_controls": 15593,
+            "excluded_censored_before_or_at_horizon": 15911,
+            "mean_predicted_risk_at_horizon": 0.011896187687904448,
+            "km_observed_risk_at_horizon": 0.012015414813661418,
+            "calibration_in_the_large_difference": -0.00011922712575697034,
+            "calibration_mean_absolute_bin_gap": 0.00418277200595061,
+            "calibration_maximum_absolute_bin_gap": 0.02280281853100459,
+            "calibration_bins": [
+              {
+                "bin": 1,
+                "participants": 3178,
+                "events_total": 4,
+                "mean_predicted_risk": 0.00032022243695402813,
+                "km_observed_risk": 0.0003463803255975284,
+                "absolute_gap": 2.615788864350027e-05,
+                "minimum_predicted_risk": 4.7785698623625805e-06,
+                "maximum_predicted_risk": 0.0005516357711718989
+              },
+              {
+                "bin": 2,
+                "participants": 3178,
+                "events_total": 9,
+                "mean_predicted_risk": 0.0007758507714315276,
+                "km_observed_risk": 0.0016511025491457998,
+                "absolute_gap": 0.0008752517777142722,
+                "minimum_predicted_risk": 0.0005516919544291676,
+                "maximum_predicted_risk": 0.0010077628737471533
+              },
+              {
+                "bin": 3,
+                "participants": 3178,
+                "events_total": 8,
+                "mean_predicted_risk": 0.0012658212140120866,
+                "km_observed_risk": 0.0008007404967939058,
+                "absolute_gap": 0.0004650807172181808,
+                "minimum_predicted_risk": 0.0010078469943083368,
+                "maximum_predicted_risk": 0.001550760063935841
+              },
+              {
+                "bin": 4,
+                "participants": 3178,
+                "events_total": 6,
+                "mean_predicted_risk": 0.0018834694177405666,
+                "km_observed_risk": 0.0006313131313131493,
+                "absolute_gap": 0.0012521562864274173,
+                "minimum_predicted_risk": 0.0015509286047147297,
+                "maximum_predicted_risk": 0.002246826796265089
+              },
+              {
+                "bin": 5,
+                "participants": 3178,
+                "events_total": 11,
+                "mean_predicted_risk": 0.0026920580618535095,
+                "km_observed_risk": 0.001349319262847648,
+                "absolute_gap": 0.0013427387990058615,
+                "minimum_predicted_risk": 0.0022468387399841028,
+                "maximum_predicted_risk": 0.0031982178830081143
+              },
+              {
+                "bin": 6,
+                "participants": 3177,
+                "events_total": 16,
+                "mean_predicted_risk": 0.0038570148580451082,
+                "km_observed_risk": 0.0023237219293223976,
+                "absolute_gap": 0.0015332929287227106,
+                "minimum_predicted_risk": 0.003198231308680688,
+                "maximum_predicted_risk": 0.004606863376187653
+              },
+              {
+                "bin": 7,
+                "participants": 3177,
+                "events_total": 24,
+                "mean_predicted_risk": 0.005641167056339936,
+                "km_observed_risk": 0.0037824603116914934,
+                "absolute_gap": 0.0018587067446484426,
+                "minimum_predicted_risk": 0.004607223774271363,
+                "maximum_predicted_risk": 0.006855946360983856
+              },
+              {
+                "bin": 8,
+                "participants": 3177,
+                "events_total": 31,
+                "mean_predicted_risk": 0.008731321370688242,
+                "km_observed_risk": 0.0038649288300534046,
+                "absolute_gap": 0.004866392540634838,
+                "minimum_predicted_risk": 0.006856365962136568,
+                "maximum_predicted_risk": 0.011188003205259589
+              },
+              {
+                "bin": 9,
+                "participants": 3177,
+                "events_total": 60,
+                "mean_predicted_risk": 0.016004680964683386,
+                "km_observed_risk": 0.009194221118391077,
+                "absolute_gap": 0.006810459846292308,
+                "minimum_predicted_risk": 0.011190908993199189,
+                "maximum_predicted_risk": 0.02317152977662673
+              },
+              {
+                "bin": 10,
+                "participants": 3177,
+                "events_total": 457,
+                "mean_predicted_risk": 0.07780680944827105,
+                "km_observed_risk": 0.10060962797927564,
+                "absolute_gap": 0.02280281853100459,
+                "minimum_predicted_risk": 0.02317329865936646,
+                "maximum_predicted_risk": 0.7572185801819888
+              }
+            ]
+          },
+          "mean_cost": 1.0
+        },
+        "adaptive": {
+          "prediction": {
+            "participants": 31775,
+            "events_total": 626,
+            "harrell_c_index": 0.9063279235348448,
+            "ipcw_brier_at_horizon": 0.010338306883538925,
+            "ipcw_cumulative_dynamic_auc": 0.9210282903674469,
+            "ipcw_average_precision": 0.21558488806956944,
+            "horizon_cases": 271,
+            "horizon_controls": 15593,
+            "excluded_censored_before_or_at_horizon": 15911,
+            "mean_predicted_risk_at_horizon": 0.011821066058846736,
+            "km_observed_risk_at_horizon": 0.012015414813661418,
+            "calibration_in_the_large_difference": -0.00019434875481468168,
+            "calibration_mean_absolute_bin_gap": 0.004700557567600757,
+            "calibration_maximum_absolute_bin_gap": 0.024874586385900288,
+            "calibration_bins": [
+              {
+                "bin": 1,
+                "participants": 3178,
+                "events_total": 6,
+                "mean_predicted_risk": 0.00046614439228624774,
+                "km_observed_risk": 0.0011119155036219963,
+                "absolute_gap": 0.0006457711113357486,
+                "minimum_predicted_risk": 3.20937957284384e-05,
+                "maximum_predicted_risk": 0.000757848194340216
+              },
+              {
+                "bin": 2,
+                "participants": 3178,
+                "events_total": 12,
+                "mean_predicted_risk": 0.0009516797992844189,
+                "km_observed_risk": 0.0019582040677685875,
+                "absolute_gap": 0.0010065242684841685,
+                "minimum_predicted_risk": 0.0007578504647820505,
+                "maximum_predicted_risk": 0.001130523117736204
+              },
+              {
+                "bin": 3,
+                "participants": 3178,
+                "events_total": 4,
+                "mean_predicted_risk": 0.0013060604314099062,
+                "km_observed_risk": 0.0005027652086475598,
+                "absolute_gap": 0.0008032952227623464,
+                "minimum_predicted_risk": 0.0011306173261054209,
+                "maximum_predicted_risk": 0.0014906348482612852
+              },
+              {
+                "bin": 4,
+                "participants": 3178,
+                "events_total": 6,
+                "mean_predicted_risk": 0.0017303565041265026,
+                "km_observed_risk": 0.0,
+                "absolute_gap": 0.0017303565041265026,
+                "minimum_predicted_risk": 0.0014908420835164637,
+                "maximum_predicted_risk": 0.0020474631463608395
+              },
+              {
+                "bin": 5,
+                "participants": 3178,
+                "events_total": 9,
+                "mean_predicted_risk": 0.0025055479458363544,
+                "km_observed_risk": 0.0015476929251329041,
+                "absolute_gap": 0.0009578550207034503,
+                "minimum_predicted_risk": 0.0020474680634040565,
+                "maximum_predicted_risk": 0.0030356727321343424
+              },
+              {
+                "bin": 6,
+                "participants": 3177,
+                "events_total": 14,
+                "mean_predicted_risk": 0.003724743986729265,
+                "km_observed_risk": 0.0023033649147140567,
+                "absolute_gap": 0.0014213790720152084,
+                "minimum_predicted_risk": 0.0030356947465921547,
+                "maximum_predicted_risk": 0.004497444325627709
+              },
+              {
+                "bin": 7,
+                "participants": 3177,
+                "events_total": 23,
+                "mean_predicted_risk": 0.005532747503144362,
+                "km_observed_risk": 0.0033265314896243625,
+                "absolute_gap": 0.0022062160135199998,
+                "minimum_predicted_risk": 0.0044985721120780475,
+                "maximum_predicted_risk": 0.006741076013746294
+              },
+              {
+                "bin": 8,
+                "participants": 3177,
+                "events_total": 33,
+                "mean_predicted_risk": 0.008580312322758991,
+                "km_observed_risk": 0.0038433859109701096,
+                "absolute_gap": 0.0047369264117888814,
+                "minimum_predicted_risk": 0.00674129598844897,
+                "maximum_predicted_risk": 0.011008993763667596
+              },
+              {
+                "bin": 9,
+                "participants": 3177,
+                "events_total": 56,
+                "mean_predicted_risk": 0.01571530937242835,
+                "km_observed_risk": 0.0070868649894902935,
+                "absolute_gap": 0.008628444382938055,
+                "minimum_predicted_risk": 0.01101098644248244,
+                "maximum_predicted_risk": 0.022727632530945896
+              },
+              {
+                "bin": 10,
+                "participants": 3177,
+                "events_total": 463,
+                "mean_predicted_risk": 0.07771417178379042,
+                "km_observed_risk": 0.10258875816969071,
+                "absolute_gap": 0.024874586385900288,
+                "minimum_predicted_risk": 0.022728885300172474,
+                "maximum_predicted_risk": 0.749594249119487
+              }
+            ]
+          },
+          "mean_cost": 1.5991817466561762
+        }
+      },
+      "bootstrap": {
+        "method": "participant-level event-stratified paired percentile bootstrap",
+        "seed": 20260827,
+        "replicates_requested": 200,
+        "stratification": "event status within the unchanged test split",
+        "training_censoring_distribution_refit_per_replicate": false,
+        "methods": {
+          "base_plus_fpg": {
+            "harrell_c_index": {
+              "point_estimate": 0.9080043020729509,
+              "ci95_lower": 0.8904987330018662,
+              "ci95_upper": 0.92351101167613,
+              "valid_replicates": 200
+            },
+            "ipcw_brier_at_horizon": {
+              "point_estimate": 0.010368000220594295,
+              "ci95_lower": 0.009531965639129364,
+              "ci95_upper": 0.01119808402428684,
+              "valid_replicates": 200
+            },
+            "ipcw_cumulative_dynamic_auc": {
+              "point_estimate": 0.9239633371219685,
+              "ci95_lower": 0.9036317200621836,
+              "ci95_upper": 0.9405035979928879,
+              "valid_replicates": 200
+            },
+            "ipcw_average_precision": {
+              "point_estimate": 0.21216528345886662,
+              "ci95_lower": 0.17470307408384558,
+              "ci95_upper": 0.2678509556475371,
+              "valid_replicates": 200
+            },
+            "mean_cost": {
+              "point_estimate": 1.0,
+              "ci95_lower": 1.0,
+              "ci95_upper": 1.0,
+              "valid_replicates": 200
+            }
+          },
+          "adaptive": {
+            "harrell_c_index": {
+              "point_estimate": 0.9063279235348448,
+              "ci95_lower": 0.8884721776681523,
+              "ci95_upper": 0.9214981586167198,
+              "valid_replicates": 200
+            },
+            "ipcw_brier_at_horizon": {
+              "point_estimate": 0.010338306883538925,
+              "ci95_lower": 0.009506042871755875,
+              "ci95_upper": 0.011145513872092507,
+              "valid_replicates": 200
+            },
+            "ipcw_cumulative_dynamic_auc": {
+              "point_estimate": 0.9210282903674469,
+              "ci95_lower": 0.8995849664065837,
+              "ci95_upper": 0.9380606868457816,
+              "valid_replicates": 200
+            },
+            "ipcw_average_precision": {
+              "point_estimate": 0.21558488806956944,
+              "ci95_lower": 0.1759553363362271,
+              "ci95_upper": 0.2680120163761414,
+              "valid_replicates": 200
+            },
+            "mean_cost": {
+              "point_estimate": 1.5991817466561762,
+              "ci95_lower": 1.5815515342250197,
+              "ci95_upper": 1.6141424075531077,
+              "valid_replicates": 200
+            }
+          }
+        },
+        "contrasts": {
+          "adaptive_minus_base_plus_fpg": {
+            "harrell_c_index": {
+              "point_estimate": -0.0016763785381060936,
+              "ci95_lower": -0.004889092830678965,
+              "ci95_upper": 0.0006701255684865243,
+              "valid_replicates": 200
+            },
+            "ipcw_brier_at_horizon": {
+              "point_estimate": -2.96933370553705e-05,
+              "ci95_lower": -0.00010685561244468825,
+              "ci95_upper": 4.275487848524399e-05,
+              "valid_replicates": 200
+            },
+            "ipcw_cumulative_dynamic_auc": {
+              "point_estimate": -0.0029350467545216086,
+              "ci95_lower": -0.007189657924955344,
+              "ci95_upper": 0.00043372027317161897,
+              "valid_replicates": 200
+            },
+            "ipcw_average_precision": {
+              "point_estimate": 0.0034196046107028144,
+              "ci95_lower": -0.008826897152405921,
+              "ci95_upper": 0.015373424473092697,
+              "valid_replicates": 200
+            },
+            "mean_cost": {
+              "point_estimate": 0.5991817466561762,
+              "ci95_lower": 0.5815515342250196,
+              "ci95_upper": 0.6141424075531077,
+              "valid_replicates": 200
+            }
+          }
+        }
+      },
+      "archived_adaptive_reproduced": true,
+      "censoring_source": "primary training"
+    },
+    "external": {
+      "methods": {
+        "base_plus_fpg": {
+          "prediction": {
+            "participants": 15464,
+            "events_total": 373,
+            "harrell_c_index": 0.8533657758118299,
+            "ipcw_brier_at_horizon": 0.007580410781223883,
+            "ipcw_cumulative_dynamic_auc": 0.8556282364855942,
+            "ipcw_average_precision": 0.06187195857007739,
+            "horizon_cases": 101,
+            "horizon_controls": 10998,
+            "excluded_censored_before_or_at_horizon": 4365,
+            "mean_predicted_risk_at_horizon": 0.008798145200247163,
+            "km_observed_risk_at_horizon": 0.007841098030138993,
+            "calibration_in_the_large_difference": 0.0009570471701081697,
+            "calibration_mean_absolute_bin_gap": 0.0027815444033124767,
+            "calibration_maximum_absolute_bin_gap": 0.009883540113083532,
+            "calibration_bins": [
+              {
+                "bin": 1,
+                "participants": 1547,
+                "events_total": 2,
+                "mean_predicted_risk": 0.0007684220501788033,
+                "km_observed_risk": 0.0,
+                "absolute_gap": 0.0007684220501788033,
+                "minimum_predicted_risk": 2.2120418035287415e-05,
+                "maximum_predicted_risk": 0.0011455967199891504
+              },
+              {
+                "bin": 2,
+                "participants": 1547,
+                "events_total": 3,
+                "mean_predicted_risk": 0.0014814501673067202,
+                "km_observed_risk": 0.0007496251874062887,
+                "absolute_gap": 0.0007318249799004315,
+                "minimum_predicted_risk": 0.00114563111197874,
+                "maximum_predicted_risk": 0.001802759353845329
+              },
+              {
+                "bin": 3,
+                "participants": 1547,
+                "events_total": 2,
+                "mean_predicted_risk": 0.002185503769678386,
+                "km_observed_risk": 0.0007299270072992359,
+                "absolute_gap": 0.00145557676237915,
+                "minimum_predicted_risk": 0.0018043953396609247,
+                "maximum_predicted_risk": 0.0025913409533636633
+              },
+              {
+                "bin": 4,
+                "participants": 1547,
+                "events_total": 13,
+                "mean_predicted_risk": 0.0030472517238316166,
+                "km_observed_risk": 0.0022486820829955567,
+                "absolute_gap": 0.0007985696408360598,
+                "minimum_predicted_risk": 0.0025913579695618916,
+                "maximum_predicted_risk": 0.003535545603031931
+              },
+              {
+                "bin": 5,
+                "participants": 1546,
+                "events_total": 13,
+                "mean_predicted_risk": 0.004157129159378664,
+                "km_observed_risk": 0.002368598666320665,
+                "absolute_gap": 0.001788530493057999,
+                "minimum_predicted_risk": 0.003538702456514664,
+                "maximum_predicted_risk": 0.004813364473748694
+              },
+              {
+                "bin": 6,
+                "participants": 1546,
+                "events_total": 12,
+                "mean_predicted_risk": 0.005603600543282754,
+                "km_observed_risk": 0.0015390500644281158,
+                "absolute_gap": 0.004064550478854638,
+                "minimum_predicted_risk": 0.004814732110775766,
+                "maximum_predicted_risk": 0.006499824610369909
+              },
+              {
+                "bin": 7,
+                "participants": 1546,
+                "events_total": 22,
+                "mean_predicted_risk": 0.007663001448570857,
+                "km_observed_risk": 0.0038558158605221937,
+                "absolute_gap": 0.003807185588048663,
+                "minimum_predicted_risk": 0.006500518352439033,
+                "maximum_predicted_risk": 0.008931983481358818
+              },
+              {
+                "bin": 8,
+                "participants": 1546,
+                "events_total": 38,
+                "mean_predicted_risk": 0.010888730332667178,
+                "km_observed_risk": 0.007951477032303922,
+                "absolute_gap": 0.002937253300363256,
+                "minimum_predicted_risk": 0.008932533934787545,
+                "maximum_predicted_risk": 0.013196650350323469
+              },
+              {
+                "bin": 9,
+                "participants": 1546,
+                "events_total": 83,
+                "mean_predicted_risk": 0.016834666981379153,
+                "km_observed_risk": 0.015249908059885797,
+                "absolute_gap": 0.001584758921493356,
+                "minimum_predicted_risk": 0.013197369792870117,
+                "maximum_predicted_risk": 0.021526117946140455
+              },
+              {
+                "bin": 10,
+                "participants": 1546,
+                "events_total": 185,
+                "mean_predicted_risk": 0.0353696194698521,
+                "km_observed_risk": 0.04525315958293563,
+                "absolute_gap": 0.009883540113083532,
+                "minimum_predicted_risk": 0.021532230729544466,
+                "maximum_predicted_risk": 0.17888682183037374
+              }
+            ]
+          },
+          "mean_cost": 1.0
+        },
+        "adaptive": {
+          "prediction": {
+            "participants": 15464,
+            "events_total": 373,
+            "harrell_c_index": 0.8524842512711529,
+            "ipcw_brier_at_horizon": 0.007583281942201293,
+            "ipcw_cumulative_dynamic_auc": 0.8521528369341776,
+            "ipcw_average_precision": 0.06207250582958304,
+            "horizon_cases": 101,
+            "horizon_controls": 10998,
+            "excluded_censored_before_or_at_horizon": 4365,
+            "mean_predicted_risk_at_horizon": 0.008338341771740794,
+            "km_observed_risk_at_horizon": 0.007841098030138993,
+            "calibration_in_the_large_difference": 0.0004972437416018004,
+            "calibration_mean_absolute_bin_gap": 0.0030185090086670627,
+            "calibration_maximum_absolute_bin_gap": 0.01342537414776878,
+            "calibration_bins": [
+              {
+                "bin": 1,
+                "participants": 1547,
+                "events_total": 3,
+                "mean_predicted_risk": 0.0008848449853600767,
+                "km_observed_risk": 0.0,
+                "absolute_gap": 0.0008848449853600767,
+                "minimum_predicted_risk": 0.00016765816245045695,
+                "maximum_predicted_risk": 0.001178051056474172
+              },
+              {
+                "bin": 2,
+                "participants": 1547,
+                "events_total": 1,
+                "mean_predicted_risk": 0.0013965026255106814,
+                "km_observed_risk": 0.0007547169811320531,
+                "absolute_gap": 0.0006417856443786283,
+                "minimum_predicted_risk": 0.0011786003305892523,
+                "maximum_predicted_risk": 0.0016168426665919
+              },
+              {
+                "bin": 3,
+                "participants": 1547,
+                "events_total": 5,
+                "mean_predicted_risk": 0.0019749689515658466,
+                "km_observed_risk": 0.0014769146832162017,
+                "absolute_gap": 0.000498054268349645,
+                "minimum_predicted_risk": 0.0016170310249430386,
+                "maximum_predicted_risk": 0.0024235112168470296
+              },
+              {
+                "bin": 4,
+                "participants": 1547,
+                "events_total": 11,
+                "mean_predicted_risk": 0.002915641048004042,
+                "km_observed_risk": 0.0022444992676118325,
+                "absolute_gap": 0.0006711417803922097,
+                "minimum_predicted_risk": 0.002423987449921561,
+                "maximum_predicted_risk": 0.003441615559588551
+              },
+              {
+                "bin": 5,
+                "participants": 1546,
+                "events_total": 15,
+                "mean_predicted_risk": 0.004078120067926492,
+                "km_observed_risk": 0.00236767688036299,
+                "absolute_gap": 0.001710443187563502,
+                "minimum_predicted_risk": 0.00344191416954831,
+                "maximum_predicted_risk": 0.004748005443369729
+              },
+              {
+                "bin": 6,
+                "participants": 1546,
+                "events_total": 10,
+                "mean_predicted_risk": 0.00555619000163108,
+                "km_observed_risk": 0.001535636493325443,
+                "absolute_gap": 0.004020553508305637,
+                "minimum_predicted_risk": 0.004751876825717205,
+                "maximum_predicted_risk": 0.006459871899710756
+              },
+              {
+                "bin": 7,
+                "participants": 1546,
+                "events_total": 23,
+                "mean_predicted_risk": 0.00759805790476854,
+                "km_observed_risk": 0.003841756727933854,
+                "absolute_gap": 0.003756301176834686,
+                "minimum_predicted_risk": 0.006460285612246208,
+                "maximum_predicted_risk": 0.008842363916156337
+              },
+              {
+                "bin": 8,
+                "participants": 1546,
+                "events_total": 34,
+                "mean_predicted_risk": 0.010679642125965423,
+                "km_observed_risk": 0.0071973960664711845,
+                "absolute_gap": 0.003482246059494239,
+                "minimum_predicted_risk": 0.008850559915760225,
+                "maximum_predicted_risk": 0.012901612230889592
+              },
+              {
+                "bin": 9,
+                "participants": 1546,
+                "events_total": 78,
+                "mean_predicted_risk": 0.016242540980419183,
+                "km_observed_risk": 0.015142129540063887,
+                "absolute_gap": 0.0011004114403552964,
+                "minimum_predicted_risk": 0.012909710368745997,
+                "maximum_predicted_risk": 0.02048998480621167
+              },
+              {
+                "bin": 10,
+                "participants": 1546,
+                "events_total": 193,
+                "mean_predicted_risk": 0.03207384396123492,
+                "km_observed_risk": 0.0454992181090037,
+                "absolute_gap": 0.01342537414776878,
+                "minimum_predicted_risk": 0.020491772900479877,
+                "maximum_predicted_risk": 0.12454837999507928
+              }
+            ]
+          },
+          "mean_cost": 1.2968830832902225
+        }
+      },
+      "bootstrap": {
+        "method": "participant-level event-stratified paired percentile bootstrap",
+        "seed": 20260827,
+        "replicates_requested": 200,
+        "stratification": "event status within the unchanged test split",
+        "training_censoring_distribution_refit_per_replicate": false,
+        "methods": {
+          "base_plus_fpg": {
+            "harrell_c_index": {
+              "point_estimate": 0.8533657758118299,
+              "ci95_lower": 0.8341999446143428,
+              "ci95_upper": 0.8707391189155584,
+              "valid_replicates": 200
+            },
+            "ipcw_brier_at_horizon": {
+              "point_estimate": 0.007580410781223883,
+              "ci95_lower": 0.006401598965454976,
+              "ci95_upper": 0.00880629372267199,
+              "valid_replicates": 200
+            },
+            "ipcw_cumulative_dynamic_auc": {
+              "point_estimate": 0.8556282364855942,
+              "ci95_lower": 0.8180975803136938,
+              "ci95_upper": 0.8860099041266466,
+              "valid_replicates": 200
+            },
+            "ipcw_average_precision": {
+              "point_estimate": 0.06187195857007739,
+              "ci95_lower": 0.04087782944648527,
+              "ci95_upper": 0.10263755756015855,
+              "valid_replicates": 200
+            },
+            "mean_cost": {
+              "point_estimate": 1.0,
+              "ci95_lower": 1.0,
+              "ci95_upper": 1.0,
+              "valid_replicates": 200
+            }
+          },
+          "adaptive": {
+            "harrell_c_index": {
+              "point_estimate": 0.8524842512711529,
+              "ci95_lower": 0.8318227569306359,
+              "ci95_upper": 0.8702034327469512,
+              "valid_replicates": 200
+            },
+            "ipcw_brier_at_horizon": {
+              "point_estimate": 0.007583281942201293,
+              "ci95_lower": 0.006393747905398135,
+              "ci95_upper": 0.008812863395717883,
+              "valid_replicates": 200
+            },
+            "ipcw_cumulative_dynamic_auc": {
+              "point_estimate": 0.8521528369341776,
+              "ci95_lower": 0.8132157812930274,
+              "ci95_upper": 0.8833399068713287,
+              "valid_replicates": 200
+            },
+            "ipcw_average_precision": {
+              "point_estimate": 0.06207250582958304,
+              "ci95_lower": 0.04321118746048666,
+              "ci95_upper": 0.10458350814317065,
+              "valid_replicates": 200
+            },
+            "mean_cost": {
+              "point_estimate": 1.2968830832902225,
+              "ci95_lower": 1.2836879203310916,
+              "ci95_upper": 1.3139792421107086,
+              "valid_replicates": 200
+            }
+          }
+        },
+        "contrasts": {
+          "adaptive_minus_base_plus_fpg": {
+            "harrell_c_index": {
+              "point_estimate": -0.0008815245406770256,
+              "ci95_lower": -0.006570834908974975,
+              "ci95_upper": 0.003331986220484304,
+              "valid_replicates": 200
+            },
+            "ipcw_brier_at_horizon": {
+              "point_estimate": 2.8711609774099978e-06,
+              "ci95_lower": -1.7212147266949006e-05,
+              "ci95_upper": 2.1900269381728926e-05,
+              "valid_replicates": 200
+            },
+            "ipcw_cumulative_dynamic_auc": {
+              "point_estimate": -0.0034753995514165137,
+              "ci95_lower": -0.01796434244855924,
+              "ci95_upper": 0.00530209746742629,
+              "valid_replicates": 200
+            },
+            "ipcw_average_precision": {
+              "point_estimate": 0.00020054725950564845,
+              "ci95_lower": -0.013374793692164441,
+              "ci95_upper": 0.010840307998506495,
+              "valid_replicates": 200
+            },
+            "mean_cost": {
+              "point_estimate": 0.2968830832902225,
+              "ci95_lower": 0.28368792033109147,
+              "ci95_upper": 0.31397924211070866,
+              "valid_replicates": 200
+            }
+          }
+        }
+      },
+      "archived_adaptive_reproduced": true,
+      "censoring_source": "NAGALA evaluation cohort"
+    }
+  },
+  "input_sha256": {
+    "configs/fpg_comparison.json": "7cc87d92d7fc5d1482a84ad6b9203c3e8f2c9aaa8e14fb9d71b4ad42efd29af2",
+    "configs/features.yaml": "f8dab97867f474440f45705fad6acc9b4444f1e14d26fbf77218bdeb9b76b3c7",
+    "configs/costs.yaml": "dcae2a077f824840c61751b03407d987da375ae5c636c7284dcfbc2fea53b32a",
+    "data/processed/primary_cohort.csv": "d407cd4bd148d01fd06f34b3a1c8f64970e9a8dabad4875d43eec6fd1c605866",
+    "data/processed/primary_cohort_manifest.json": "c6e6b16087108152a157f6b5a559d355561eda9a809b8dedaf604f380b2a7a51",
+    "data/raw/RC+Health+Care+Data-20180820.xlsx": "ffd341a1a91ac65585b9fba70847a2681f5671a6035d9cfbf92e50795d74fbf6",
+    "data/external/Data set Int J Obesity.xlsx": "671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+    "models/static_subsets.joblib": "3248e5694f06b0bbf8bd83f84b472bbc8f8f90c6a6e405a95e855b743e988b4e",
+    "models/adaptive_value_policy.joblib": "c3cda5336d7cea63f2db358febbbf72a0a8d3803f66d194fcf232ddf0249a4a8",
+    "reports/static_baselines_metrics.json": "83ae8c7be5fe85b7c3d09fa8c931c7d787172544372f0e1ea66e89ace43eed8e",
+    "reports/adaptive_acquisition_metrics.json": "5cc1ee86629d4d243a6538092d807d4e729508a13c5b0440a3d5304c6dc6cf8a",
+    "reports/cost_performance_metrics.json": "051e563147817fdfd82e437fcd2c13c5c92c51b17e978e44b205a4cda3b0d326",
+    "reports/external_validation_metrics.json": "b746c7a03f59ef69f926dc83b703c4692d189ab73043ea88742eed4920f476b4"
+  },
+  "script_sha256": "4bc3e0895eda4fb3a183abcc8758d13146fbdfa8b79b95f4cc3ae638151b234b",
+  "inputs_unchanged": true,
+  "models_fitted": false,
+  "policy_retuned": false,
+  "participant_level_output": null,
+  "python": "3.12.4",
+  "elapsed_seconds": 86.43700000000536,
+  "artifact_migration": {
+    "date": "2026-11-10",
+    "source_commit": "0b9a4f4",
+    "original_sha256": "a9fd0da2d248e61a9bbe796f35fcb74178043ef2cdda146a664e0d14160f64cf",
+    "changes": "Descriptive identifiers, paths and dependent checksums; numerical results unchanged.",
+    "models_refitted": false,
+    "metrics_recomputed": false
+  }
+}
