@@ -1,0 +1,258 @@
+{
+  "folds": [
+    {
+      "fold": 0,
+      "train_count": 118626,
+      "held_count": 29657,
+      "participant_overlap": 0,
+      "training_rows_sha256": "8e2704cd031eca6d6886d67ac4ddb031abba7e2fd480d9f97c63aa77f87c7e64",
+      "cox_bank_sha256": "460eda9c1ff8503e8e3b95cb29f7c6e6753bcf1ee04b038f3899d723b78de6e2",
+      "lab_training": [
+        {
+          "target_bit": 2,
+          "observed_participants": 115920,
+          "positive_participants": 30650,
+          "training_states_per_participant": 2,
+          "own_test_hidden": true
+        },
+        {
+          "target_bit": 4,
+          "observed_participants": 115900,
+          "positive_participants": 26393,
+          "training_states_per_participant": 2,
+          "own_test_hidden": true
+        },
+        {
+          "target_bit": 8,
+          "observed_participants": 117625,
+          "positive_participants": 23593,
+          "training_states_per_participant": 2,
+          "own_test_hidden": true
+        },
+        {
+          "target_bit": 32,
+          "observed_participants": 106499,
+          "positive_participants": 3391,
+          "training_states_per_participant": 2,
+          "own_test_hidden": true
+        }
+      ]
+    },
+    {
+      "fold": 1,
+      "train_count": 118626,
+      "held_count": 29657,
+      "participant_overlap": 0,
+      "training_rows_sha256": "a6ce2db54e45126832880a489dedef5a5b81c332e1cd43fb29bc7ef8321ad93a",
+      "cox_bank_sha256": "6caf390992800302bd3b02410e405a2cc487ce26797bd184cabf96bf14ae9c79",
+      "lab_training": [
+        {
+          "target_bit": 2,
+          "observed_participants": 115914,
+          "positive_participants": 30516,
+          "training_states_per_participant": 2,
+          "own_test_hidden": true
+        },
+        {
+          "target_bit": 4,
+          "observed_participants": 115896,
+          "positive_participants": 26357,
+          "training_states_per_participant": 2,
+          "own_test_hidden": true
+        },
+        {
+          "target_bit": 8,
+          "observed_participants": 117648,
+          "positive_participants": 23522,
+          "training_states_per_participant": 2,
+          "own_test_hidden": true
+        },
+        {
+          "target_bit": 32,
+          "observed_participants": 106584,
+          "positive_participants": 3390,
+          "training_states_per_participant": 2,
+          "own_test_hidden": true
+        }
+      ]
+    },
+    {
+      "fold": 2,
+      "train_count": 118626,
+      "held_count": 29657,
+      "participant_overlap": 0,
+      "training_rows_sha256": "059f5df6ea557960a4d278bf4bd977df679bad379f3180c15cd485358e48d261",
+      "cox_bank_sha256": "793badfb28ada4819374cb12b4f7ef14694419974114fe2ed3c7500155a41955",
+      "lab_training": [
+        {
+          "target_bit": 2,
+          "observed_participants": 115911,
+          "positive_participants": 30645,
+          "training_states_per_participant": 2,
+          "own_test_hidden": true
+        },
+        {
+          "target_bit": 4,
+          "observed_participants": 115893,
+          "positive_participants": 26319,
+          "training_states_per_participant": 2,
+          "own_test_hidden": true
+        },
+        {
+          "target_bit": 8,
+          "observed_participants": 117642,
+          "positive_participants": 23548,
+          "training_states_per_participant": 2,
+          "own_test_hidden": true
+        },
+        {
+          "target_bit": 32,
+          "observed_participants": 106596,
+          "positive_participants": 3394,
+          "training_states_per_participant": 2,
+          "own_test_hidden": true
+        }
+      ]
+    },
+    {
+      "fold": 3,
+      "train_count": 118627,
+      "held_count": 29656,
+      "participant_overlap": 0,
+      "training_rows_sha256": "991a93aa5d8ced9d77716cfb852eadea83bb46364e904cef61797d5b7d81ad28",
+      "cox_bank_sha256": "f68db345c8f241682ecdd195cc6957e862216c163ee8d0895acf9c7848694b68",
+      "lab_training": [
+        {
+          "target_bit": 2,
+          "observed_participants": 115963,
+          "positive_participants": 30595,
+          "training_states_per_participant": 2,
+          "own_test_hidden": true
+        },
+        {
+          "target_bit": 4,
+          "observed_participants": 115944,
+          "positive_participants": 26303,
+          "training_states_per_participant": 2,
+          "own_test_hidden": true
+        },
+        {
+          "target_bit": 8,
+          "observed_participants": 117628,
+          "positive_participants": 23566,
+          "training_states_per_participant": 2,
+          "own_test_hidden": true
+        },
+        {
+          "target_bit": 32,
+          "observed_participants": 106532,
+          "positive_participants": 3393,
+          "training_states_per_participant": 2,
+          "own_test_hidden": true
+        }
+      ]
+    },
+    {
+      "fold": 4,
+      "train_count": 118627,
+      "held_count": 29656,
+      "participant_overlap": 0,
+      "training_rows_sha256": "9ed852547d03e3ec94c5a52b6318fb9c754e46e94706a2ec328569ca65f80793",
+      "cox_bank_sha256": "b6156777f2273d9e4c29419d621f3f4a9c0b5feb00b3c3f048037ee2d9a77819",
+      "lab_training": [
+        {
+          "target_bit": 2,
+          "observed_participants": 115952,
+          "positive_participants": 30530,
+          "training_states_per_participant": 2,
+          "own_test_hidden": true
+        },
+        {
+          "target_bit": 4,
+          "observed_participants": 115935,
+          "positive_participants": 26432,
+          "training_states_per_participant": 2,
+          "own_test_hidden": true
+        },
+        {
+          "target_bit": 8,
+          "observed_participants": 117629,
+          "positive_participants": 23579,
+          "training_states_per_participant": 2,
+          "own_test_hidden": true
+        },
+        {
+          "target_bit": 32,
+          "observed_participants": 106549,
+          "positive_participants": 3416,
+          "training_states_per_participant": 2,
+          "own_test_hidden": true
+        }
+      ]
+    }
+  ],
+  "diagnostics": {
+    "total_cholesterol": {
+      "oof_base_brier_observed_only": 0.17992264022425833,
+      "oof_base_auc_observed_only": 0.6779671257103765,
+      "observed_count": 144915,
+      "positive_count": 38234,
+      "oof_availability_brier": 0.02213499839486182
+    },
+    "triglycerides": {
+      "oof_base_brier_observed_only": 0.14583042932806942,
+      "oof_base_auc_observed_only": 0.7830344713316273,
+      "observed_count": 144892,
+      "positive_count": 32951,
+      "oof_availability_brier": 0.02228140180608198
+    },
+    "alt": {
+      "oof_base_brier_observed_only": 0.13743551489439582,
+      "oof_base_auc_observed_only": 0.7452713498217538,
+      "observed_count": 147043,
+      "positive_count": 29452,
+      "oof_availability_brier": 0.008290590752936061
+    },
+    "bun": {
+      "oof_base_brier_observed_only": 0.030277690390859934,
+      "oof_base_auc_observed_only": 0.70261461109182,
+      "observed_count": 133190,
+      "positive_count": 4246,
+      "oof_availability_brier": 0.09138289919232921
+    }
+  },
+  "final_training": [
+    {
+      "target_bit": 2,
+      "observed_participants": 144915,
+      "positive_participants": 38234,
+      "training_states_per_participant": 2,
+      "own_test_hidden": true
+    },
+    {
+      "target_bit": 4,
+      "observed_participants": 144892,
+      "positive_participants": 32951,
+      "training_states_per_participant": 2,
+      "own_test_hidden": true
+    },
+    {
+      "target_bit": 8,
+      "observed_participants": 147043,
+      "positive_participants": 29452,
+      "training_states_per_participant": 2,
+      "own_test_hidden": true
+    },
+    {
+      "target_bit": 32,
+      "observed_participants": 133190,
+      "positive_participants": 4246,
+      "training_states_per_participant": 2,
+      "own_test_hidden": true
+    }
+  ],
+  "labels": "Raw observed laboratory thresholds; missing labels excluded from abnormality loss",
+  "utility": "P(source observed | state) * P(abnormal | source observed, state)",
+  "interpretation": "Expected retrospective observable yield, not prospective test sensitivity",
+  "final_state_source": "Existing cross-fitted Cox states; preprocessing fitted within folds"
+}

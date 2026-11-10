@@ -1,0 +1,152 @@
+{
+  "config": {
+    "horizon_years": 3.0,
+    "folds": 5,
+    "fold_seed": 20260821,
+    "bootstrap_replicates": 200,
+    "bootstrap_seed": 20260827,
+    "test_budgets": [
+      1,
+      2,
+      3,
+      4,
+      6
+    ],
+    "lab_weight_grid": [
+      0.0,
+      0.05,
+      0.2,
+      1.0,
+      5.0
+    ],
+    "survival_retention_fraction": 0.99,
+    "draw_costs": [
+      0,
+      1,
+      5,
+      20
+    ],
+    "selection": "Maximize validation observed-positive micro recall subject to 99% full-vs-base C-index gain; if infeasible maximize validation C-index, then recall; flag infeasibility",
+    "budget_semantics": "Fill affordable test budget using normalized OOF revision plus weighted expected observed-positive yield per marginal cost. No utility STOP; budget stopping only. Static comparators have identical test counts before guardrails.",
+    "external_transfer": "Frozen weights and static rankings, intersect with external availability; budget capped at four tests; no external fitting",
+    "clinical_ancestry": "For ADA only, Asian ancestry assumed from cohort context; not individually measured. Also report unknown-ancestry sensitivity. KZ158 does not enumerate high-risk ethnicities, so ethnicity is unassessed for both KZ cohort variants.",
+    "clinical_family_history": "Dataset family history is not verified first-degree; excluded from cohort guardrails",
+    "guardrail_budget": "FPG appended after policy if required; extra cost and budget exceedance reported; no repeat draw charge",
+    "lab_labels": "Observed-only TC>=5.2, TG>=1.7 mmol/L; ALT>33 male or >25 female U/L; BUN>7.1 mmol/L internal only; CCR excluded"
+  },
+  "protected_artifacts": {
+    "configs/acquisition_research.json": "492d5684904ab0087ed745a8c83b58bae0539e6fe58ea0e6dcde02af1d5e6d3a",
+    "configs/costs.yaml": "dcae2a077f824840c61751b03407d987da375ae5c636c7284dcfbc2fea53b32a",
+    "configs/features.yaml": "f8dab97867f474440f45705fad6acc9b4444f1e14d26fbf77218bdeb9b76b3c7",
+    "configs/fpg_comparison.json": "7cc87d92d7fc5d1482a84ad6b9203c3e8f2c9aaa8e14fb9d71b4ad42efd29af2",
+    "configs/legacy_model_constraints.txt": "ea81b7e040f56cf57bc09b3fbc473e52f1edd78ce66bf4e14352465806efbc4a",
+    "data/external/Data set Int J Obesity.xlsx": "671359aea2019c848f969395f88e57f888eaba8463ea0351bcda8f1c947f5523",
+    "data/processed/primary_cohort.csv": "d407cd4bd148d01fd06f34b3a1c8f64970e9a8dabad4875d43eec6fd1c605866",
+    "data/processed/primary_cohort_manifest.json": "c6e6b16087108152a157f6b5a559d355561eda9a809b8dedaf604f380b2a7a51",
+    "models/adaptive_value_policy.joblib": "c3cda5336d7cea63f2db358febbbf72a0a8d3803f66d194fcf232ddf0249a4a8",
+    "models/cox_baseline.joblib": "1dd6e4abf007758a0256d841dc35798fd47a27debe0c7d2c8c290b6c8c4cd91f",
+    "models/static_subsets.joblib": "3248e5694f06b0bbf8bd83f84b472bbc8f8f90c6a6e405a95e855b743e988b4e",
+    "reports/adaptive_acquisition_metrics.json": "5cc1ee86629d4d243a6538092d807d4e729508a13c5b0440a3d5304c6dc6cf8a",
+    "reports/cost_performance_metrics.json": "051e563147817fdfd82e437fcd2c13c5c92c51b17e978e44b205a4cda3b0d326",
+    "reports/external_validation_metrics.json": "b746c7a03f59ef69f926dc83b703c4692d189ab73043ea88742eed4920f476b4",
+    "reports/feature_cost_design_manifest.json": "48a27fc8d3d80f17019441d433285fb7a969fcfb752e8f539f05ebc89e654d51",
+    "reports/fpg_comparison_metrics.json": "45de1e559ad8ebbb55041fb91f996922414feefe12a9b440920d777a8a2980ee",
+    "reports/ordered_acquisition_metrics.json": "889aa0a67762f43b901a8240d4dcc9e94f204e48e83ae579af01358524c7c9e5",
+    "reports/ordinary_baseline_metrics.json": "ccd9c99cd0df5d22e854dbb11f686f5229664e201ffc94744e300bc7ddb12730",
+    "reports/static_baselines_metrics.json": "83ae8c7be5fe85b7c3d09fa8c931c7d787172544372f0e1ea66e89ace43eed8e",
+    "results/acquisition_v2/contrasts.csv": "da297810320c598f589ea6d46fdb9656433078ffa81d4893c4ce8e21503c0ce9",
+    "results/acquisition_v2/crossfit_audit.json": "fc10807768e182018a08b471672c0d04fa7a1de3cc1d96ddb03bff01598f889a",
+    "results/acquisition_v2/external.json": "1d54fb9c1a9178b077fe431ff99ab41cb2dece9927e961cbd2978900f55ee074",
+    "results/acquisition_v2/internal.json": "a4c396850520a1b8f619186a7627b34d7f3572fa896f134043780f367390275e",
+    "results/acquisition_v2/metrics.csv": "db98976e008b868f1d4f294c8385a32a0f0329d1b54d55b6e60771b4c03b1958",
+    "results/acquisition_v2/metrics.json": "be725479ea938b4c73a7184ef480ee0fd4de8833e0e64e9874af720cc58b81c2",
+    "results/acquisition_v2/protocol.json": "a6b2aa8e81e23c228d5137a681d2277fa099c8fe56809b66facf7791615bd030",
+    "results/acquisition_v2/selection.json": "c77e80e056fdae59fabbfcc60278e7109d93bd879f37af017aeaae7e9de855ca",
+    "results/acquisition_v2/utility_training.json": "ad7c9003ba777ea1897714d9054e69c315a416350781141449a4b62907863a70",
+    "scripts/run_acquisition_research.py": "1b2d1a2fb6c8bcff99e133f1742340d1737accbbdf45c79c288c72274084cfc4",
+    "src/t2d_aaf/__init__.py": "41362a5ea4931c546433d4c48290c5707bf02dbbea1c3aafa9f43d1225e47003",
+    "src/t2d_aaf/acquisition/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/t2d_aaf/acquisition/adaptive.py": "e842baf837b99e7d53a59494f4f300e6176585236465fbf376d6ba2554a8d4ad",
+    "src/t2d_aaf/acquisition/adaptive_reporting.py": "2fd6e25be578c7e4c6e52aa4b48e0c408d63dabdb5710b641859a5f37563b44e",
+    "src/t2d_aaf/acquisition/ordered.py": "99a58ec91f0a83b290be2bb31fd6a0ca189c32a45f869e6653d3a8a9391b8d8c",
+    "src/t2d_aaf/acquisition/ordered_reporting.py": "4d1c787852259457c8e0f0623fef7946eb6469dcf86b6815578eda4a2069050b",
+    "src/t2d_aaf/data/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/t2d_aaf/data/audit.py": "cff365a06e9880fe342fae3b43703ba87a7c0ba2cec90608171076a22c2176bc",
+    "src/t2d_aaf/data/cohort.py": "f9b605cef62b6e73f23fe7597e791f8564ea2ff657ebaee3383bcee0139dd60f",
+    "src/t2d_aaf/demo/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/t2d_aaf/demo/service.py": "9b59402efce93e7db1c400e41fff91d4cd1f99cc01675dd7980a4320cb7dc338",
+    "src/t2d_aaf/evaluation/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/t2d_aaf/evaluation/cost_performance.py": "10db8b89e8b5c855db15898426ae4383bbad1507f62563c4ca85639175c7069b",
+    "src/t2d_aaf/evaluation/cost_performance_reporting.py": "cf60477af46d14a74f9b02cdffce51005fc5a79b7e7c9d5912cbefd5350bffae",
+    "src/t2d_aaf/evaluation/survival_metrics.py": "1a66c2097b6b217add821fc85df91da9bf8a74ad81a5489ce378a3e12db6d454",
+    "src/t2d_aaf/external/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/t2d_aaf/external/nagala.py": "f05f97c05bde008452385ab10bd7b506d675376bd1355ae1ff6ac72ec729cc75",
+    "src/t2d_aaf/external/reporting.py": "cac06c0bd859bda663fa03dca9f4ff8cf6079de8038e683054fcf18a51965641",
+    "src/t2d_aaf/external/validation.py": "41e4b4809802e4e996f8eb2b17d01f1f76149748a41f945dcb44a263eddfefad",
+    "src/t2d_aaf/features/__init__.py": "dca241f742442750e29d823bcb9c3ba3a6d73906d35119bd8d8b1e87abe53841",
+    "src/t2d_aaf/features/registry.py": "d0bd34e5609348ff2ec7eae72b445757c048cada5235fcb2b88a102bbb1814fe",
+    "src/t2d_aaf/features/reporting.py": "26c6745dc68da838b03ff9ad3e62dd77358173d597f060d5a66ac86a2a1f0ed3",
+    "src/t2d_aaf/research/__init__.py": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "src/t2d_aaf/research/crossfit.py": "be2fb38d875e549b130064d692b48703450ff879718b7fcc16cfec9b87e19d67",
+    "src/t2d_aaf/research/experiment.py": "110bba9ba51b4b3a359ecfb9f623b703a94920255a549949dc05b322ee825302",
+    "src/t2d_aaf/research/inference.py": "eadd6c681a59ec7b70ea1e703008a67df451cc19787dda882bb5f8e6d4ca4313",
+    "src/t2d_aaf/research/policy.py": "5ef7f1ca141bd0b8b04eb6e288231af6ed67eb2ec4f7ab7c328e5d89e1f6b026",
+    "src/t2d_aaf/survival/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/t2d_aaf/survival/baseline.py": "5651903b87bfffa9e38336f9b399f7e899f24a38dcdb2f75e2473b43306f0054",
+    "src/t2d_aaf/survival/reporting.py": "5e9aadd806d30155be8ce3a8544b2e9297c6fefcab478865c4420fb173bac6fa",
+    "src/t2d_aaf/survival/static_baselines.py": "e407dda3d07d0a90ecc920fc7f8487d26fe5d86020a5bd11c4e6400edac85623",
+    "src/t2d_aaf/survival/static_reporting.py": "88530116189b9ad2c6fd865174255364d3e432f4f82c4d3fe54918c91de294d8"
+  },
+  "source_sha256": {
+    "src/t2d_aaf/multiobjective/evaluation.py": "73d6597c86cffc1a11e17b1bd3db7ca72cb788317ffcbda32ac75983844cbbd6",
+    "src/t2d_aaf/multiobjective/policy.py": "cb930e1e5e8cde6de92c969abb60c5e635681af3f877e28b03bd90594674da16",
+    "src/t2d_aaf/multiobjective/training.py": "99ebedaa58464b36a5fc1bfff76483540280e9f52a0427092f834f61bd34550c",
+    "src/t2d_aaf/multiobjective/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/t2d_aaf/clinical/rules.py": "88b7653defa1d6805a12753cff98860da09c52592ee98caef5924123a8daedb5",
+    "src/t2d_aaf/clinical/thresholds.py": "422469963872b25baa4b8b9e8463935647238be8206ce578c1c743e78fa997d6",
+    "src/t2d_aaf/clinical/__init__.py": "897d20f8f751f6100b0bfefd2b0a1bec72b6ea35f4ccfad7d33f9f3d282a0641",
+    "src/t2d_aaf/triage_experiment.py": "a6bcce4a4cc97a45dabc0a126831f1c7d903374d3e4c423b31eb01b4709fdb42"
+  },
+  "thresholds": {
+    "total_cholesterol": {
+      "threshold": 5.2,
+      "operator": ">=",
+      "unit": "mmol/L",
+      "basis": "Prespecified research cutoff; not a treatment threshold"
+    },
+    "triglycerides": {
+      "threshold": 1.7,
+      "operator": ">=",
+      "unit": "mmol/L",
+      "basis": "Prespecified research cutoff; distinct from ADA screening risk factor"
+    },
+    "alt": {
+      "male_threshold": 33.0,
+      "female_threshold": 25.0,
+      "operator": ">",
+      "unit": "U/L",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10735173/",
+      "basis": "Upper bounds of AASLD healthy ranges; operational research label, not liver diagnosis"
+    },
+    "bun": {
+      "threshold": 7.1,
+      "operator": ">",
+      "unit": "mmol/L",
+      "source": "https://www.mayoclinic.org/tests-procedures/blood-urea-nitrogen/about/pac-20384821",
+      "basis": "Adult upper reference bound; age/laboratory reference intervals may differ"
+    }
+  },
+  "guideline_sources": {
+    "ADA2026": "https://doi.org/10.2337/dc26-s002",
+    "KZ158": "https://nrchd.kz/storage/documents/\u041a\u043b\u0438\u043d\u0438\u0447\u0435\u0441\u043a\u0438\u0435%20\u043f\u0440\u043e\u0442\u043e\u043a\u043e\u043b\u044b/\u041f\u043e\u0442\u043e\u043a%20\u043a\u043b\u0438\u043d\u0438\u0447\u0435\u0441\u043a\u0438\u0435%20\u043f\u0440\u043e\u0442\u043e\u043a\u043e\u043b\u044b/\u0421\u0430\u0445\u0430\u0440\u043d\u044b\u0439%20\u0434\u0438\u0430\u0431\u0435\u0442%202%20\u0442\u0438\u043f\u0430.pdf"
+  },
+  "source_check_date": "2026-11-10",
+  "inference": "Paired event-stratified percentile bootstrap; fitted models, selection and censoring weights fixed; no multiplicity correction",
+  "limitations": [
+    "Retrospective observed-positive yield depends on source missingness; unobserved truth unknown",
+    "ALT/BUN cutoffs are operational research labels, not diagnoses",
+    "Guardrails implement available screening indications, not full guideline compliance",
+    "Fixed-budget allocation differs from economic stopping in acquisition_v2",
+    "External censoring distribution is estimated from NAGALA for evaluation only"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "horizon_years": 3.0,
+  "folds": 5,
+  "fold_seed": 20260821,
+  "bootstrap_replicates": 200,
+  "bootstrap_seed": 20260827,
+  "test_budgets": [1, 2, 3, 4, 6],
+  "lab_weight_grid": [0.0, 0.05, 0.2, 1.0, 5.0],
+  "survival_retention_fraction": 0.99,
+  "draw_costs": [0, 1, 5, 20],
+  "selection": "Maximize validation observed-positive micro recall subject to 99% full-vs-base C-index gain; if infeasible maximize validation C-index, then recall; flag infeasibility",
+  "budget_semantics": "Fill affordable test budget using normalized OOF revision plus weighted expected observed-positive yield per marginal cost. No utility STOP; budget stopping only. Static comparators have identical test counts before guardrails.",
+  "external_transfer": "Frozen weights and static rankings, intersect with external availability; budget capped at four tests; no external fitting",
+  "clinical_ancestry": "For ADA only, Asian ancestry assumed from cohort context; not individually measured. Also report unknown-ancestry sensitivity. KZ158 does not enumerate high-risk ethnicities, so ethnicity is unassessed for both KZ cohort variants.",
+  "clinical_family_history": "Dataset family history is not verified first-degree; excluded from cohort guardrails",
+  "guardrail_budget": "FPG appended after policy if required; extra cost and budget exceedance reported; no repeat draw charge",
+  "lab_labels": "Observed-only TC>=5.2, TG>=1.7 mmol/L; ALT>33 male or >25 female U/L; BUN>7.1 mmol/L internal only; CCR excluded"
+}

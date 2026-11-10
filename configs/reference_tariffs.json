@@ -1,0 +1,17 @@
+{
+  "provider": "INVITRO Kazakhstan",
+  "city": "Almaty",
+  "currency": "KZT",
+  "checked_on": "2026-11-10",
+  "draw": 1450,
+  "draw_source": "https://invitro.kz/analizes/for-doctors/486/2222/",
+  "tests": {
+    "fpg": {"price": 1750, "source": "https://invitro.kz/kz/analizes/for-doctors/almaty/11624/2212/"},
+    "total_cholesterol": {"price": 1750, "source": "https://invitro.kz/analizes/for-doctors/485/2216/"},
+    "triglycerides": {"price": 1750, "source": "https://invitro.kz/analizes/for-doctors/485/2215/"},
+    "alt": {"price": 1750, "source": "https://invitro.kz/analizes/for-doctors/486/2222/"},
+    "bun": {"price": 1750, "source": "https://invitro.kz/analizes/for-doctors/483/2210/", "mapping": "Urea assay; BUN expressed in mmol/L urea equivalents"},
+    "ccr": {"price": null, "source": null, "mapping": "Ambiguous source field; no clinical assay mapping"}
+  },
+  "scope": "Reference retail snapshot, not a quotation or local cost-effectiveness estimate; fees vary by location and date; source caches may show older draw fees"
+}

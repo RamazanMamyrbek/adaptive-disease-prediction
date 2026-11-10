@@ -1,0 +1,27 @@
+{
+  "checked_artifacts": 78,
+  "all_hashes_match": true,
+  "model_sha256": {
+    "models/research/multiobjective_v2/labs.joblib": "92da711aa193dd1c42274d71141be62c98b98fb8de2434eeafb4328a0da0bcc8",
+    "models/research/acquisition_v2/oof_revision.joblib": "a31eb79abdb580e4729eee03dc7b6a0d9a4330ac6e656ae2f0aff5ab40c555b8"
+  },
+  "selection_sha256": "cace744b36af94e7c51b23b94d2b5a3cd65e81b9f33893ad16fd7b2d41c752d7",
+  "python": "3.11.17",
+  "packages": {
+    "numpy": "1.26.4",
+    "pandas": "2.3.3",
+    "scipy": "1.17.1",
+    "scikit-learn": "1.4.2",
+    "statsmodels": "0.15.0",
+    "joblib": "1.6.0",
+    "streamlit": "1.65.0"
+  },
+  "commands": [
+    "python scripts/train_multiobjective.py",
+    "python scripts/run_multiobjective.py",
+    "python -m pytest -q",
+    "python scripts/verify_multiobjective.py",
+    "streamlit run app/streamlit_app.py"
+  ],
+  "clinical_sources_checked_on": "2026-11-10"
+}
