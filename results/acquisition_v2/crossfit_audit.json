@@ -1,0 +1,202 @@
+{
+  "folds": [
+    {
+      "fold": 0,
+      "training_participants": 118626,
+      "held_out_participants": 29657,
+      "participant_overlap": 0,
+      "training_rows_sha256": "8e2704cd031eca6d6886d67ac4ddb031abba7e2fd480d9f97c63aa77f87c7e64",
+      "held_out_rows_sha256": "13e7836c0d3b9c0de6d8b972bd230be5e5336cbc3e7939c754e2ebf079f557f7",
+      "continuous_imputation": [
+        39.0,
+        23.0,
+        118.0,
+        73.0,
+        4.9,
+        4.62,
+        1.07,
+        18.0,
+        69.2,
+        4.53
+      ],
+      "continuous_mean": [
+        42.076745401514,
+        23.222858142397115,
+        119.0843912801578,
+        74.16688584290122,
+        4.912889248562709,
+        4.7033590443916165,
+        1.3310367878879843,
+        23.93706438723383,
+        69.97753983106571,
+        4.6448058604353175
+      ],
+      "binary_imputation": [
+        1.0,
+        0.0
+      ],
+      "fit_warnings": {}
+    },
+    {
+      "fold": 1,
+      "training_participants": 118626,
+      "held_out_participants": 29657,
+      "participant_overlap": 0,
+      "training_rows_sha256": "a6ce2db54e45126832880a489dedef5a5b81c332e1cd43fb29bc7ef8321ad93a",
+      "held_out_rows_sha256": "6d1f9d05cd32ab1e1b9db7f5c4cc6b1f12e3e4af6514f0c95cb24abba90fa792",
+      "continuous_imputation": [
+        38.0,
+        23.0,
+        118.0,
+        73.0,
+        4.9,
+        4.61,
+        1.07,
+        18.0,
+        69.3,
+        4.53
+      ],
+      "continuous_mean": [
+        42.067236524876506,
+        23.228552509567887,
+        119.0620268743783,
+        74.16356447996223,
+        4.913015106300473,
+        4.701456426078599,
+        1.3301305784566622,
+        23.84585672618145,
+        70.05215188913054,
+        4.646683779272673
+      ],
+      "binary_imputation": [
+        1.0,
+        0.0
+      ],
+      "fit_warnings": {}
+    },
+    {
+      "fold": 2,
+      "training_participants": 118626,
+      "held_out_participants": 29657,
+      "participant_overlap": 0,
+      "training_rows_sha256": "059f5df6ea557960a4d278bf4bd977df679bad379f3180c15cd485358e48d261",
+      "held_out_rows_sha256": "83ae33b8c35ace2562b91cb2639ca39f2f89032df5794959df5698550573c27e",
+      "continuous_imputation": [
+        39.0,
+        23.0,
+        117.0,
+        73.0,
+        4.9,
+        4.62,
+        1.07,
+        18.0,
+        69.3,
+        4.53
+      ],
+      "continuous_mean": [
+        42.06922597069782,
+        23.226970057154414,
+        119.05825029925985,
+        74.16921248292954,
+        4.9133510360292005,
+        4.703831200579974,
+        1.3317602380591103,
+        23.85506297101816,
+        69.99990069630604,
+        4.643128656449682
+      ],
+      "binary_imputation": [
+        1.0,
+        0.0
+      ],
+      "fit_warnings": {}
+    },
+    {
+      "fold": 3,
+      "training_participants": 118627,
+      "held_out_participants": 29656,
+      "participant_overlap": 0,
+      "training_rows_sha256": "991a93aa5d8ced9d77716cfb852eadea83bb46364e904cef61797d5b7d81ad28",
+      "held_out_rows_sha256": "e991e27335203628ab989e8281ec87453421b8b85631b2a4408ff4f02eb26399",
+      "continuous_imputation": [
+        38.0,
+        23.0,
+        118.0,
+        73.0,
+        4.9,
+        4.62,
+        1.07,
+        18.0,
+        69.3,
+        4.53
+      ],
+      "continuous_mean": [
+        42.05559442622675,
+        23.231778853043576,
+        119.09338514840636,
+        74.16003102160553,
+        4.911792256400313,
+        4.7025677122408895,
+        1.3293742571252751,
+        23.93203149367345,
+        70.0198928574439,
+        4.646043396528615
+      ],
+      "binary_imputation": [
+        1.0,
+        0.0
+      ],
+      "fit_warnings": {}
+    },
+    {
+      "fold": 4,
+      "training_participants": 118627,
+      "held_out_participants": 29656,
+      "participant_overlap": 0,
+      "training_rows_sha256": "9ed852547d03e3ec94c5a52b6318fb9c754e46e94706a2ec328569ca65f80793",
+      "held_out_rows_sha256": "98deeb239247302b8e4244bd16079b68375a9cb261a9a72ef048063c16ff11c7",
+      "continuous_imputation": [
+        39.0,
+        23.0,
+        118.0,
+        73.0,
+        4.9,
+        4.61,
+        1.07,
+        18.0,
+        69.3,
+        4.53
+      ],
+      "continuous_mean": [
+        42.061647011220046,
+        23.23043067767035,
+        119.02900688713362,
+        74.14903015333778,
+        4.912687246579616,
+        4.702115622918898,
+        1.3300429918989773,
+        23.93249934669173,
+        70.04250128554209,
+        4.645712527502171
+      ],
+      "binary_imputation": [
+        1.0,
+        0.0
+      ],
+      "fit_warnings": {}
+    }
+  ],
+  "signature": {
+    "data": "1e8d5e479f4b50bc9c2be9f3d06cdf5830849dc5d1ccec6cbc58d65280b97170",
+    "folds": 5,
+    "seed": 20260821,
+    "horizon": 3.0,
+    "code": {
+      "baseline.py": "5651903b87bfffa9e38336f9b399f7e899f24a38dcdb2f75e2473b43306f0054",
+      "static_baselines.py": "e407dda3d07d0a90ecc920fc7f8487d26fe5d86020a5bd11c4e6400edac85623",
+      "adaptive.py": "e842baf837b99e7d53a59494f4f300e6176585236465fbf376d6ba2554a8d4ad",
+      "cost_performance.py": "10db8b89e8b5c855db15898426ae4383bbad1507f62563c4ca85639175c7069b"
+    },
+    "crossfit_code": "be2fb38d875e549b130064d692b48703450ff879718b7fcc16cfec9b87e19d67"
+  }
+}
